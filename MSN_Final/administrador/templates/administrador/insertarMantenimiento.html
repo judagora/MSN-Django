@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/AgendarM.css' %}">
+    <link rel="stylesheet" href="{% static 'css/boostrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/colores.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <title>Motors Safety Net</title>
+</head>
+
+<body class="fuente">
+
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
+        <div class="logo">
+            <a class="link" href="{% url 'index' %}">
+                <img src="{% static 'img/logo-msn.svg' %}" alt="imagen logo">
+            </a>
+            <h1>Motors Safety Net</h1>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:indexAdministrador' %}">
+                <i class="lni lni-user"></i>
+                <!--<span>{{ request.user.nombres }}</span>-->
+            </a>
+
+            <a class="correo text-white text-decoration-none d-flex align-items-center">
+                <!-- <small>{{ request.user.correo }}</small>-->
+            </a>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'logout' %}">
+                <i class="lni lni-exit"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </header>
+
+
+    <!-- Contenido de la página -->
+    <div class="col">
+        <div class="row">
+            <!-- Columna del menú -->
+            <div class="col-lg-3 bg-light-subtle">
+                <ul class="nav flex-column col color1">
+                    <div class="espaciobarranav">
+                        <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
+                            <li class="nav-item d-flex justify-content-center align-items-center">
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                            </li>
+                        </div>
+                        <ul class="submenu">
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                            </div>
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center" aria-current="page"
+                                href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                        class="lni lni-agenda"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center"
+                                href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                        class="lni lni-delivery"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center"
+                                href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                        class="lni lni-cogs"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center"
+                                href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+
+            <div class="col-8 col">
+                <div class="row mt-3">
+                    <div>
+                        <h1 class="AgendaT">Agendar Mantenimiento</h1>
+                    </div>
+
+                    <div class="izquierda">
+                        <form class="row g-3 needs-validation" action="/insertarMantenimientoAd" novalidate
+                            method="post">
+                            <div class="col-md-3 position-relative">
+                                <label for="validationTooltip04" class="form-label">Tipo de Mantenimiento</label>
+                                <select class="form-select" name="tipoMantenimiento" id="validationTooltip04" required>
+                                    <option selected disabled value="">...</option>
+                                    <option>Preventivo</option>
+                                    <option>Correctivo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Descripción</label>
+                                <input type="text" class="form-control" name="descripcionMantenimiento"
+                                    id="validationTooltip01" required>
+                            </div>
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Costo</label>
+                                <input type="text" class="form-control" name="costoMantenimiento"
+                                    id="validationTooltip01" required>
+                            </div>
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Notas Adicionales</label>
+                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento"
+                                    id="validationTooltip01" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="validationTooltip01" class="form-label">Placa</label>
+                                <input type="text" name="placa" class="form-control" id="validationTooltip01"
+                                    maxlength="6" minlength="6" required placeholder="Ej: abc123">
+                            </div>
+                            <div class="espacio2">
+                                <div class="row">
+                                    <div class="col-6 d-flex justify-content-end align-items-center">
+                                        <input type="submit" value="Registrar" name="btnRegistrarMantenimiento"
+                                            class="btn btn-primary">
+                                    </div>
+                                    <div class="col-6 d-flex justify-content-start align-items-center">
+                                        <a href="/moduloAdmin/mantenimientos" class="btn btn-primary">volver</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${mensajeExito}" class="alert alert-success text-center" role="alert">
+                                <span th:text="${mensajeExito}"></span>
+                            </div>
+                            <div th:if="${mensajeError}" class="alert alert-danger text-center" role="alert">
+                                <span th:text="${mensajeError}"></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% load static %}  <!-- Cargar la etiqueta static -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+
+
+</body>
+
+</html>

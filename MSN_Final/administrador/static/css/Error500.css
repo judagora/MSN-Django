@@ -1,0 +1,63 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    text-align: center;
+    padding: 50px;
+}
+
+h1 {
+    font-size: 48px;
+    color: #ff5555;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+
+
+
+/* Estilos adicionales para hacer la página más responsiva */
+@media screen and (max-width: 768px) {
+    .col-lg-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .nav.flex-column.col.color1 {
+        padding-left: 0;
+    }
+
+    .col-8.col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .tabla {
+        margin-left: 0;
+    }
+
+    .barraNav {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .barraNav ul {
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .nav.flex-column.col.color1 {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .nav.flex-column.col.color1 {
+        font-size: 12px;
+    }
+}
