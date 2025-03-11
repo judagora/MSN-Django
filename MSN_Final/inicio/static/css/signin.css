@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    width: 50%;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="date"],
+  input[type="email"],
+  input[type="password"],
+  input[list="tipo"],
+  input[type="number"]{
+    width: 95%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+
+  select {
+    width: 98%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+ 
+    #btn-volver   {
+    padding: 10px 20px;
+    background-color: #3fb19d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+    #btn-volver   {
+    text-decoration: none;
+    margin-left: 2vw;
+  }
+
+  #btn-volver:hover {
+    background-color: #369685;
+  }
+
+
+  @media only screen and (max-width: 493px) {
+    .btn-volver {
+      margin-left: 1vw;
+    }
+    button {
+      margin-bottom: 2vh;
+    }
+  }
