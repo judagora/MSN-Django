@@ -89,7 +89,7 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-image: url("Modulo Cliente/img/pexels-albin-berlin-919073.jpg");
+    background-image: url("../img/pexels-albin-berlin-919073.jpg");
     background-attachment: fixed;
     background-size: cover;
     height: 600px;
@@ -246,7 +246,6 @@ footer{
 }
 
 
-
 /*responsive*/
 @media only screen and (max-width: 1300px) {
     .barraNav ul li { 
@@ -335,5 +334,3 @@ footer{
         align-items: center;
     }
 }
-
-

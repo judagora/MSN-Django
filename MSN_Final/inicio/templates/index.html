@@ -1,20 +1,21 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="">
-    <link rel="shortcut icon" href="" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'img/logo-msn.svg'%}" type="image/x-icon">
     <title>Motors Safety Net</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'iniciosource/css/style.css' %}">
 </head>
 <body>
      <!-- Cabecera -->
      <header>
         
         <div class="logo">
-            <a class="link" href="">
-                <img  src="" alt="">
+            <a class="link" href="{% url 'index'%}">
+                <img  src="{% static 'img/logo-msn.svg'%}" alt="">
                 <h1>Motors Safety Net</h1>
             </a>
 
@@ -22,10 +23,10 @@
 
         <nav class="barraNav">
             <ul>
-                <li><a class="link" href="#">Inicio</a></li> 
+                <li><a class="link" href="{% url 'index'%}">Inicio</a></li> 
                 <li><a class="link" href="#">Acerca de Nosortos</a></li> 
                 <li><a class="link" href="#">Contactanos</a></li> 
-                <li><a class="link" href="#">Servicios</a></li> 
+                <li><a class="link" href="#servicios">Servicios</a></li> 
             </ul> 
                 
             
@@ -44,8 +45,8 @@
         </div>
         
         <div class="botones">
-         <a href="#" class="">Iniciar Sesión</a>   
-         <a href="#" class="">Registrarse</a>  
+         <a href="{% url 'login'%}" class="">Iniciar Sesión</a>   
+         <a href="{% url 'register'%}" class="">Registrarse</a>  
         </div>
     </section>
 
@@ -103,13 +104,13 @@
             <div class="linea6  mm">Ficha: 2770803</div>
 
             <!-- Logo de WhatsApp -->
-            <img class="imgW " src="" alt=" Ícono WhatsApp" width="45" height="45"
+            <img class="imgW " src="{% static 'iniciosource/img/whatsapp_4494470.png'%}" alt=" Ícono WhatsApp" width="45" height="45"
                 title="WhatsApp">
             <!-- Logo de Instagram -->
-                <img class="imgI" src="" alt="Ícono Instagram" width="45" height="45"
+                <img class="imgI" src="{% static 'iniciosource/img/instagram_4494468.png'%}" alt="Ícono Instagram" width="45" height="45"
                 title="Instagram">
             <!-- Logo de Facebook -->
-                <img class="imgF " src="" alt="Ícono Facebook" width="45" height="45"
+                <img class="imgF " src="{% static 'iniciosource/img/facebook_4494464.png'%}" alt="Ícono Facebook" width="45" height="45"
                 title="Facebook">
         </div>
     
