@@ -134,6 +134,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "mecanico/static",
     BASE_DIR / "inicio/static",
     os.path.join(BASE_DIR, 'inicio/static'),
+    os.path.join(BASE_DIR, 'administrador/static'),
+
 ]
 
 # Default primary key field type
