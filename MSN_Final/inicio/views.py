@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegistroForm, LoginForm
 from .models import Usuario
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
 from django.contrib import messages
 
 
@@ -34,30 +35,29 @@ def registro(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(data=request.POST)
+        form = LoginForm(data = request.POST)
         if form.is_valid():
-            correo_electronico = form.cleaned_data['correo']
+            corrreo = form.cleaned_data['correo']
             password = form.cleaned_data['password']
-            usuario = authenticate(correo_electronico=correo_electronico, password=password)
-            if usuario is not None:
-                login(request, usuario)
-                
-                if usuario.groups.filter(name='Administrador').exists():
+            user = authenticate(correo_electronico=corrreo, password=password)
+
+            if user is not None:
+                login(request, user)
+
+                if user.groups.filter(name="Cliente").exists():
+                    return redirect('cliente:inicio')
+                elif user.groups.filter(name="Administrador").exists():
                     return redirect('administrador:index')
-                elif usuario.groups.filter(name='Mecanico').exists():
-                    return redirect('mecanico:index')
-                elif usuario.groups.filter(name='Cliente').exists():
-                    return redirect('cliente:index')
+                elif user.groups.filter(name="Mecanico").exists():
+                    return redirect('mecanico:inicio')
                 else:
-                    messages.error(request, "Usuario o contraseña incorrectos.")
+                    return messages.error(request, "No tienes permisos para acceder a esta página.")
             else:
-                messages.error(request, "Usuario o contraseña incorrectos.")
-        else:
-            messages.error(request, "Usuario o contraseña incorrectos.")
+                form.add_error(None, "Correo o contraseña incorrectos")
     else:
         form = LoginForm()
 
-    return render(request, 'login.html')
+    return render(request, 'login.html',{"form": form})
 
 def logout_view(request):
     request.session.flush()

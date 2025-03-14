@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <link rel="shortcut icon" href="{% static 'img/logo-msn.svg'%}" type="image/x-icon">
+  <link rel="shortcut icon" href="{% static 'iniciosource/img/logo-msn.svg''%}" type="image/x-icon">
   <link rel="stylesheet" href="{% static 'iniciosource/css/styleLogin.css' %}">
   <link rel="stylesheet" href="{% static 'iniciosource/css/style.css' %}">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
 
     <div class="logo">
       <a class="link" href="{% url 'index'%}">
-        <img src="{% static 'img/logo-msn.svg'%}" alt="">
+        <img src="{% static 'iniciosource/img/logo-msn.svg'%}" alt="">
         <h1>Motors Safety Net</h1>
       </a>
 
@@ -79,12 +79,24 @@
     <form action="{% url 'login_view'%}" method="POST">
       {% csrf_token %}
       <div class="form-group">
-        <label for="txtcorreo">Correo Electrónico:</label>
-        <input type="email" id="correo" name="correo" required>
+        <label for="correo">Correo Electrónico:</label>
+        <input type="email" id="correo" name="correo" placeholder="Ingresa tu correo" required>
+        {% if form.username.errors %}
+            <div class="alert-danger">
+              <span class="">{{ form.username.errors }}</span>
+            </div>
+              
+        {% endif %}
       </div>
       <div class="form-group">
-        <label for="txtcontraseña">Contraseña:</label>
-        <input type="password" id="password" name="password" required>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+        {% if form.password.errors %}
+            <div class="alert-danger">
+              <span class="">{{ form.password.errors }}</span>
+            </div>
+              
+        {% endif %}
       </div>
 
       
