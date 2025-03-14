@@ -110,6 +110,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "inicio.Usuario" # Se especifica el modelo de usuario personalizado
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

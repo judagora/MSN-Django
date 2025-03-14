@@ -1,0 +1,131 @@
+.formulario {
+    background-color: aliceblue;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.col-9 {
+    display: flex;
+    flex-direction: column;
+}
+
+.formulario h4 {
+    text-align: center;
+    padding: 15px;
+    font-size: 30px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[list="tipo"],
+select[list="tipo-m"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+ #tm {
+    width: 98%;
+}
+
+.modNoti{ 
+    width: 96%; 
+}
+
+
+.enviar {
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #3fb19d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+.enviar:hover {
+    background-color: #369685;
+}
+
+.notificacion {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: aliceblue;
+    width: 100%;
+    height: 50vh;
+    border-radius: 20px;
+}
+
+.notificacion h4 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.notificacion table {
+    background-color: aliceblue;
+   
+}
+
+.editar-b,
+.eliminar-b {
+    padding: 10px;
+    border: none;
+    background-color: #ccc;
+    transition: all .3s;
+    border-radius: 2px;
+    display: block;
+    width: fit-content;
+   
+
+}
+
+.editar-b:hover {
+    background-color: #b2b2b2;
+}
+
+.eliminar-b:hover {
+    background-color: #dc3545;
+}
+
+.table {
+    margin-top: 30px;
+    
+}
+
+@media only screen and (max-width: 540px) {
+    header {
+        padding-bottom: 200px;
+    }
+
+    .menu {
+        height: 77vh;
+    }
+    .formulario {
+        height: auto;
+    }
+    .notificacion {
+        height: auto;
+    }
+} 
+
+@media only screen and (max-width: 450px) {
+    header {
+        padding-bottom: 250px;
+    }
+    .menu {
+        height: 86vh;
+    }
+
+    .formulario {
+        height: 60vh;
+    }
+
+} 

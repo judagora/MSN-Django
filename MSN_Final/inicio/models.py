@@ -1,20 +1,58 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
-# Create your models here.
-from django.db import models
 
-class Usuario(models.Model):
+
+class UsuarioManager(BaseUserManager): # Clase para validar los campos de los usuarios
+    def create_user(self, correo_electronico, nombre_usuario, contraseña=None, rol_usuario="Cliente"):
+        if not correo_electronico:
+            raise ValueError("El usuario debe tener un correo electrónico")
+        usuario = self.model(
+            correo_electronico=self.normalize_email(correo_electronico),
+            nombre_usuario=nombre_usuario,
+            rol_usuario=rol_usuario
+        )
+        usuario.set_password(contraseña)
+        usuario.save(using=self._db)
+        return usuario
+
+    def create_superuser(self, correo_electronico, nombre_usuario, contraseña):
+        usuario = self.create_user(
+            correo_electronico,
+            nombre_usuario,
+            contraseña,
+            rol_usuario="Administrador"
+        )
+        usuario.is_superuser = True
+        usuario.is_staff = True
+        usuario.save(using=self._db)
+        return usuario
+
+
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
     id_usuario = models.AutoField(primary_key=True)
     nombres = models.CharField(max_length=30)
     apellidos = models.CharField(max_length=30)
     telefono = models.CharField(max_length=20)
-    correo_electronico = models.EmailField(max_length=40)
-    nombre_usuario = models.CharField(max_length=30)
-    contraseña = models.CharField(max_length=64)
-    rol_usuario = models.CharField(max_length=30, default="Cliente")
+    correo_electronico = models.EmailField(unique=True, max_length=40)
+    nombre_usuario = models.CharField(unique=True, max_length=30)
+    rol_usuario = models.CharField(max_length=30, choices=[
+        ("Cliente", "Cliente"),
+        ("Mecánico", "Mecánico"),
+        ("Administrador", "Administrador")
+    ], default="Cliente")
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = "correo_electronico"
+    REQUIRED_FIELDS = ["nombre_usuario"]
 
     def __str__(self):
-        return f"{self.nombres} {self.apellidos}"
+        return f"{self.nombres} {self.apellidos} ({self.rol_usuario})"
 
 
 class Mantenimiento(models.Model):
