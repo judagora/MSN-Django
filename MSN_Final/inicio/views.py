@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login
 from .forms import RegistroForm, LoginForm
 from .models import Usuario
 from django.contrib.auth.hashers import make_password
@@ -35,30 +36,38 @@ def registro(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(data = request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
-            corrreo = form.cleaned_data['correo']
+            correo = form.cleaned_data['username']  # AuthenticationForm usa "username" para el correo
             password = form.cleaned_data['password']
-            user = authenticate(correo_electronico=corrreo, password=password)
 
-            if user is not None:
-                login(request, user)
+            usuario = authenticate(request, username=correo, password=password)
+            print("Usuario autenticado:", usuario)
+            if usuario is not None:
+                auth_login(request, usuario)
+                print("Usuario en sesión:", request.user)
+                grupo = usuario.rol_usuario  # Obtiene el primer grupo del usuario
+                print("Grupo del usuario:", grupo) 
+                if grupo:
+                    print("Nombre del grupo:", grupo)
+                    if grupo == "Cliente":
+                        print("Redirigiendo a: cliente:inicio")
+                        return redirect('cliente:inicio')
+                    elif grupo == "Administrador":
+                        return redirect('administrador:index')
+                    elif grupo == "Mecanico":
+                        return redirect('mecanico:inicio')
 
-                if user.groups.filter(name="Cliente").exists():
-                    return redirect('cliente:inicio')
-                elif user.groups.filter(name="Administrador").exists():
-                    return redirect('administrador:index')
-                elif user.groups.filter(name="Mecanico").exists():
-                    return redirect('mecanico:inicio')
-                else:
-                    return messages.error(request, "No tienes permisos para acceder a esta página.")
+                messages.error(request, "No tienes permisos para acceder a esta página.")
+                return redirect('login_view')
             else:
-                form.add_error(None, "Correo o contraseña incorrectos")
+                messages.error(request, "Correo o contraseña incorrectos.")
+        else:
+            print("Errores del formulario:", form.errors)
     else:
         form = LoginForm()
 
-    return render(request, 'login.html',{"form": form})
-
+    return render(request, 'login.html', {"form": form})
 def logout_view(request):
     request.session.flush()
     return redirect('login')

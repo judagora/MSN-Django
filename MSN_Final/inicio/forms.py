@@ -70,12 +70,12 @@ class RegistroForm(UserCreationForm):
         return password2
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(
-        label= "Correo",
-        widget= forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa tu correo'})
+    username = forms.EmailField(
+        label="Correo Electrónico",
+        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "Correo Electrónico"})
     )
     password = forms.CharField(
-        label= "Contraseña",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa tu contraseña'})
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Contraseña"})
     )
     
