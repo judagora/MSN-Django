@@ -1,0 +1,22 @@
+.grupo{
+    margin-left: 5%;
+    margin-top: 10%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.256);
+}
+@media only screen and  (max-width: 767.98px){ 
+.rowgrupo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 50%;
+    width: 50%;
+    height:  85vh;
+}
+.grupo{
+    display: flex;
+    
+}
+}
