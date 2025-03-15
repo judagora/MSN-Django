@@ -1,14 +1,17 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'found/css/Modificarh.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/boostrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/colores.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/ModificarP.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/MantenimientoP.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <title>Motors Safety Net</title>
@@ -24,17 +27,17 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:indexAdministrador' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'logout' %}">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -93,54 +96,67 @@
                 </ul>
             </div>
 
-
-            <div class="col-8 col  ">
-                <div class="row mt-3 ">
-                    <div>
-                        <h1 class="Insert">Modificar Peritaje</h1>
-                    </div>
-
-                    <!-- Contenido -->
-                    <div class="izquierda">
-                        <form class="row g-3 needs-validation"
-                            th:action="@{/moduloAdmin/peritajes/{id}(id=${peritaje.idPeritaje})}" novalidate
-                            method="post">
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Id Peritaje</label>
-                                <input type="text" class="form-control" name="IdPeritaje" id="validationTooltip01"
-                                    th:value="${peritaje.idPeritaje}" readonly>
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcion" id="validationTooltip01"
-                                    th:value="${peritaje.descripcion}">
-                            </div>
-                            <div class="espacio2">
-                                <div class="row">
-                                    <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Editar" name="btnEditarPeritaje"
-                                            class="btn btn-primary">
-                                    </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center ">
-                                        <a th:href="@{'/moduloAdmin/peritajes'}" class="btn btn-primary">Cancelar</a>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                    </form>
+            <div class="col-8 col">
+                <div class="row mt-3">
+                    <h1 class="espacio2 col colortext" style="display: flex; justify-content: center; margin-top: 5%;">
+                        Mecánicos</h1>
+                </div>
+                <!-- Tabla de datos -->
+                <div class="tabla table-responsive" style="margin-left: 5%; margin-bottom: 10%; margin-top: 5%;">
+                    <table id="tablaMecanico" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Id Usuario</th>
+                                <th>Nombres</th>
+                                <th>Apellidos</th>
+                                <th>Teléfono</th>
+                                <th>Correo Electrónico</th>
+                                <th>Nombre de Usuario</th>
+                                <th>Contraseña</th>
+                                <th>Rol Usuario</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><a
+                                        th:href="@{/moduloAdmin/modificarMecanico/{idUsuario}(idUsuario=${mecanico.usuario.idUsuario})}"><i
+                                            class="lni lni-cog" style="font-size: 32px; color: black;"></i></a>
+                                    <a
+                                        th:href="@{/moduloAdmin/eliminarMecanico/{idUsuario}(idUsuario=${mecanico.usuario.idUsuario})}"><i
+                                            class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i></a>
+                                </td>
+                            </tr>
+                            </tfoot>
+                    </table>
                 </div>
             </div>
 
+                <!-- Codigo para las data tables -->
+                <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+                <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
 
-            {% load static %}  <!-- Cargar la etiqueta static -->
-            <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+                <script>
+                    new DataTable('#tablaMecanico');
+                </script>
 
-            <script>
-                function toggleSubMenu() {
-                    const submenu = document.querySelector('.submenu');
-                    submenu.classList.toggle('show');
-                }
-            </script>
+                <script>
+                    function toggleSubMenu() {
+                        const submenu = document.querySelector('.submenu');
+                        submenu.classList.toggle('show');
+                    }
+                </script>
+
+
+
 
 </body>
 

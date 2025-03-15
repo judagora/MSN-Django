@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/stylesAdmin/Modificarh.css}">
+    <link rel="stylesheet" th:href="@{/css/stylesAdmin/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/stylesAdmin/Colores.css}">
+    <link th:href="@{https://cdn.lineicons.com/4.0/lineicons.css}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <title>Motors Safety Net</title>
+
+</head>
+
+<body class="fuente">
+
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
+        <div class="logo">
+            <a class="link" href="{% url 'index' %}">
+                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+            </a>
+            <h1>Motors Safety Net</h1>
+        </div>
+  
+        <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+                <i class="lni lni-user"></i>
+                <!--<span>{{ request.user.nombres }}</span>-->
+            </a>
+  
+            <a class="correo text-white text-decoration-none d-flex align-items-center">
+                <!-- <small>{{ request.user.correo }}</small>-->
+            </a>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
+                <i class="lni lni-exit"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </header>
+
+
+    <div class="col">
+        <div class="row">
+            <!-- columna del menu -->
+            <div class="col-lg-3 bg-light-subtle">
+                <ul class="nav flex-column col color1">
+                    <div class="espaciobarranav">
+                        <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
+                            <li class="nav-item d-flex justify-content-center align-items-center">
+                                <h3><a class="nav-link text-light text-center">Gestionar Perfiles <i
+                                            class="lni lni-chevron-right-circle"></i></a></h3>
+                            </li>
+                        </div>
+                        <ul class="submenu">
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light  text-center"
+                                        th:href="@{/moduloAdmin/insertarCliente}">Registrar Cliente</a></li>
+                            </div>
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light  text-center"
+                                        th:href="@{/moduloAdmin/insertarMecanico}" style="margin-top: 10%;">Registrar
+                                        Mecánico</a></li>
+                            </div>
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light  text-center" th:href="@{/moduloAdmin/clientes}"
+                                        style="margin-top: 10%;">Clientes Registrados</a></li>
+                            </div>
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light  text-center" th:href="@{/moduloAdmin/mecanicos}"
+                                        style="margin-top: 10%;">Mecanicos Registrados</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center" aria-current="page"
+                                    th:href="@{/moduloAdmin/mantenimientos}">Mantenimientos programados <i
+                                        class="lni lni-agenda"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center"
+                                    th:href="@{/moduloAdmin/historialesVehiculo}">Historial del vehículo<i
+                                        class="lni lni-delivery"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center"
+                                    th:href="@{/moduloAdmin/talleresMecanico}">Talleres Mecánico<i
+                                        class="lni lni-cogs"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center"
+                                    th:href="@{/moduloAdmin/peritajes}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+
+
+
+            <div class="col-8 col  ">
+                <div class="row mt-3 ">
+                    <div>
+                        <h1 class="Insert">Modificar Taller Mecánico</h1>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="izquierda">
+                        <form class="row g-3 needs-validation" action="/modificarTaller" novalidate method="post">
+                            <!-- ID del Taller (oculto) -->
+                            <input type="hidden" name="idTaller" th:value="${taller.idTaller}" />
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" name="nombre" id="validationTooltip01"
+                                    th:value="${taller.nombre}" required>
+                            </div>
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="direccion" id="validationTooltip01"
+                                    th:value="${taller.direccion}" required>
+                            </div>
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Telefono</label>
+                                <input type="text" class="form-control" name="telefono" id="validationTooltip01"
+                                    th:value="${taller.telefono}" required>
+                            </div>
+                            <div class="col-md-4 position-relative">
+                                <label for="validationTooltip01" class="form-label">Horario de atención</label>
+                                <input type="time" class="form-control" id="validationTooltip01" name="horarioDeAtencion"
+                                    th:value="${taller.horarioDeAtencion}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="idAdministrador" class="form-label">Administrador</label>
+                                <select id="idAdministrador" name="idAdministrador" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione un Administrador</option>
+                                    <th:block th:each="admin : ${usuarios}">
+                                        <option th:value="${admin.idUsuario}"
+                                            th:text="${admin.nombres + ' ' + admin.apellidos}"
+                                            th:if="${admin.idUsuario == taller.administrador.idAdministrador}" selected>
+                                        </option>
+                                        <option th:value="${admin.idUsuario}"
+                                            th:text="${admin.nombres + ' ' + admin.apellidos}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="idMecanico" class="form-label">Mecánico</label>
+                                <select id="idMecanico" name="idMecanico" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione un Mecánico</option>
+                                    <th:block th:each="mecanico : ${mecanicos}">
+                                        <option th:value="${mecanico.idMecanico}" th:text="${mecanico.usuario.nombres}" 
+                                                th:if="${mecanico.idMecanico == taller.mecanico.idMecanico}" selected></option>
+                                        <option th:value="${mecanico.idMecanico}" th:text="${mecanico.usuario.nombres}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="espacio2">
+                                <div class="row">
+                                    <div class="col-6 d-flex justify-content-end align-items-center">
+                                        <input type="submit" value="Actualizar" class="btn btn-primary">
+                                    </div>
+                                    <div class="col-6 d-flex justify-content-start align-items-center ">
+                                        <a th:href="@{/moduloAdmin/talleresMecanico}" class="btn btn-primary">volver</a>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+
+                    </form>
+                </div>
+
+                <script src="../js/bootstrap.bundle.min.js"></script>
+
+                <script>
+                    function toggleSubMenu() {
+                        const submenu = document.querySelector('.submenu');
+                        submenu.classList.toggle('show');
+                    }
+                </script>
+
+</body>
+
+</html>

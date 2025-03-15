@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -25,17 +26,17 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:indexAdministrador' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'logout' %}">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>

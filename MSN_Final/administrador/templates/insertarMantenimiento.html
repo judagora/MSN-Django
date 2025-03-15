@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -93,74 +94,91 @@
                 </ul>
             </div>
 
-
-            <div class="col-8 col  ">
-                <div class="row mt-3 ">
+            <div class="col-8 col">
+                <div class="row mt-3">
                     <div>
-                        <h1 class="AgendaT">Modificar Mantenimiento</h1>
+                        <h1 class="AgendaT">Agendar Mantenimiento</h1>
                     </div>
 
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation"
-                            th:action="@{/moduloAdmin/mantenimientos/{id}(id=${mantenimiento.idMantenimiento})}"
-                            novalidate method="post">
-                            <div class="col-md-4 position-relative">
-                                <label for="txtIdMantenimiento" class="form-label">Id Mantenimiento</label>
-                                <input type="text" class="form-control" name="idMantenimiento" required readonly
-                                    th:value="${mantenimiento.idMantenimiento}">
-                            </div>
+                        <form class="row g-3 needs-validation" action="/insertarMantenimientoAd" novalidate
+                            method="post">
                             <div class="col-md-3 position-relative">
-                                <label for="txtTipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
-                                <select class="form-select" name="tipoMantenimiento" required>
-                                    <option disabled>Elegir...</option>
-                                    <option th:value="'Preventivo'" th:text="'Preventivo'"
-                                        th:selected="${mantenimiento.tipoMantenimiento == 'Preventivo'}">Preventivo
-                                    </option>
-                                    <option th:value="'Correctivo'" th:text="'Correctivo'"
-                                        th:selected="${mantenimiento.tipoMantenimiento == 'Correctivo'}">Correctivo
-                                    </option>
+                                <label for="validationTooltip04" class="form-label">Tipo de Mantenimiento</label>
+                                <select class="form-select" name="tipoMantenimiento" id="validationTooltip04" required>
+                                    <option selected disabled value="">...</option>
+                                    <option>Preventivo</option>
+                                    <option>Correctivo</option>
                                 </select>
                             </div>
                             <div class="col-md-4 position-relative">
-                                <label for="txtDescripcion" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcionMantenimiento" required
-                                    th:value="${mantenimiento.descripcionMantenimiento}">
+                                <label for="validationTooltip01" class="form-label">Descripción</label>
+                                <input type="text" class="form-control" name="descripcionMantenimiento"
+                                    id="validationTooltip01" required>
                             </div>
                             <div class="col-md-4 position-relative">
-                                <label for="txtCosto" class="form-label">Costo</label>
-                                <input type="text" class="form-control" name="costoMantenimiento" required
-                                    th:value="${mantenimiento.costoMantenimiento}">
+                                <label for="validationTooltip01" class="form-label">Costo</label>
+                                <input type="text" class="form-control" name="costoMantenimiento"
+                                    id="validationTooltip01" required>
                             </div>
                             <div class="col-md-4 position-relative">
-                                <label for="txtNotasAdicionales" class="form-label">Notas Adicionales</label>
-                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento" required
-                                    th:value="${mantenimiento.notasAdicionalesMantenimiento}">
+                                <label for="validationTooltip01" class="form-label">Notas Adicionales</label>
+                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento"
+                                    id="validationTooltip01" required>
                             </div>
-
+                            <div class="col-md-6">
+                                <label for="validationTooltip01" class="form-label">Placa</label>
+                                <input type="text" name="placa" class="form-control" id="validationTooltip01"
+                                    maxlength="6" minlength="6" required placeholder="Ej: abc123">
+                            </div>
                             <div class="espacio2">
                                 <div class="row">
                                     <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Editar" name="btnEditarMantenimiento"
+                                        <input type="submit" value="Registrar" name="btnRegistrarMantenimiento"
                                             class="btn btn-primary">
                                     </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center ">
-                                        <a href="/moduloAdmin/mantenimientos" class="btn btn-primary">Cancelar</a>
+                                    <div class="col-6 d-flex justify-content-start align-items-center">
+                                        <a href="/moduloAdmin/mantenimientos" class="btn btn-primary">volver</a>
                                     </div>
                                 </div>
                             </div>
+                            <div th:if="${mensajeExito}" class="alert alert-success text-center" role="alert">
+                                <span th:text="${mensajeExito}"></span>
+                            </div>
+                            <div th:if="${mensajeError}" class="alert alert-danger text-center" role="alert">
+                                <span th:text="${mensajeError}"></span>
+                            </div>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    {% load static %}  <!-- Cargar la etiqueta static -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 
-                    {% load static %}  <!-- Cargar la etiqueta static -->
-                    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
-                    <script>
-                        function toggleSubMenu() {
-                            const submenu = document.querySelector('.submenu');
-                            submenu.classList.toggle('show');
-                        }
-                    </script>
 
 </body>
 
