@@ -3,186 +3,306 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
-    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <title>Motors Safety Net</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
+  <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
+  <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <title>Motors Safety Net</title>
 </head>
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
-    <header class="barrasup">
-      <div class="logo">
-          <a class="link" href="{% url 'index' %}">
-              <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-          </a>
-          <h1>Motors Safety Net</h1>
-      </div>
+  <!-- Barra de Navegación -->
+  <header class="barrasup">
+    <div class="logo">
+      <a class="link" href="{% url 'index' %}">
+        <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+      </a>
+      <h1>Motors Safety Net</h1>
+    </div>
 
-      <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-          <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
-              <i class="lni lni-user"></i>
-              <!--<span>{{ request.user.nombres }}</span>-->
-          </a>
+    <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
+      <a class="usuario text-white text-decoration-none d-flex align-items-center"
+        href="{% url 'administrador:inicio' %}">
+        <i class="lni lni-user"></i>
+        <!--<span>{{ request.user.nombres }}</span>-->
+      </a>
 
-          <a class="correo text-white text-decoration-none d-flex align-items-center">
-              <!-- <small>{{ request.user.correo }}</small>-->
-          </a>
-          <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
-              <i class="lni lni-exit"></i>
-              <span>Cerrar Sesión</span>
-          </a>
-      </div>
+      <a class="correo text-white text-decoration-none d-flex align-items-center">
+        <!-- <small>{{ request.user.correo }}</small>-->
+      </a>
+      <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
+        <i class="lni lni-exit"></i>
+        <span>Cerrar Sesión</span>
+      </a>
+    </div>
   </header>
 
+  <!-- Contenido de la página -->
+  <div class="col">
+    <div class="row">
+      <!-- Columna del menú -->
+      <div class="col-lg-3 bg-light-subtle">
+        <ul class="nav flex-column col color1">
+          <div class="espaciobarranav">
+            <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
+              <li class="nav-item d-flex justify-content-center align-items-center">
+                <h3><a class="nav-link text-light text-center">Mecanicos <i
+                      class="lni lni-chevron-right-circle"></i></a></h3>
+              </li>
+            </div>
+            <ul class="submenu">
+              <div class="cambiocolor">
+                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}"
+                    style="margin-top: 10%;">Registrar Mecánico</a></li>
+              </div>
+              <div class="cambiocolor">
+                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}"
+                    style="margin-top: 10%;">Mecánicos Registrados</a></li>
+              </div>
+            </ul>
+          </div>
+          <div class="espaciobarranav cambiocolor">
+            <li class="nav-item d-flex justify-content-center align-items-center">
+              <h3><a class="nav-link text-light text-center" aria-current="page"
+                  href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                    class="lni lni-agenda"></i></a></h3>
+            </li>
+          </div>
+          <div class="espaciobarranav cambiocolor">
+            <li class="nav-item d-flex justify-content-center align-items-center">
+              <h3><a class="nav-link text-light text-center"
+                  href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                    class="lni lni-delivery"></i></a></h3>
+            </li>
+          </div>
+          <div class="espaciobarranav cambiocolor">
+            <li class="nav-item d-flex justify-content-center align-items-center">
+              <h3><a class="nav-link text-light text-center" href="{% url 'administrador:talleresMecanico' %}">Talleres
+                  Mecánico<i class="lni lni-cogs"></i></a></h3>
+            </li>
+          </div>
+          <div class="espaciobarranav cambiocolor">
+            <li class="nav-item d-flex justify-content-center align-items-center">
+              <h3><a class="nav-link text-light text-center" href="{% url 'administrador:peritajes' %}">Peritaje<i
+                    class="lni lni-cogs"></i></a></h3>
+            </li>
+          </div>
+        </ul>
+      </div>
 
-    <!-- Contenido de la página -->
-    <div class="col">
-      <div class="row">
-          <!-- Columna del menú -->
-          <div class="col-lg-3 bg-light-subtle">
-              <ul class="nav flex-column col color1">
-                  <div class="espaciobarranav">
-                      <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
-                          <li class="nav-item d-flex justify-content-center align-items-center">
-                              <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
-                          </li>
-                      </div>
-                      <ul class="submenu">
-                          <div class="cambiocolor">
-                              <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
-                          </div>
-                          <div class="cambiocolor">
-                              <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
-                          </div>
-                      </ul>
-                  </div>
-                  <div class="espaciobarranav cambiocolor">
-                      <li class="nav-item d-flex justify-content-center align-items-center">
-                          <h3><a class="nav-link text-light text-center" aria-current="page"
-                              href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
-                                      class="lni lni-agenda"></i></a></h3>
-                      </li>
-                  </div>
-                  <div class="espaciobarranav cambiocolor">
-                      <li class="nav-item d-flex justify-content-center align-items-center">
-                          <h3><a class="nav-link text-light text-center"
-                              href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
-                                      class="lni lni-delivery"></i></a></h3>
-                      </li>
-                  </div>
-                  <div class="espaciobarranav cambiocolor">
-                      <li class="nav-item d-flex justify-content-center align-items-center">
-                          <h3><a class="nav-link text-light text-center"
-                              href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
-                                      class="lni lni-cogs"></i></a></h3>
-                      </li>
-                  </div>
-                  <div class="espaciobarranav cambiocolor">
-                      <li class="nav-item d-flex justify-content-center align-items-center">
-                          <h3><a class="nav-link text-light text-center"
-                              href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
-                      </li>
-                  </div>
-              </ul>
+      <!-- Contenido principal -->
+      <div class="col-8 col">
+        <div class="row mt-3">
+          <div>
+            <h1 class="Insert">Insertar Mecánico</h1>
           </div>
 
 
-            <div class="col-8 col  ">
-                <div class="row mt-3 ">
-                  <div>
-                    <h1 class="Insert">Insertar Mecánico</h1>
-                  </div>
-        
-                  <!-- Contenido -->
-                  <div class="izquierda">
-                    <form class="row g-3 needs-validation" action="/registrarMecanico" method="post" novalidate>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip02" class="form-label">Nombres</label>
-                        <input type="text" name="nombres" class="form-control" id="validationTooltip02" required>
+          <!-- Formulario -->
+          <div class="izquierda">
+            <form method="post" class="row g-3 needs-validation" novalidate>
+              {% csrf_token %}
+
+              <!-- Campo: Nombres -->
+              <div class="col-md-4 position-relative">
+                <label for="id_nombres" class="form-label">Nombres</label>
+                <input type="text" name="nombres" class="form-control {% if form.nombres.errors %}is-invalid{% endif %}"
+                  id="id_nombres" value="{{ form.nombres.value|default_if_none:'' }}" required>
+                {% if form.nombres.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.nombres.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Apellidos -->
+              <div class="col-md-4 position-relative">
+                <label for="id_apellidos" class="form-label">Apellidos</label>
+                <input type="text" name="apellidos"
+                  class="form-control {% if form.apellidos.errors %}is-invalid{% endif %}" id="id_apellidos"
+                  value="{{ form.apellidos.value|default_if_none:'' }}" required>
+                {% if form.apellidos.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.apellidos.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Teléfono -->
+              <div class="col-md-4 position-relative">
+                <label for="id_telefono" class="form-label">Teléfono</label>
+                <div class="input-group has-validation">
+                  <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
+                  <input type="text" name="telefono"
+                    class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="id_telefono"
+                    value="{{ form.telefono.value|default_if_none:'' }}" required>
+                </div>
+                {% if form.telefono.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.telefono.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Correo Electrónico -->
+              <div class="col-md-4 position-relative">
+                <label for="id_correo_electronico" class="form-label">Correo Electrónico</label>
+                <input type="email" name="correo_electronico"
+                  class="form-control {% if form.correo_electronico.errors %}is-invalid{% endif %}"
+                  id="id_correo_electronico" value="{{ form.correo_electronico.value|default_if_none:'' }}" required>
+                {% if form.correo_electronico.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.correo_electronico.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+
+
+              <!-- Campo: Nombre de Usuario -->
+              <div class="col-md-4 position-relative">
+                <label for="id_nombre_usuario" class="form-label">Nombre de Usuario</label>
+                <input type="text" name="nombre_usuario"
+                  class="form-control {% if form.nombre_usuario.errors %}is-invalid{% endif %}" id="id_nombre_usuario"
+                  value="{{ form.nombre_usuario.value|default_if_none:'' }}" required>
+                {% if form.nombre_usuario.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.nombre_usuario.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Contraseña -->
+              <div class="col-md-4 position-relative">
+                <label for="id_password1" class="form-label">Contraseña</label>
+                <input type="password" name="password1"
+                  class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" required>
+                {% if form.password1.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.password1.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Confirmar Contraseña -->
+              <div class="col-md-4 position-relative">
+                <label for="id_password2" class="form-label">Confirmar Contraseña</label>
+                <input type="password" name="password2"
+                  class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" required>
+                {% if form.password2.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.password2.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Horario de Trabajo -->
+              <!-- Campo: Horario de Trabajo -->
+              <div class="col-md-4 position-relative">
+                <label for="id_horario_de_trabajo" class="form-label">Horario de Trabajo</label>
+                <input type="time" name="horario_de_trabajo"
+                  class="form-control {% if form.horario_de_trabajo.errors %}is-invalid{% endif %}"
+                  id="id_horario_de_trabajo" value="{{ form.horario_de_trabajo.value|default_if_none:'' }}" step="60"
+                  required>
+                {% if form.horario_de_trabajo.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.horario_de_trabajo.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Experiencia Laboral -->
+              <div class="col-md-4 position-relative">
+                <label for="id_experiencia_laboral" class="form-label">Experiencia Laboral</label>
+                <textarea name="experiencia_laboral"
+                  class="form-control {% if form.experiencia_laboral.errors %}is-invalid{% endif %}"
+                  id="id_experiencia_laboral"
+                  required>{{ form.experiencia_laboral.value|default_if_none:'' }}</textarea>
+                {% if form.experiencia_laboral.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.experiencia_laboral.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Campo Oculto: rol_usuario -->
+              <input type="hidden" name="rol_usuario" value="Mecánico">
+
+              <!-- Botón de envío -->
+              <div class="col-12 text-center">
+                <input type="submit" value="Insertar" class="btn btn-primary">
+              </div>
+            </form>
+          </div>
+        </div>
+        <br>
+        <div class="container">
+          <div class="row justify-content-center">
+              <div class="col-md-6 text-center">
+                  {% for message in messages %}
+                      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                          {{ message }}
                       </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">Apellidos</label>
-                        <input type="text" name="apellidos" class="form-control" id="validationTooltip01" required>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltipUsername" class="form-label">Teléfono</label>
-                        <div class="input-group has-validation">
-                          <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                          <input type="number" name="telefono" class="form-control" id="validationTooltipUsername"
-                            aria-describedby="validationTooltipUsernamePrepend" required>
-                        </div>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">Correo
-                          electrónico</label>
-                        <input type="text" name="correo" class="form-control" id="validationTooltip01" required>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">Nombre de
-                          usuario</label>
-                        <input type="text" name="nombreUsuario" class="form-control" id="validationTooltip01" required>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">Contraseña</label>
-                        <input type="text" name="contrasenna" class="form-control" id="validationTooltip01" required>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">RolUsuario</label>
-                        <input type="text" name="rolUsuario" class="form-control" id="validationTooltip01" readonly
-                          value="Mecanico" required>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">Horario de Trabajo</label>
-                        <input type="time" name="horario" class="form-control" id="validationTooltip01" required>
-                      </div>
-                      <div class="col-md-4 position-relative">
-                        <label for="validationTooltip01" class="form-label">Experiencia Laboral</label>
-                        <input type="text" name="experiencia" class="form-control" id="validationTooltip01" required>
-                      </div>
-        
-                      <div class="col-12 text-center">
-                        <input type="submit" value="Insertar" class="btn btn-primary">
-                      </div>
-        
-                    </form>
-                  </div>
-        </body>
-        
-        </html>
-        
-        {% load static %}  <!-- Cargar la etiqueta static -->
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-        
-        <script>
-          function toggleSubMenu() {
-            const submenu = document.querySelector('.submenu');
-            submenu.classList.toggle('show');
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    function toggleSubMenu() {
+      const submenu = document.querySelector('.submenu');
+      submenu.classList.toggle('show');
+    }
+  </script>
+  <script>
+    (() => {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
           }
-        </script>
-        
-        <script>(() => {
-            'use strict'
-        
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-        
-            // Loop over them and prevent submission
-            Array.from(forms).forEach(form => {
-              form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                  event.preventDefault()
-                  event.stopPropagation()
-                }
-        
-                form.classList.add('was-validated')
-              }, false)
-            })
-          })()</script>
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+  </script>
+</body>
+
+</html>
