@@ -5,7 +5,8 @@ app_name = 'administrador'
 
 urlpatterns = [
     path('inicio/', views.inicio, name='inicio'),
-    path('modificarMecanico/', views.modificarMecanico, name='modificarMecanico'),
+    path('modificarMecanico/<int:id_usuario>/', views.modificarMecanico, name='modificarMecanico'),
+    path('eliminar_mecanico/<int:id_usuario>/', views.eliminar_mecanico, name='eliminar_mecanico'),
     path('insertarMecanico/', views.insertarMecanico, name='insertarMecanico'),
     path('mecanicos/', views.mecanicos, name='mecanicos'),
     path('mantenimientos/', views.mantenimientos, name='mantenimientos'),

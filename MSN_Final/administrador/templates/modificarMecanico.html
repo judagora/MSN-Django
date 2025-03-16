@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -17,7 +16,7 @@
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
+    <!-- Barra de Navegación -->
     <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
@@ -25,13 +24,13 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
@@ -41,7 +40,6 @@
             </a>
         </div>
     </header>
-
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -94,123 +92,107 @@
                 </ul>
             </div>
 
-
-            <div class="col-8 col  ">
-                <div class="row mt-3 ">
+            <!-- Contenido principal -->
+            <div class="col-8 col">
+                <div class="row mt-3">
                     <div>
-                        <h1 class="Insert">Modificar Mecanico</h1>
+                        <h1 class="Insert">Modificar Mecánico</h1>
                     </div>
 
-                    <!-- Contenido -->
-
-
+                    <!-- Formulario -->
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation" action="/guardarMecanico" method="post" novalidate>
-                            <input type="hidden" name="idUsuario" th:value="${mecanico.usuario.idUsuario}" />
+                        <form method="post" class="row g-3 needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Campo: Nombres -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltip02" class="form-label">Nombres</label>
-                                <input type="text" th:value="${mecanico.usuario.nombres}" name="nombres"
-                                    class="form-control" id="validationTooltip02" required>
+                                <label for="id_nombres" class="form-label">Nombres</label>
+                                <input type="text" name="nombres" class="form-control" id="id_nombres" value="{{ form.instance.nombres }}" required>
                             </div>
+                        
+                            <!-- Campo: Apellidos -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Apellidos</label>
-                                <input type="text" th:value="${mecanico.usuario.apellidos}" name="apellidos"
-                                    class="form-control" id="validationTooltip01" required>
+                                <label for="id_apellidos" class="form-label">Apellidos</label>
+                                <input type="text" name="apellidos" class="form-control" id="id_apellidos" value="{{ form.instance.apellidos }}" required>
                             </div>
+                        
+                            <!-- Campo: Teléfono -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltipUsername" class="form-label">Teléfono</label>
+                                <label for="id_telefono" class="form-label">Teléfono</label>
                                 <div class="input-group has-validation">
                                     <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                                    <input type="number" th:value="${mecanico.usuario.telefono}" name="telefono"
-                                        class="form-control" id="validationTooltipUsername"
-                                        aria-describedby="validationTooltipUsernamePrepend" required>
+                                    <input type="text" name="telefono" class="form-control" id="id_telefono" value="{{ form.instance.telefono }}" required>
                                 </div>
                             </div>
+                        
+                            <!-- Campo: Correo Electrónico -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Correo electrónico</label>
-                                <input type="text" th:value="${mecanico.usuario.correo}" name="correo"
-                                    class="form-control" id="validationTooltip01" required>
+                                <label for="id_correo_electronico" class="form-label">Correo Electrónico</label>
+                                <input type="email" name="correo_electronico" class="form-control" id="id_correo_electronico" value="{{ form.instance.correo_electronico }}" required>
                             </div>
+                        
+                            <!-- Campo: Nombre de Usuario -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Nombre de usuario</label>
-                                <input type="text" th:value="${mecanico.usuario.nombreUsuario}" name="nombreUsuario"
-                                    class="form-control" id="validationTooltip01" required>
+                                <label for="id_nombre_usuario" class="form-label">Nombre de Usuario</label>
+                                <input type="text" name="nombre_usuario" class="form-control" id="id_nombre_usuario" value="{{ form.instance.nombre_usuario }}" required>
                             </div>
+                        
+                            <!-- Campo: Horario de Trabajo -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Contraseña</label>
-                                <input type="text" th:value="${mecanico.usuario.contrasenna}" name="contrasenna"
-                                    class="form-control" id="validationTooltip01" required>
+                                <label for="id_horario_de_trabajo" class="form-label">Horario de Trabajo</label>
+                                <input type="time" name="horario_de_trabajo" class="form-control" id="id_horario_de_trabajo" value="{{ form.horario_de_trabajo.value|default_if_none:'' }}" required>
                             </div>
+                        
+                            <!-- Campo: Experiencia Laboral -->
                             <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Rol Usuario</label>
-                                <input type="text" th:value="${mecanico.usuario.rolUsuario}" name="rolUsuario"
-                                    class="form-control" id="validationTooltip01" readonly value="Mecanico" required>
+                                <label for="id_experiencia_laboral" class="form-label">Experiencia Laboral</label>
+                                <textarea name="experiencia_laboral" class="form-control" id="id_experiencia_laboral" required>{{ form.experiencia_laboral.value|default_if_none:'' }}</textarea>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="horario" class="form-label">Horario de trabajo</label>
-                                <input type="time" th:value="${horario}" name="horario" class="form-control"
-                                    id="horario" required>
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="experiencia" class="form-label">Experiencia</label>
-                                <input type="text" th:value="${mecanico.experiencia}" name="experiencia"
-                                    class="form-control" id="experiencia" required>
-                            </div>
-
+                        
+                            <!-- Botón de envío -->
                             <div class="col-12 text-center">
-                                <input type="submit" value="Guardar Cambios"
-                                    class="btn btn-primary rounded-pill px-4 text-white"
-                                    style="color: white; padding-top: 0.4rem; padding-bottom: 0.4rem; padding-left: 2rem; padding-right: 2rem; font-size: 1rem; line-height: 1.6; margin-right: 5%;">
-                                <a th:href="@{'/moduloAdmin/mecanicos'}"
-                                    class="btn btn-primary rounded-pill px-4 text-white text-center"
-                                    style="color: white; padding-top: 0.4rem; padding-bottom: 0.4rem; padding-left: 2rem; padding-right: 2rem; font-size: 1rem; line-height: 1.6;">Cancelar</a>
+                                <input type="submit" value="Guardar Cambios" class="btn btn-primary">
+                                <a href="{% url 'administrador:mecanicos' %}" class="btn btn-primary">Volver</a>
                             </div>
+                        
+                            <!-- Campo Oculto: rol_usuario -->
+                            <input type="hidden" name="rol_usuario" value="Mecánico">
+                        
+                            <!-- Campos Ocultos: contraseñas -->
+                            <input type="hidden" name="password1" value="{{ form.instance.password }}">
+                            <input type="hidden" name="password2" value="{{ form.instance.password }}">
+                        </form>    
                     </div>
                 </div>
-                <!-- Mostrar mensaje de éxito -->
-                <div th:if="${mensajeExito}" class="alert alert-success">
-                    <span th:text="${mensajeExito}"></span>
-                </div>
 
-                <!-- Mostrar mensaje de error -->
-                <div th:if="${mensajeError}" class="alert alert-danger">
-                    <span th:text="${mensajeError}"></span>
+                <br>
+                  <!-- Mostrar mensajes de Django -->
+                  {% if messages %}
+                  <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
+              {% endif %}
 
-                </form>
             </div>
         </div>
+    </div>
 
-
-        {% load static %}  <!-- Cargar la etiqueta static -->
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
-        <script>
-            function toggleSubMenu() {
-                const submenu = document.querySelector('.submenu');
-                submenu.classList.toggle('show');
-            }
-        </script>
-
-        <script>(() => {
-                'use strict'
-
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                const forms = document.querySelectorAll('.needs-validation')
-
-                // Loop over them and prevent submission
-                Array.from(forms).forEach(form => {
-                    form.addEventListener('submit', event => {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-            })()</script>
-
+    <!-- Scripts -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
 </body>
 
 </html>

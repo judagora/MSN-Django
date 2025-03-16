@@ -1,12 +1,43 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from .models import Usuario
-from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
+from inicio.models import Usuario
 
-class RegistroMecanicoForm(UserCreationForm):
+
+class ModificarMecanicoForm(forms.ModelForm):
+    horario_de_trabajo = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time'}),
+        label="Horario de Trabajo"
+    )
+    experiencia_laboral = forms.CharField(
+        widget=forms.Textarea,
+        label="Experiencia Laboral"
+    )
+    rol_usuario = forms.CharField(
+        initial="Mecánico",
+        widget=forms.HiddenInput()
+    )
+
     class Meta:
         model = Usuario
-        fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'password']
+        fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'rol_usuario']
+
+class RegistroMecanicoForm(UserCreationForm):
+    horario_de_trabajo = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time', 'format': '%H:%M'}),
+        label="Horario de Trabajo"
+    )
+    experiencia_laboral = forms.CharField(
+        widget=forms.Textarea,
+        label="Experiencia Laboral"
+    )
+    rol_usuario = forms.CharField(
+        initial="Mecanico",
+        widget=forms.HiddenInput()
+    )
+
+    class Meta:
+        model = Usuario
+        fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'password1', 'password2', 'rol_usuario']
 
         labels = {
             'nombres': 'Nombres',
@@ -14,7 +45,10 @@ class RegistroMecanicoForm(UserCreationForm):
             'correo_electronico': 'Correo Electrónico',
             'nombre_usuario': 'Nombre de Usuario',
             'telefono': 'Teléfono',
+            'password1': 'Contraseña',
+            'password2': 'Confirmar Contraseña',
         }
+
         error_messages = {
             'nombres': {
                 'required': "El campo nombre es obligatorio.",
@@ -39,19 +73,15 @@ class RegistroMecanicoForm(UserCreationForm):
                 'min_length': "El teléfono debe tener al menos 10 dígitos.",
                 'max_length': "El teléfono no puede tener más de 10 dígitos."
             },
-            'password': {
-                'required': "El campo contraseña es obligatoria.",
-                'min_length': "La contraseña debe tener al menos 8 caracteres."
-            },
         }
 
-    def clean_password(self):
-        password = self.cleaned_data.get("password")
 
-        if password and password.isnumeric():
-            raise ValidationError("La contraseña no puede ser solo números. Agrega letras y caracteres especiales.")
+    def save(self, commit=True):
+        usuario = super().save(commit=False)
+        usuario.rol_usuario = "Mecanico"
+        if commit:
+            usuario.save()
+        return usuario
+    
 
-        return password
-
-
-
+    

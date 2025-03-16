@@ -19,7 +19,7 @@
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
+    <!-- Barra de Navegación -->
     <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
@@ -27,13 +27,13 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
@@ -43,7 +43,6 @@
             </a>
         </div>
     </header>
-
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -112,52 +111,89 @@
                                 <th>Teléfono</th>
                                 <th>Correo Electrónico</th>
                                 <th>Nombre de Usuario</th>
-                                <th>Contraseña</th>
                                 <th>Rol Usuario</th>
+                                <th>Horario de Trabajo</th>
+                                <th>Experiencia Laboral</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for mecanico in mecanicos %}
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><a
-                                        th:href="@{/moduloAdmin/modificarMecanico/{idUsuario}(idUsuario=${mecanico.usuario.idUsuario})}"><i
-                                            class="lni lni-cog" style="font-size: 32px; color: black;"></i></a>
-                                    <a
-                                        th:href="@{/moduloAdmin/eliminarMecanico/{idUsuario}(idUsuario=${mecanico.usuario.idUsuario})}"><i
-                                            class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i></a>
+                                <td>{{ mecanico.id_usuario.id_usuario }}</td>
+                                <td>{{ mecanico.id_usuario.nombres }}</td>
+                                <td>{{ mecanico.id_usuario.apellidos }}</td>
+                                <td>{{ mecanico.id_usuario.telefono }}</td>
+                                <td>{{ mecanico.id_usuario.correo_electronico }}</td>
+                                <td>{{ mecanico.id_usuario.nombre_usuario }}</td>
+                                <td>{{ mecanico.id_usuario.rol_usuario }}</td>
+                                <td>{{ mecanico.horario_de_trabajo|time:"H:i" }}</td>
+                                <td>{{ mecanico.experiencia_laboral }}</td>
+                                <td>
+                                    <a href="{% url 'administrador:modificarMecanico' mecanico.id_usuario.id_usuario %}">
+                                        <i class="lni lni-cog" style="font-size: 32px; color: black;"></i>
+                                    </a>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ mecanico.id_usuario.id_usuario }}">
+                                        <i class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i>
+                                    </a>
                                 </td>
                             </tr>
-                            </tfoot>
+
+                            <!-- Modal de Confirmación de Eliminación -->
+                            <div class="modal fade" id="confirmarEliminacion{{ mecanico.id_usuario.id_usuario }}" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas eliminar al mecánico <strong>{{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}</strong>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="post" action="{% url 'administrador:eliminar_mecanico' mecanico.id_usuario.id_usuario %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
                     </table>
+                    <!-- Mostrar mensajes de Django -->
+                  {% if messages %}
+                  <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
+              {% endif %}
+        </div>
+    </div>
 
-                <!-- Codigo para las data tables -->
-                <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-                <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
-
-                <script>
-                    new DataTable('#tablaMecanico');
-                </script>
-
-                <script>
-                    function toggleSubMenu() {
-                        const submenu = document.querySelector('.submenu');
-                        submenu.classList.toggle('show');
-                    }
-                </script>
-
-
-
-
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script>
+        new DataTable('#tablaMecanico');
+    </script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
 </body>
 
 </html>
