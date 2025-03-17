@@ -21,6 +21,9 @@ class ModificarMecanicoForm(forms.ModelForm):
         model = Usuario
         fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'rol_usuario']
 
+
+
+
 class RegistroMecanicoForm(UserCreationForm):
     horario_de_trabajo = forms.TimeField(
         widget=forms.TimeInput(attrs={'type': 'time', 'format': '%H:%M'}),
@@ -73,6 +76,13 @@ class RegistroMecanicoForm(UserCreationForm):
                 'min_length': "El teléfono debe tener al menos 10 dígitos.",
                 'max_length': "El teléfono no puede tener más de 10 dígitos."
             },
+            'password1': {
+                'required': "La contraseña es obligatoria.",
+                'min_length': "La contraseña debe tener al menos 8 caracteres."
+            },
+            'password2': {
+                'required': "Debes confirmar tu contraseña."
+            }
         }
 
 

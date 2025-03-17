@@ -104,7 +104,7 @@
                                 style="font-size: 32px; margin-left: 30%; color: black;"></i></a>Modificar Taller
                             <i class="lni lni-circle-minus"
                                 style="font-size: 32px; margin-left: 5%;  color: black;"></i></a>Eliminar taller
-                            <a th:href="@{/moduloAdmin/insertarTaller}"><i class="lni lni-circle-plus"
+                            <a  href="{% url 'administrador:insertarTaller' %}"><i class="lni lni-circle-plus"
                                     style="font-size: 32px; color: black; margin-left:50px;"></i></a>Agregar Taller
                         </div>
                     </div>
@@ -113,43 +113,60 @@
                         <table id="TallerM" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Id Taller Mecánico</th>
+                                    <th>Id Taller</th>
                                     <th>Nombre</th>
                                     <th>Dirección</th>
                                     <th>Teléfono</th>
-                                    <th>Horario de atención</th>
-                                    <th>Mecánico Asociado</th>
-                                    <th>Accion</th>
+                                    <th>Horario</th>
+                                    <th>Mecánico</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="taller : ${talleres}">
-                                    <td th:text="${taller.idTaller}"></td>
-                                    <td th:text="${taller.nombre}"></td>
-                                    <td th:text="${taller.direccion}"></td>
-                                    <td th:text="${taller.telefono}"></td>
-                                    <td th:text="${taller.horarioDeAtencion}"></td>
+                                {% for taller in talleres %}
+                                <tr>
+                                    <td>{{ taller.id_taller_mecanico }}</td>
+                                    <td>{{ taller.nombre }}</td>
+                                    <td>{{ taller.direccion }}</td>
+                                    <td>{{ taller.telefono }}</td>
+                                    <td>{{ taller.horario_de_atencion }}</td>
+                                    <td>{{ taller.id_mecanico.id_usuario.nombres }}</td>
                                     <td>
-                                        <th:block
-                                            th:if="${taller.mecanico != null and taller.mecanico.usuario != null}">
-                                            <span th:text="${taller.mecanico.usuario.nombres}"></span>
-                                        </th:block>
-                                        <th:block th:if="${taller.mecanico == null or taller.mecanico.usuario == null}">
-                                            <span>No asignado</span>
-                                        </th:block>
+                                        <!-- Botón para modificar -->
+                                        <a href="{% url 'administrador:modificarTaller' taller.id_taller_mecanico %}">
+                                            <i class="lni lni-cog" style="font-size: 32px; color: black;"></i>
+                                        </a>
+            
+                                        <!-- Botón para abrir el modal de eliminación -->
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ taller.id_taller_mecanico }}">
+                                            <i class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i>
+                                        </a>
                                     </td>
-                                    <td><a
-                                            th:href="@{/moduloAdmin/modificarTaller/{idTaller}(idTaller=${taller.idTaller})}"><i
-                                                class="lni lni-cog" style="font-size: 32px; color: black;"></i></a>
-                                        <form th:action="@{/eliminarTaller}" method="post" style="display:inline;">
-                                            <input type="hidden" name="idTaller" th:value="${taller.idTaller}" />
-                                            <button type="submit" class="btn btn-danger"
-                                                style="background-color: transparent; border: none;">
-                                                <i class="lni lni-circle-minus"
-                                                    style="font-size: 32px; color: black;"></i>
-                                            </button>
-                                        </form>
-                                    </td>
+                                </tr>
+            
+                                <!-- Modal de Confirmación de Eliminación -->
+                                <div class="modal fade" id="confirmarEliminacion{{ taller.id_taller_mecanico }}" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que deseas eliminar el taller <strong>{{ taller.nombre }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <!-- Formulario para eliminar el taller -->
+                                                <form action="{% url 'administrador:eliminar_taller' taller.id_taller_mecanico %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}                                    </td>
                                 </tr>
                                 </tfoot>
                         </table>

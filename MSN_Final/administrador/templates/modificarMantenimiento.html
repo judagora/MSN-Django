@@ -16,8 +16,7 @@
 </head>
 
 <body class="fuente">
-
-    <!--  Barra de Navegación  -->
+    <!-- Barra de Navegación -->
     <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
@@ -25,13 +24,11 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
@@ -41,7 +38,6 @@
             </a>
         </div>
     </header>
-
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -66,103 +62,88 @@
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" aria-current="page"
-                                href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
-                                        class="lni lni-agenda"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center" aria-current="page" href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i class="lni lni-agenda"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
-                                        class="lni lni-delivery"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i class="lni lni-delivery"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
-                                        class="lni lni-cogs"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                 </ul>
             </div>
 
-
-            <div class="col-8 col  ">
-                <div class="row mt-3 ">
-                    <div>
-                        <h1 class="AgendaT">Modificar Mantenimiento</h1>
-                    </div>
-
+            <!-- Contenido Principal -->
+            <div class="col-8">
+                <div class="row mt-3">
+                    <h1 class="AgendaT">Modificar Mantenimiento</h1>
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation"
-                            th:action="@{/moduloAdmin/mantenimientos/{id}(id=${mantenimiento.idMantenimiento})}"
-                            novalidate method="post">
-                            <div class="col-md-4 position-relative">
-                                <label for="txtIdMantenimiento" class="form-label">Id Mantenimiento</label>
-                                <input type="text" class="form-control" name="idMantenimiento" required readonly
-                                    th:value="${mantenimiento.idMantenimiento}">
-                            </div>
+                        <form class="row g-3 needs-validation" action="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}" method="post" novalidate>
+                            {% csrf_token %}
+                            <!-- Campo: Tipo de Mantenimiento -->
                             <div class="col-md-3 position-relative">
-                                <label for="txtTipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
-                                <select class="form-select" name="tipoMantenimiento" required>
-                                    <option disabled>Elegir...</option>
-                                    <option th:value="'Preventivo'" th:text="'Preventivo'"
-                                        th:selected="${mantenimiento.tipoMantenimiento == 'Preventivo'}">Preventivo
-                                    </option>
-                                    <option th:value="'Correctivo'" th:text="'Correctivo'"
-                                        th:selected="${mantenimiento.tipoMantenimiento == 'Correctivo'}">Correctivo
-                                    </option>
+                                <label for="tipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
+                                <select class="form-select" name="tipoMantenimiento" id="tipoMantenimiento" required>
+                                    <option value="Preventivo" {% if mantenimiento.tipo_mantenimiento == 'Preventivo' %}selected{% endif %}>Preventivo</option>
+                                    <option value="Correctivo" {% if mantenimiento.tipo_mantenimiento == 'Correctivo' %}selected{% endif %}>Correctivo</option>
                                 </select>
                             </div>
+
+                            <!-- Campo: Descripción -->
                             <div class="col-md-4 position-relative">
-                                <label for="txtDescripcion" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcionMantenimiento" required
-                                    th:value="${mantenimiento.descripcionMantenimiento}">
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="txtCosto" class="form-label">Costo</label>
-                                <input type="text" class="form-control" name="costoMantenimiento" required
-                                    th:value="${mantenimiento.costoMantenimiento}">
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="txtNotasAdicionales" class="form-label">Notas Adicionales</label>
-                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento" required
-                                    th:value="${mantenimiento.notasAdicionalesMantenimiento}">
+                                <label for="descripcionMantenimiento" class="form-label">Descripción</label>
+                                <input type="text" class="form-control" name="descripcionMantenimiento" id="descripcionMantenimiento" value="{{ mantenimiento.descripcion }}" required>
                             </div>
 
+                            <!-- Campo: Costo -->
+                            <div class="col-md-4 position-relative">
+                                <label for="costoMantenimiento" class="form-label">Costo</label>
+                                <input type="text" class="form-control" name="costoMantenimiento" id="costoMantenimiento" value="{{ mantenimiento.costo }}" required>
+                            </div>
+
+                            <!-- Campo: Notas Adicionales -->
+                            <div class="col-md-4 position-relative">
+                                <label for="notasAdicionalesMantenimiento" class="form-label">Notas Adicionales</label>
+                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento" id="notasAdicionalesMantenimiento" value="{{ mantenimiento.notas_adicionales }}">
+                            </div>
+
+                            <!-- Botones -->
                             <div class="espacio2">
                                 <div class="row">
                                     <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Editar" name="btnEditarMantenimiento"
-                                            class="btn btn-primary">
+                                        <input type="submit" value="Editar" name="btnEditarMantenimiento" class="btn btn-primary">
                                     </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center ">
-                                        <a href="/moduloAdmin/mantenimientos" class="btn btn-primary">Cancelar</a>
+                                    <div class="col-6 d-flex justify-content-start align-items-center">
+                                        <a href="{% url 'administrador:mantenimientos' %}" class="btn btn-primary">Cancelar</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-                    {% load static %}  <!-- Cargar la etiqueta static -->
-                    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-
-                    <script>
-                        function toggleSubMenu() {
-                            const submenu = document.querySelector('.submenu');
-                            submenu.classList.toggle('show');
-                        }
-                    </script>
-
+    <!-- Scripts -->
+    {% load static %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
 </body>
 
 </html>
