@@ -98,14 +98,14 @@
                 <div class="row mt-3">
                     <div>
                         <h1 class="espacio2 col colortext" style="display: flex; justify-content: center;">Talleres
-                            Mecánicos</h1>
+                            Mecánico</h1>
                         <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
                             <i class="lni lni-cog"
                                 style="font-size: 32px; margin-left: 30%; color: black;"></i></a>Modificar Taller
                             <i class="lni lni-circle-minus"
                                 style="font-size: 32px; margin-left: 5%;  color: black;"></i></a>Eliminar taller
                             <a  href="{% url 'administrador:insertarTaller' %}"><i class="lni lni-circle-plus"
-                                    style="font-size: 32px; color: black; margin-left:50px;"></i></a>Agregar Taller
+                                    style="font-size: 32px; color: black; margin-left:50px;"></i></a>Insertar Taller
                         </div>
                     </div>
                     <!-- Tabla de datos -->
@@ -113,7 +113,6 @@
                         <table id="TallerM" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Id Taller</th>
                                     <th>Nombre</th>
                                     <th>Dirección</th>
                                     <th>Teléfono</th>
@@ -125,7 +124,6 @@
                             <tbody>
                                 {% for taller in talleres %}
                                 <tr>
-                                    <td>{{ taller.id_taller_mecanico }}</td>
                                     <td>{{ taller.nombre }}</td>
                                     <td>{{ taller.direccion }}</td>
                                     <td>{{ taller.telefono }}</td>

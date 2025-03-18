@@ -160,7 +160,6 @@ def modificarTaller(request, id_taller_mecanico):
         taller.save()
 
         messages.success(request, 'Taller modificado exitosamente.')
-        return redirect('administrador:talleresMecanico')
 
     administradores = Administrador.objects.all()
     mecanicos = Mecanico.objects.all()

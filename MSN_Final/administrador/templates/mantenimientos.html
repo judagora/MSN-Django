@@ -112,7 +112,6 @@
                     <table id="MantenimientoP" class="table table-bordered display nowrap" width="100%" height="100%">
                         <thead>
                             <tr>
-                                <th>Id Mantenimiento</th>
                                 <th>Tipo de Mantenimiento</th>
                                 <th>Descripción</th>
                                 <th>Costo</th>
@@ -123,7 +122,6 @@
                         <tbody>
                             {% for mantenimiento in mantenimientos %}
                             <tr>
-                                <td>{{ mantenimiento.id_mantenimiento }}</td>
                                 <td>{{ mantenimiento.tipo_mantenimiento }}</td>
                                 <td>{{ mantenimiento.descripcion }}</td>
                                 <td>{{ mantenimiento.costo }}</td>

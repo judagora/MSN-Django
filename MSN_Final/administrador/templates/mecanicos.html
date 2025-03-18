@@ -105,7 +105,6 @@
                     <table id="tablaMecanico" class="display" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Id Usuario</th>
                                 <th>Nombres</th>
                                 <th>Apellidos</th>
                                 <th>Teléfono</th>
@@ -120,7 +119,6 @@
                         <tbody>
                             {% for mecanico in mecanicos %}
                             <tr>
-                                <td>{{ mecanico.id_usuario.id_usuario }}</td>
                                 <td>{{ mecanico.id_usuario.nombres }}</td>
                                 <td>{{ mecanico.id_usuario.apellidos }}</td>
                                 <td>{{ mecanico.id_usuario.telefono }}</td>
