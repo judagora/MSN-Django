@@ -16,22 +16,25 @@
 </head>
 
 <body class="fuente">
-    <!-- Barra de Navegación -->
-    <header class="barrasup">
+      <!--  Barra de Navegación  -->
+      <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
+                <span>{{ user.nombre_usuario }}</span>
             </a>
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
+                <small>{{ user.correo_electronico }}</small>
             </a>
+            <br>
             <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
@@ -117,17 +120,20 @@
                                 <input type="text" class="form-control" name="notasAdicionalesMantenimiento" id="notasAdicionalesMantenimiento" value="{{ mantenimiento.notas_adicionales }}">
                             </div>
 
-                            <!-- Botones -->
-                            <div class="espacio2">
-                                <div class="row">
-                                    <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Editar" name="btnEditarMantenimiento" class="btn btn-primary">
+                                  <!-- Botones -->
+                                  <div class="row mt-3">
+                                    <div class="col-6 d-flex justify-content-end">
+                                        <button class="btn w-100" type="submit"
+                                            style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                            Modificar
+                                        </button>
                                     </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center">
-                                        <a href="{% url 'administrador:mantenimientos' %}" class="btn btn-primary">Cancelar</a>
+    
+                                    <div class="col-6 d-flex justify-content-start">
+                                        <a href="{% url 'administrador:mantenimientos' %}"
+                                            class="btn btn-secondary w-100">Volver</a>
                                     </div>
                                 </div>
-                            </div>
                         </form>
                     </div>
                 </div>

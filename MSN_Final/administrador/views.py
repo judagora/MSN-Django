@@ -98,7 +98,6 @@ def insertarMecanico(request):
                 messages.error(request, f"Error al registrar el mecánico: {str(e)}")
                 print(f"Error al registrar el mecánico: {str(e)}")  # Depuración en consola
         else:
-            messages.error(request, "El formulario no es válido. Corrige los errores.")
             print("Errores del formulario:", form.errors)  # Imprime los errores del formulario en la consola
     else:
         form = RegistroMecanicoForm()
@@ -138,12 +137,26 @@ def mecanicos (request):
     # Pasar los datos a la plantilla
     return render(request, 'mecanicos.html', {'mecanicos': mecanicos})
 
+
+
 def peritajes (request):
     peritajes = Peritaje.objects.all()
     return render(request, 'peritajes.html', {'peritajes': peritajes})
 
-def modificarPeritaje (request):
-    return render(request, 'modificarPeritaje.html')
+
+
+def modificarPeritaje(request, id_peritaje):
+    peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
+
+    if request.method == 'POST':
+        peritaje.descripcion = request.POST.get('descripcion')
+        peritaje.costo = request.POST.get('costo')
+        peritaje.notas_adicionales = request.POST.get('notas_adicionales')
+        peritaje.save()
+
+        messages.success(request, 'Peritaje modificado exitosamente.')
+
+    return render(request, 'modificarPeritaje.html', {'peritaje': peritaje})
 
 
 
@@ -170,11 +183,20 @@ def modificarTaller(request, id_taller_mecanico):
     })
 
 
+
 def eliminarTaller(request, id_taller):
     taller = get_object_or_404(TallerMecanico, id_taller=id_taller)
     taller.delete()
     messages.success(request, 'Taller eliminado exitosamente.')
     return redirect('administrador:talleresMecanico')
+
+
+
+def eliminarPeritaje(request, id_peritaje):
+    peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
+    peritaje.delete()
+    messages.success(request, 'Peritaje eliminado exitosamente.')
+    return redirect('administrador:peritajes')
 
 
 def modificarMantenimiento (request, id_mantenimiento):

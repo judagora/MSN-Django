@@ -17,31 +17,31 @@
 
 <body class="fuente">
 
-  <!-- Barra de Navegación -->
-  <header class="barrasup">
+   <!--  Barra de Navegación  -->
+   <header class="barrasup">
     <div class="logo">
-      <a class="link" href="{% url 'index' %}">
-        <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-      </a>
-      <h1>Motors Safety Net</h1>
+        <a class="link" href="{% url 'index' %}">
+            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+        </a>
+        <h1>Motors Safety Net</h1>
     </div>
 
     <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-      <a class="usuario text-white text-decoration-none d-flex align-items-center"
-        href="{% url 'administrador:inicio' %}">
-        <i class="lni lni-user"></i>
-        <!--<span>{{ request.user.nombres }}</span>-->
-      </a>
+        <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+            <i class="lni lni-user"></i>
+            <span>{{ user.nombre_usuario }}</span>
+        </a>
 
-      <a class="correo text-white text-decoration-none d-flex align-items-center">
-        <!-- <small>{{ request.user.correo }}</small>-->
-      </a>
-      <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
-        <i class="lni lni-exit"></i>
-        <span>Cerrar Sesión</span>
-      </a>
+        <a class="correo text-white text-decoration-none d-flex align-items-center">
+            <small>{{ user.correo_electronico }}</small>
+        </a>
+        <br>
+        <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
+            <i class="lni lni-exit"></i>
+            <span>Cerrar Sesión</span>
+        </a>
     </div>
-  </header>
+</header>
 
   <!-- Contenido de la página -->
   <div class="col">
@@ -143,9 +143,9 @@
                 <label for="id_telefono" class="form-label">Teléfono</label>
                 <div class="input-group has-validation">
                   <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                  <input type="text" name="telefono"
+                  <input type="number" name="telefono"
                     class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="id_telefono"
-                    value="{{ form.telefono.value|default_if_none:'' }}" required>
+                    value="{{ form.telefono.value|default_if_none:'' }}"  maxlength="10" required>
                 </div>
                 {% if form.telefono.errors %}
                 <div class="invalid-feedback">
@@ -161,7 +161,7 @@
                 <label for="id_correo_electronico" class="form-label">Correo Electrónico</label>
                 <input type="email" name="correo_electronico"
                   class="form-control {% if form.correo_electronico.errors %}is-invalid{% endif %}"
-                  id="id_correo_electronico" value="{{ form.correo_electronico.value|default_if_none:'' }}" required>
+                  id="id_correo_electronico" value="{{ form.correo_electronico.value|default_if_none:'' }}" required  maxlength="30">
                 {% if form.correo_electronico.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.correo_electronico.errors %}
@@ -178,7 +178,7 @@
                 <label for="id_nombre_usuario" class="form-label">Nombre de Usuario</label>
                 <input type="text" name="nombre_usuario"
                   class="form-control {% if form.nombre_usuario.errors %}is-invalid{% endif %}" id="id_nombre_usuario" maxlength="10" minlength="8"
-                  value="{{ form.nombre_usuario.value|default_if_none:'' }}" required>
+                  value="{{ form.nombre_usuario.value|default_if_none:'' }}" required  maxlength="20">
                 {% if form.nombre_usuario.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.nombre_usuario.errors %}
@@ -192,7 +192,7 @@
               <div class="col-md-4 position-relative">
                 <label for="id_password1" class="form-label">Contraseña</label>
                 <input type="password" name="password1"
-                  class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" maxlength="10" minlength="8" required>
+                  class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" maxlength="20" required>
                 {% if form.password1.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.password1.errors %}
@@ -206,7 +206,7 @@
               <div class="col-md-4 position-relative">
                 <label for="id_password2" class="form-label">Confirmar Contraseña</label>
                 <input type="password" name="password2"
-                  class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" maxlength="10" minlength="8" required>
+                  class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2"  maxlength="20" required>
                 {% if form.password2.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.password2.errors %}
@@ -223,7 +223,7 @@
                 <input type="time" name="horario_de_trabajo"
                   class="form-control {% if form.horario_de_trabajo.errors %}is-invalid{% endif %}"
                   id="id_horario_de_trabajo" value="{{ form.horario_de_trabajo.value|default_if_none:'' }}" step="60"
-                  required>
+                  required  maxlength="30">
                 {% if form.horario_de_trabajo.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.horario_de_trabajo.errors %}
@@ -238,7 +238,7 @@
                 <label for="id_experiencia_laboral" class="form-label">Experiencia Laboral</label>
                 <textarea name="experiencia_laboral"
                   class="form-control {% if form.experiencia_laboral.errors %}is-invalid{% endif %}"
-                  id="id_experiencia_laboral"
+                  id="id_experiencia_laboral"  maxlength="30"
                   required>{{ form.experiencia_laboral.value|default_if_none:'' }}</textarea>
                 {% if form.experiencia_laboral.errors %}
                 <div class="invalid-feedback">

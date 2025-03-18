@@ -17,8 +17,8 @@
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
-    <header class="barrasup">
+      <!--  Barra de Navegación  -->
+      <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
@@ -29,12 +29,13 @@
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
+                <span>{{ user.nombre_usuario }}</span>
             </a>
   
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
+                <small>{{ user.correo_electronico }}</small>
             </a>
+            <br>
             <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
@@ -52,43 +53,49 @@
                     <div class="espaciobarranav">
                         <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
                             <li class="nav-item d-flex justify-content-center align-items-center">
-                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i
+                                            class="lni lni-chevron-right-circle"></i></a></h3>
                             </li>
                         </div>
                         <ul class="submenu">
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:insertarMecanico' %}"
+                                        style="margin-top: 10%;">Registrar Mecánico</a></li>
                             </div>
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos
+                                        Registrados</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center" aria-current="page"
-                                href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                    href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
                                         class="lni lni-agenda"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                    href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
                                         class="lni lni-delivery"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                    href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
                                         class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                                    href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a>
+                            </h3>
                         </li>
                     </div>
                 </ul>
@@ -102,46 +109,72 @@
                     </div>
 
                     <!-- Contenido -->
-                    <div class="izquierda">
-                        <form class="row g-3 needs-validation"
-                            th:action="@{/moduloAdmin/peritajes/{id}(id=${peritaje.idPeritaje})}" novalidate
-                            method="post">
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Id Peritaje</label>
-                                <input type="text" class="form-control" name="IdPeritaje" id="validationTooltip01"
-                                    th:value="${peritaje.idPeritaje}" readonly>
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcion" id="validationTooltip01"
-                                    th:value="${peritaje.descripcion}">
-                            </div>
-                            <div class="espacio2">
-                                <div class="row">
-                                    <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Editar" name="btnEditarPeritaje"
-                                            class="btn btn-primary">
+                    <div class="col-12 col-md-6  mx-auto mt-4">
+                        <div class="row mt-3">
+                            <div class="izquierda">
+                                <form class="row g-3 needs-validation"
+                                    action="{% url 'administrador:modificarPeritaje' peritaje.id_peritaje %}"
+                                    method="post" novalidate>
+                                    {% csrf_token %}
+                                    <!-- Campo: Descripción -->
+                                    <div class="col-md-8 position-relative">
+                                        <label for="descripcion" class="form-label">Descripción</label>
+                                        <textarea class="form-control" name="descripcion" id="descripcion"
+                                            required>{{ peritaje.descripcion }}</textarea>
                                     </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center ">
-                                        <a th:href="@{'/moduloAdmin/peritajes'}" class="btn btn-primary">Cancelar</a>
+
+                                    <!-- Campo: Costo -->
+                                    <div class="col-md-4 position-relative">
+                                        <label for="costo" class="form-label">Costo</label>
+                                        <input type="text" class="form-control" name="costo" id="costo"
+                                            value="{{ peritaje.costo }}" required>
                                     </div>
-                                </div>
-                            </div>
-                    </div>
-                    </form>
-                </div>
-            </div>
+
+                                    <!-- Campo: Notas Adicionales -->
+                                    <div class="col-md-8 position-relative">
+                                        <label for="notas_adicionales" class="form-label">Notas Adicionales</label>
+                                        <textarea class="form-control" name="notas_adicionales"
+                                            id="notas_adicionales">{{ peritaje.notas_adicionales }}</textarea>
+                                    </div>
+
+                                    <!-- Botones -->
+                                    <div class="row mt-3">
+                                        <div class="col-6 d-flex justify-content-end">
+                                            <button class="btn w-100" type="submit"
+                                                style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                                Modificar
+                                            </button>
+                                        </div>
+
+                                        <div class="col-6 d-flex justify-content-start">
+                                            <a href="{% url 'administrador:peritajes' %}"
+                                                class="btn btn-secondary w-100">Volver</a>
+                                        </div>
+                                    </div>
+                                </form>
+                                <br>
+                                <div class="container">
+                                    <div class="row justify-content-center">
+                                         <div class="col-md-6 text-center">
+                                {% for message in messages %}
+                                  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                      {{ message }}
+                                  </div>
+                              {% endfor %}
+                          </div>
+                      </div>
+                  </div>
 
 
-            {% load static %}  <!-- Cargar la etiqueta static -->
-            <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+                        {% load static %} <!-- Cargar la etiqueta static -->
+                        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
-            <script>
-                function toggleSubMenu() {
-                    const submenu = document.querySelector('.submenu');
-                    submenu.classList.toggle('show');
-                }
-            </script>
+                        <script>
+                            function toggleSubMenu() {
+                                const submenu = document.querySelector('.submenu');
+                                submenu.classList.toggle('show');
+                            }
+                        </script>
 
 </body>
 
