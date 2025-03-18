@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.lineicons.com/4.0/lineicons.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style_1.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style_2.css' %}">
@@ -17,7 +18,7 @@
     <link rel="stylesheet" href="{% static 'staticmecanico/css/InsertarMantenimiento.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style.css' %}">
 
-    <title>Modificar Mantenimiento</title>
+    <title>Modificar Repuesto</title>
 </head>
 
 <body>
@@ -31,12 +32,12 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:indexMecanico' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:inicio' %}">
                 <i class="lni lni-user"></i>
-                <span>{{ request.session.usuarioSesion.nombres }}</span>
+                <span>{{ user.nombre_usuario }}</span>
             </a>
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <small>{{ request.session.usuarioSesion.correo }}</small>
+                <small>{{ user.correo_electronico }}</small>
             </a>
             <a class="salida text-white text-decoration-none d-flex align-items-center" href="#">
                 <i class="lni lni-exit"></i>
@@ -61,13 +62,13 @@
                             </a>
                             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarMantenimiento' %}" class="sidebar-link">Insertar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarMantenimiento' %}" class="sidebar-link">Modificar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="sidebar-link">Modificar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarMantenimiento' %}" class="sidebar-link">Consultar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}" class="sidebar-link">Consultar Mantenimiento</a>
                                 </li>
                             </ul>
                         </li>
@@ -81,13 +82,13 @@
                             </a>
                             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Peritaje</a>
+                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Peritaje</a>
+                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Peritaje</a>
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar Peritaje</a>
                                 </li>
                             </ul>
                         </li>
@@ -101,13 +102,13 @@
                             </a>
                             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Repuesto</a>
+                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Repuesto</a>
+                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Repuesto</a>
+                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar Repuesto</a>
                                 </li>
                             </ul>
                         </li>
@@ -117,28 +118,27 @@
             
             <div class="col-8">
                 <div class="tabla table-responsive row mt-3">
-                    <span class="modificar">Modificar Mantenimiento</span>
-                    <table id="ModMantenimiento" class="table table-bordered display nowrap" width="100%">
+                    <span class="modificar">Modificar Repuesto</span>
+                    <table id="ModRepuesto" class="table table-bordered display nowrap" width="100%">
                         <thead>
                             <tr>
                                 <th>Placa</th>
-                                <th>Tipo de Mantenimiento</th>
                                 <th>Descripción</th>
+                                <th>Motivo del Cambio</th>
                                 <th>Costo</th>
-                                <th>Notas Adicionales</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for mantenimiento in mantenimientos %}
+                            {% for vehiculo_repuesto in vehiculo_repuestos %}
                             <tr>
-                                <td>{{ mantenimiento.placa }}</td>
-                                <td>{{ mantenimiento.tipoMantenimiento }}</td>
-                                <td>{{ mantenimiento.descripcionMantenimiento }}</td>
-                                <td>{{ mantenimiento.costoMantenimiento }}</td>
-                                <td>{{ mantenimiento.notasAdicionalesMantenimiento }}</td>
+                                <td>{{ vehiculo_repuesto.id_vehiculo.placa }}</td>
+                                <td>{{ vehiculo_repuesto.id_repuestos_modificados.descripcion }}</td>
+                                <td>{{ vehiculo_repuesto.id_repuestos_modificados.motivo }}</td>
+                                <td>{{ vehiculo_repuesto.id_repuestos_modificados.costo }}</td>
                                 <td>
-                                    <a href="{% url 'modificarMantenimiento2' mantenimiento.placa %}">
+                                    <!-- Enlace al formulario de modificación con la placa y el ID del mantenimiento -->
+                                    <a href="{% url 'mecanico:modificarRepuestoMc2' vehiculo_repuesto.id_vehiculo.placa vehiculo_repuesto.id_repuestos_modificados.id_repuestos_modificados %}">
                                         <i class="engranaje lni lni-cogs ms-4" style="font-size: 50px; color:black;"></i>
                                     </a>
                                 </td>
@@ -157,7 +157,7 @@
     <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.js"></script>
     <script>
         $(document).ready(function () {
-            $('#ModMantenimiento').DataTable({
+            $('#ModRepuesto').DataTable({
                 responsive: true
             });
         });

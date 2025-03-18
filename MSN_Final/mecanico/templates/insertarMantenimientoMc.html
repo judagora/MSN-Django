@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -31,12 +32,12 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="#indexMecanico">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:inicio' %}">
                 <i class="lni lni-user"></i>
-                <span>{{ request.session.usuarioSesion.nombres }}</span>
+                <span>{{ user.nombre_usuario }}</span>
             </a>
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <small>{{ request.session.usuarioSesion.correo }}</small>
+                <small>{{ user.correo_electronico }}</small>
             </a>
             <a class="salida text-white text-decoration-none d-flex align-items-center" href="#">
                 <i class="lni lni-exit"></i>
@@ -63,13 +64,13 @@
                             </a>
                             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="sidebar-link">Modificar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}" class="sidebar-link">Consultar Mantenimiento</a>
                                 </li>
                             </ul>
                         </li>
@@ -83,13 +84,13 @@
                             </a>
                             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Peritaje</a>
+                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Peritaje</a>
+                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Peritaje</a>
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar Peritaje</a>
                                 </li>
                             </ul>
                         </li>
@@ -103,13 +104,13 @@
                             </a>
                             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Repuesto</a>
+                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Repuesto</a>
+                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Repuesto</a>
+                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar Repuesto</a>
                                 </li>
                             </ul>
                         </li>
@@ -122,7 +123,7 @@
                 <div>
                     <div class="card-body">
                         <h1 class="text-center mb-4">Insertar Mantenimiento</h1>
-                        <form class="grupo row g-3 needs-validation" action="{% url 'insertarMantenimiento' %}"
+                        <form class="grupo row g-3 needs-validation" action=""
                             method="post" novalidate>
                             {% csrf_token %}
 
@@ -130,7 +131,7 @@
                             <div class="col-md-6">
                                 <label for="validationCustom03" class="form-label">Placa</label>
                                 <input type="text" name="placa" class="form-control" id="validationCustom03"
-                                    maxlength="6" minlength="6" required placeholder="Ej: ABC123">
+                                    maxlength="6" minlength="6" required placeholder="Ej: abc123">
                                 <div class="invalid-feedback">Por favor ingrese la placa del vehículo.</div>
                             </div>
 
@@ -155,10 +156,9 @@
 
                             <!-- Costo -->
                             <div class="col-md-6">
-                                <label for="validationCustom03" class="form-label">Costo</label>
-                                <input type="text" name="costoMantenimiento" class="form-control"
-                                    id="validationCustom03" required>
-                                <div class="invalid-feedback">Por favor ingrese el costo.</div>
+                                <label for="costoMantenimiento" class="form-label">Costo</label>
+                                <input type="number" name="costoMantenimiento" class="form-control" id="costoMantenimiento" min="50000" required>
+                                <div class="invalid-feedback">Por favor ingrese un costo válido (igual o mayor a 50,000).</div>
                             </div>
 
                             <!-- Notas Adicionales -->
@@ -182,7 +182,7 @@
                                 </div>
 
                                 <div class="col-6 d-flex justify-content-start">
-                                    <a href="{% url 'moduloMecanico:indexMecanico' %}"
+                                    <a href="{% url 'mecanico:inicio' %}"
                                         class="btn btn-secondary w-100">Cancelar</a>
                                 </div>
                             </div>
@@ -212,19 +212,79 @@
     <!-- Link Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        (() => {
-            'use strict';
+        document.addEventListener('DOMContentLoaded', function () {
             const forms = document.querySelectorAll('.needs-validation');
+    
             Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault(); // Evitar envío del formulario por defecto
+    
+                    // Limpiar mensajes de error previos
+                    const existingErrors = form.querySelectorAll('.invalid-feedback');
+                    existingErrors.forEach(error => error.remove());
+    
+                    // Validación general del formulario
                     if (!form.checkValidity()) {
-                        event.preventDefault();
                         event.stopPropagation();
+                        form.classList.add('was-validated');
+                        return;
                     }
-                    form.classList.add('was-validated');
+    
+                    // Validación específica para el campo de costo
+                    const costoInput = form.querySelector('#costoMantenimiento');
+                    if (costoInput) {
+                        const costo = parseFloat(costoInput.value);
+    
+                        if (isNaN(costo) || costo < 50000) {
+                            costoInput.setCustomValidity('El costo debe ser un número igual o mayor a 50,000.');
+                            event.stopPropagation();
+                            form.classList.add('was-validated');
+                            return;
+                        } else {
+                            costoInput.setCustomValidity('');
+                        }
+                    }
+    
+                    // Validación de la placa
+                    const placaInput = form.querySelector('input[name="placa"]');
+                    const placaError = document.createElement('div');
+                    placaError.className = 'invalid-feedback';
+                    placaInput.parentNode.appendChild(placaError);
+    
+                    const placa = placaInput.value;
+    
+                    try {
+                        console.log('Verificando placa:', placa); // Depuración
+                        const response = await fetch(`/mecanico/verificar-placa/?placa=${placa}`);
+                        console.log('Respuesta del servidor:', response); // Depuración
+    
+                        if (!response.ok) {
+                            throw new Error('Error al verificar la placa.');
+                        }
+    
+                        const data = await response.json();
+                        console.log('Datos recibidos:', data); // Depuración
+    
+                        if (data.exists) {
+                            // Si la placa existe, enviar el formulario
+                            form.submit();
+                        } else {
+                            // Si la placa no existe, mostrar mensaje de error
+                            placaError.textContent = 'La placa no existe.';
+                            placaInput.classList.add('is-invalid');
+                            event.stopPropagation();
+                            form.classList.add('was-validated');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error); // Depuración
+                        placaError.textContent = 'Ocurrió un error al verificar la placa.';
+                        placaInput.classList.add('is-invalid');
+                        event.stopPropagation();
+                        form.classList.add('was-validated');
+                    }
                 }, false);
             });
-        })();
+        });
     </script>
 </body>
 

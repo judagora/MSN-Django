@@ -68,7 +68,9 @@ class Mantenimiento(models.Model):
 
 class Peritaje(models.Model):
     id_peritaje = models.AutoField(primary_key=True)
-    descripcion = models.TextField()
+    descripcion = models.CharField(max_length=255)
+    costo = models.CharField(max_length=15)
+    notas_adicionales = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Peritaje {self.id_peritaje}"
@@ -76,9 +78,9 @@ class Peritaje(models.Model):
 
 class RepuestosModificados(models.Model):
     id_repuestos_modificados = models.AutoField(primary_key=True)
-    motivo_del_cambio = models.CharField(max_length=255)
-    descripcion_del_cambio = models.CharField(max_length=255)
-    costo_repuesto = models.TextField()
+    descripcion = models.CharField(max_length=255)
+    motivo = models.CharField(max_length=255)
+    costo = models.CharField(max_length=15)
 
     def __str__(self):
         return f"Repuesto Modificado {self.id_repuestos_modificados}"

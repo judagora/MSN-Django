@@ -1,0 +1,281 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lineicons/css/lineicons.css">
+    <link rel="stylesheet" href="https://cdn.lineicons.com/4.0/lineicons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="{% static 'staticmecanico/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'staticmecanico/css/style_1.css' %}">
+    <link rel="stylesheet" href="{% static 'staticmecanico/css/style_2.css' %}">
+    <link rel="stylesheet" href="{% static 'staticmecanico/css/styleheader.css' %}">
+    <link rel="shortcut icon" href="{% static 'staticmecanico/img/logo-msn.svg' %}" class="pestaña">
+    <link rel="stylesheet" href="{% static 'staticmecanico/css/InsertarMantenimiento.css' %}">
+    <link rel="stylesheet" href="{% static 'staticmecanico/css/style.css' %}">
+
+    <title>Insertar Peritaje</title>
+</head>
+
+<body>
+    <!--  Barra de Navegación -->
+    <header class="barrasup">
+        <div class="logo">
+            <a class="link" href="{% url 'index' %}">
+                <img src="{% static 'staticmecanico/img/logo-msn.svg' %}" alt="imagen logo">
+            </a>
+            <h1>Motors Safety Net</h1>
+        </div>
+
+        <div class="d-flex flex-column justify-content-between">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:inicio' %}">
+                <i class="lni lni-user"></i>
+                <span>{{ user.nombre_usuario }}</span>
+            </a>
+            <a class="correo text-white text-decoration-none d-flex align-items-center">
+                <small>{{ user.correo_electronico }}</small>
+            </a>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" href="#">
+                <i class="lni lni-exit"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </header>
+
+
+    <!--  Contenido Principal -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="menuu col-lg-3 col-md-4 bg-black">
+                <div>
+                    <a class="titulo text-white text-decoration-none p-md-2 mt-2" role="button">
+                        <span>MECÁNICO</span>
+                    </a>
+                    <ul class="nav nav-pills flex-column mt-2 mt-sm-0">
+                        <li class="nav-item">
+                            <a href="#" class="encabezados nav-link text-white" data-bs-toggle="collapse"
+                                data-bs-target="#auth1">
+                                <i class="lni lni-protection p-md-2"></i>
+                                <span class="ms-2">Gestionar Mantenimientos</span>
+                            </a>
+                            <ul id="auth1" class="sidebar-dropdown list-unstyled collapse">
+                                <li class="sidebar-item mt-2 d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar Mantenimiento</a>
+                                </li>
+                                <li class="sidebar-item mt-2 d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="sidebar-link">Modificar Mantenimiento</a>
+                                </li>
+                                <li class="sidebar-item mt-2 d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}" class="sidebar-link">Consultar Mantenimiento</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-pills flex-column mt-2 mt-sm-0" id="menu2">
+                        <li class="nav-item">
+                            <a href="#" class="encabezados nav-link text-white" data-bs-toggle="collapse"
+                                data-bs-target="#auth2">
+                                <i class="lni lni-protection p-md-2"></i>
+                                <span class="ms-2">Gestionar Peritajes</span>
+                            </a>
+                            <ul id="auth2" class="sidebar-dropdown list-unstyled collapse">
+                                <li class="sidebar-item mt-2  d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar Peritaje</a>
+                                </li>
+                                <li class="sidebar-item mt-2  d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar Peritaje</a>
+                                </li>
+                                <li class="sidebar-item mt-2  d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar Peritaje</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-pills flex-column mt-2 mt-sm-0" id="menu3">
+                        <li class="nav-item">
+                            <a href="#" class="encabezados nav-link text-white" data-bs-toggle="collapse"
+                                data-bs-target="#auth3">
+                                <i class="lni lni-protection p-md-2"></i>
+                                <span class="ms-2">Gestionar Repuestos</span>
+                            </a>
+                            <ul id="auth3" class="sidebar-dropdown list-unstyled collapse">
+                                <li class="sidebar-item mt-2  d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar Repuesto</a>
+                                </li>
+                                <li class="sidebar-item mt-2  d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar Repuesto</a>
+                                </li>
+                                <li class="sidebar-item mt-2  d-flex justify-content-center">
+                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar Repuesto</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- apertura formulario -->
+            <div class="col-12 col-md-6 col-lg-4 mx-auto mt-4">
+                <div>
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Insertar Peritaje</h1>
+                        <form class="grupo row g-3 needs-validation" action=""
+                            method="post" novalidate>
+                            {% csrf_token %}
+
+                            <!-- Placa -->
+                            <div class="col-md-6">
+                                <label for="validationCustom03" class="form-label">Placa</label>
+                                <input type="text" name="placa" class="form-control" id="validationCustom03"
+                                    maxlength="6" minlength="6" required placeholder="Ej: abc123">
+                                <div class="invalid-feedback">Por favor ingrese la placa del vehículo.</div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="col-md-12">
+                                <label for="validationTextarea" class="form-label">Descripción</label>
+                                <textarea class="form-control" name="descripcionPeritaje" id="validationTextarea"
+                                    placeholder="Ingresa aquí la descripción del Peritaje" required></textarea>
+                                <div class="invalid-feedback">Por favor ingrese la descripción.</div>
+                            </div>
+
+                            <!-- Costo -->
+                            <div class="col-md-6">
+                                <label for="costoPeritaje" class="form-label">Costo</label>
+                                <input type="number" name="costoPeritaje" class="form-control" id="costoPeritaje" min="50000" required>
+                                <div class="invalid-feedback">Por favor ingrese un costo válido (igual o mayor a 50,000).</div>
+                            </div>
+
+                            <!-- Notas Adicionales -->
+                            <div class="col-md-6">
+                                <label for="validationCustom03" class="form-label">Notas Adicionales</label>
+                                <input type="text" name="notasAdicionalesPeritaje" class="form-control"
+                                    id="validationCustom03" placeholder="Ingresa aquí las notas adicionales"
+                                    maxlength="150">
+                                <div class="invalid-feedback">Ingrese alguna descripción adicional.</div>
+                            </div>
+
+
+
+                            <!-- Botones -->
+                            <div class="row mt-3">
+                                <div class="col-6 d-flex justify-content-end">
+                                    <button class="btn w-100" type="submit"
+                                        style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                        Insertar
+                                    </button>
+                                </div>
+
+                                <div class="col-6 d-flex justify-content-start">
+                                    <a href="{% url 'mecanico:inicio' %}"
+                                        class="btn btn-secondary w-100">Cancelar</a>
+                                </div>
+                            </div>
+
+                            <!-- Mensajes de éxito y error -->
+                            {% if mensajeExito %}
+                            <div class="alert alert-success text-center" role="alert">
+                                {{ mensajeExito }}
+                            </div>
+                            {% endif %}
+
+                            {% if mensajeError %}
+                            <div class="alert alert-danger text-center" role="alert">
+                                {{ mensajeError }}
+                            </div>
+                            {% endif %}
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- cierre formulario -->
+        </div>
+    </div>
+
+    <!-- Link Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('.needs-validation');
+    
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault(); // Evitar envío del formulario por defecto
+    
+                    // Limpiar mensajes de error previos
+                    const existingErrors = form.querySelectorAll('.invalid-feedback');
+                    existingErrors.forEach(error => error.remove());
+    
+                    // Validación general del formulario
+                    if (!form.checkValidity()) {
+                        event.stopPropagation();
+                        form.classList.add('was-validated');
+                        return;
+                    }
+    
+                    // Validación específica para el campo de costo
+                    const costoInput = form.querySelector('#costoPeritaje');
+                    if (costoInput) {
+                        const costo = parseFloat(costoInput.value);
+    
+                        if (isNaN(costo) || costo < 50000) {
+                            costoInput.setCustomValidity('El costo debe ser un número igual o mayor a 50,000.');
+                            event.stopPropagation();
+                            form.classList.add('was-validated');
+                            return;
+                        } else {
+                            costoInput.setCustomValidity('');
+                        }
+                    }
+    
+                    // Validación de la placa
+                    const placaInput = form.querySelector('input[name="placa"]');
+                    const placaError = document.createElement('div');
+                    placaError.className = 'invalid-feedback';
+                    placaInput.parentNode.appendChild(placaError);
+    
+                    const placa = placaInput.value;
+    
+                    try {
+                        console.log('Verificando placa:', placa); // Depuración
+                        const response = await fetch(`/mecanico/verificar-placa/?placa=${placa}`);
+                        console.log('Respuesta del servidor:', response); // Depuración
+    
+                        if (!response.ok) {
+                            throw new Error('Error al verificar la placa.');
+                        }
+    
+                        const data = await response.json();
+                        console.log('Datos recibidos:', data); // Depuración
+    
+                        if (data.exists) {
+                            // Si la placa existe, enviar el formulario
+                            form.submit();
+                        } else {
+                            // Si la placa no existe, mostrar mensaje de error
+                            placaError.textContent = 'La placa no existe.';
+                            placaInput.classList.add('is-invalid');
+                            event.stopPropagation();
+                            form.classList.add('was-validated');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error); // Depuración
+                        placaError.textContent = 'Ocurrió un error al verificar la placa.';
+                        placaInput.classList.add('is-invalid');
+                        event.stopPropagation();
+                        form.classList.add('was-validated');
+                    }
+                }, false);
+            });
+        });
+    </script>
+</body>
+
+</html>

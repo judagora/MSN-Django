@@ -1,26 +1,34 @@
 from django.urls import path
 from . import  views
 
+
 app_name = 'mecanico'
 
 urlpatterns = [
     path('inicio/', views.inicio, name='inicio'),
-    path('insertarMantenimiento/', views.insertarMantenimiento, name='insertarMantenimiento'),
-    path('modificarMantenimiento/', views.modificarMantenimiento, name='modificarMantenimiento'),
-    path('modificarMantenimiento2/', views.modificarMantenimiento2, name='modificarMantenimiento'),
-    path('consultarMantenimiento/', views.consultarMantenimiento, name='consultarMantenimiento'),
-    path('consultarMantenimiento2/', views.consultarMantenimiento2, name='consultarMantenimiento2'),
+    path('insertarMantenimientoMc/', views.insertarMantenimientoMc, name='insertarMantenimientoMc'),
+    path('modificarMantenimientoMc/', views.modificarMantenimientoMc, name='modificarMantenimientoMc'),
+    path('modificarMantenimientoMc2/<str:placa>/<int:id_mantenimiento>/', views.modificarMantenimientoMc2, name='modificarMantenimientoMc2'),
+    path('consultar-mantenimiento/', views.consultarMantenimientoMc, name='consultarMantenimientoMc'),
+    path('consultar-mantenimiento/<str:placa>/', views.consultarMantenimientoMc2, name='consultarMantenimientoMc2'),
     
-    path('insertarPeritaje/', views.insertarPeritaje, name='insertarPeritaje'),
-    path('modificarPeritaje/', views.modificarPeritaje, name='modificarPeritaje'),
-    path('modificarPeritaje2/', views.modificarPeritaje2, name='modificarPeritaje2'),
-    path('consultarPeritaje/', views.consultarPeritaje, name='consultarPeritaje'),
-    path('consultarPeritaje2/', views.consultarPeritaje2, name='consultarPeritaje2'),
     
-    path('insertarRepuesto/', views.insertarRepuesto, name='insertarRepuesto'),
-    path('modificarRepuesto/', views.modificarRepuesto, name='modificarRepuesto'),
-    path('modificarRepuesto2/', views.modificarRepuesto2, name='modificarRepuesto2'),
-    path('consultarRepuesto/', views.consultarRepuesto, name='consultarRepuesto'),
-    path('consultarRepuesto2/', views.consultarRepuesto2, name='consultarRepuesto2'),
+    
+    path('insertarPeritajeMc/', views.insertarPeritajeMc, name='insertarPeritajeMc'),
+    path('modificarPeritajeMc/', views.modificarPeritajeMc, name='modificarPeritajeMc'),
+    path('modificarPeritajeMc2/<str:placa>/<int:id_peritaje>/', views.modificarPeritajeMc2, name='modificarPeritajeMc2'),
+    path('consultarPeritajeMc/', views.consultarPeritajeMc, name='consultarPeritajeMc'),
+    path('consultarPeritajeMc2/<str:placa>/', views.consultarPeritajeMc2, name='consultarPeritajeMc2'),
+    
+    path('insertarRepuestoMc/', views.insertarRepuestoMc, name='insertarRepuestoMc'),
+    path('modificarRepuestoMc/', views.modificarRepuestoMc, name='modificarRepuestoMc'),
+    path('modificarRepuestoMc2/<str:placa>/<int:id_repuesto>/', views.modificarRepuestoMc2, name='modificarRepuestoMc2'),
+    path('consultarRepuestoMc/', views.consultarRepuestoMc, name='consultarRepuestoMc'),
+    path('consultarRepuestoMc2/<str:placa>/', views.consultarRepuestoMc2, name='consultarRepuestoMc2'),
+    
+    
+    path('verificar-placa/', views.verificar_placa, name='verificar_placa'),
+    
+ 
 ]
 

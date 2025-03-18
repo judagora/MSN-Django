@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -30,12 +31,13 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:indexMecanico' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'mecanico:inicio' %}">
                 <i class="lni lni-user"></i>
-                <span>{{ request.session.usuarioSesion.nombres }}</span>
+                <span>{{ user.nombre_usuario }}</span>
             </a>
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <small>{{ request.session.usuarioSesion.correo }}</small>
+                <small>{{ user.correo_electronico }}</small>
             </a>
             <a class="salida text-white text-decoration-none d-flex align-items-center" href="#">
                 <i class="lni lni-exit"></i>
@@ -61,13 +63,16 @@
                             </a>
                             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarMantenimiento' %}" class="sidebar-link">Insertar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar
+                                        Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarMantenimiento' %}" class="sidebar-link">Modificar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}"
+                                        class="sidebar-link">Modificar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarMantenimiento' %}" class="sidebar-link">Consultar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}"
+                                        class="sidebar-link">Consultar Mantenimiento</a>
                                 </li>
                             </ul>
                         </li>
@@ -81,13 +86,13 @@
                             </a>
                             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Peritaje</a>
+                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Peritaje</a>
+                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Peritaje</a>
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar Peritaje</a>
                                 </li>
                             </ul>
                         </li>
@@ -101,13 +106,13 @@
                             </a>
                             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Insertar Repuesto</a>
+                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Modificar Repuesto</a>
+                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="" class="sidebar-link">Consultar Repuesto</a>
+                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar Repuesto</a>
                                 </li>
                             </ul>
                         </li>
@@ -117,94 +122,93 @@
 
             <!-- Formulario -->
             <div class="col-12 col-md-6 col-lg-4 mx-auto mt-4">
-                <div>
-                    <div class="card-body">
-                        <h1 class="text-center mb-4">Modificar Mantenimiento</h1>
-                        <form class="grupo row g-3 needs-validation"
-                            action="{% url 'modificarMantenimiento2' mantenimiento.placa %}" method="post"
-                            novalidate>
-                            {% csrf_token %}
-
-                            <!-- ID de Mantenimiento -->
-                            <div class="col-md-12">
-                                <label for="placa" class="form-label">Placa</label>
-                                <input type="text" name="idPlaca" class="form-control" id="idPlaca"
-                                    required readonly value="{{ mantenimiento.placa }}">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">Modificar Mantenimiento</h1>
+                    <form class="grupo row g-3 needs-validation" method="post" novalidate>
+                        {% csrf_token %}
+                    
+                        <!-- Placa (solo lectura) -->
+                        <div class="col-md-12">
+                            <label for="placa" class="form-label">Placa</label>
+                            <input type="text" name="placa" class="form-control" id="placa" required readonly value="{{ placa }}">
+                        </div>
+                    
+                        <!-- Tipo de Mantenimiento -->
+                        <div class="col-md-12">
+                            <label for="tipo_mantenimiento" class="form-label">Tipo de Mantenimiento</label>
+                            <select class="form-select" name="tipo_mantenimiento" id="tipo_mantenimiento" required>
+                                <option disabled value="">Elegir...</option>
+                                <option value="Preventivo" {% if mantenimiento.tipo_mantenimiento == 'Preventivo' %}selected{% endif %}>Preventivo</option>
+                                <option value="Correctivo" {% if mantenimiento.tipo_mantenimiento == 'Correctivo' %}selected{% endif %}>Correctivo</option>
+                            </select>
+                        </div>
+                    
+                        <!-- Descripción -->
+                        <div class="col-md-12">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" name="descripcion" id="descripcion" required>{{ mantenimiento.descripcion }}</textarea>
+                        </div>
+                    
+                        <!-- Costo -->
+                        <div class="col-md-12">
+                            <label for="costo" class="form-label">Costo</label>
+                            <input type="number" name="costo" class="form-control" id="costo" min="50000" required value="{{ mantenimiento.costo }}">
+                        </div>
+                    
+                        <!-- Notas Adicionales -->
+                        <div class="col-md-12">
+                            <label for="notas_adicionales" class="form-label">Notas Adicionales</label>
+                            <input type="text" name="notas_adicionales" class="form-control" id="notas_adicionales" maxlength="150" value="{{ mantenimiento.notas_adicionales }}">
+                        </div>
+                    
+                        <!-- Botones -->
+                        <div class="row mt-3">
+                            <div class="col-6 d-flex justify-content-end">
+                                <button class="btn w-100 rounded-3 py-2 fw-bold" type="submit" style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                    Guardar
+                                </button>
                             </div>
-
-                            <!-- Tipo de Mantenimiento -->
-                            <div class="col-md-12">
-                                <label for="tipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
-                                <select class="form-select" name="tipoMantenimiento" id="tipoMantenimiento" required>
-                                    <option disabled value="">Elegir...</option>
-                                    <option value="Preventivo" {% if mantenimiento.tipo_mantenimiento=='Preventivo'
-                                        %}selected{% endif %}>Preventivo</option>
-                                    <option value="Correctivo" {% if mantenimiento.tipo_mantenimiento=='Correctivo'
-                                        %}selected{% endif %}>Correctivo</option>
-                                </select>
+                            <div class="col-6 d-flex justify-content-start">
+                                <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="btn btn-secondary w-100 rounded-3 py-2 fw-bold">Cancelar</a>
                             </div>
-
-                            <!-- Descripción -->
-                            <div class="col-md-12">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control" name="descripcionMantenimiento" id="descripcion"
-                                    required>{{ mantenimiento.descripcion_mantenimiento }}</textarea>
-                            </div>
-
-                            <!-- Costo -->
-                            <div class="col-md-12">
-                                <label for="costo" class="form-label">Costo</label>
-                                <input type="text" name="costoMantenimiento" class="form-control" id="costo" required
-                                    value="{{ mantenimiento.costo_mantenimiento }}">
-                            </div>
-
-                            <!-- Notas Adicionales -->
-                            <div class="col-md-12">
-                                <label for="notasAdicionales" class="form-label">Notas Adicionales</label>
-                                <input type="text" name="notasAdicionalesMantenimiento" class="form-control"
-                                    id="notasAdicionales" maxlength="150" required
-                                    value="{{ mantenimiento.notas_adicionales_mantenimiento }}">
-                            </div>
-
-                            <!-- Botones -->
-                            <div class="row mt-3">
-                                <div class="col-6 d-flex justify-content-end">
-                                    <button class="btn w-100 rounded-3 py-2 fw-bold" type="submit"
-                                        style="background-color: #128C7E; border-color: #128C7E; color: white;">
-                                        Guardar
-                                    </button>
-                                </div>
-
-                                <div class="col-6 d-flex justify-content-start">
-                                    <a href="{% url 'mecanico:indexMecanico' %}"
-                                        class="btn btn-secondary w-100 rounded-3 py-2 fw-bold">Cancelar</a>
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 
     <!-- Link Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        (() => {
-            'use strict';
+        document.addEventListener('DOMContentLoaded', function () {
             const forms = document.querySelectorAll('.needs-validation');
+    
             Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
+                form.addEventListener('submit', function (event) {
+                    const costoInput = form.querySelector('#costo');
+                    if (costoInput) {
+                        const costo = parseFloat(costoInput.value);
+                        if (isNaN(costo) || costo < 50000) {
+                            costoInput.setCustomValidity('El costo debe ser un número igual o mayor a 50,000.');
+                            event.preventDefault();
+                            event.stopPropagation();
+                        } else {
+                            costoInput.setCustomValidity('');
+                        }
+                    }
+    
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
                     }
+    
                     form.classList.add('was-validated');
                 }, false);
             });
-        })();
+        });
     </script>
 </body>
 
