@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import RegistroMecanicoForm
-from inicio.models import Mecanico, Usuario
+from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico
 from django.contrib import messages  # Para mostrar mensajes en la interfaz
 from django.contrib.auth.hashers import make_password  # Para hashear la contraseña manualmente
 
@@ -9,11 +9,39 @@ from django.contrib.auth.hashers import make_password  # Para hashear la contras
 def inicio (request):
     return render(request, 'indexAdministrador.html')
 
-def insertarTaller (request):
-    return render(request, 'insertarTaller.html')
+def insertarTaller(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        direccion = request.POST.get('direccion')
+        telefono = request.POST.get('telefono')
+        horario = request.POST.get('horario')
+        id_administrador = request.POST.get('idAdministrador')
+        id_mecanico = request.POST.get('idMecanico')
 
-def insertarMantenimiento (request):
-    return render(request, 'insertarMantenimiento.html')
+        try:
+            administrador = Administrador.objects.get(id_administrador=id_administrador)
+            mecanico = Mecanico.objects.get(id_mecanico=id_mecanico)
+
+            TallerMecanico.objects.create(
+                nombre=nombre,
+                direccion=direccion,
+                telefono=telefono,
+                horario_de_atencion=horario,
+                id_administrador=administrador,
+                id_mecanico=mecanico
+            )
+            messages.success(request, 'Taller registrado exitosamente.')
+            return redirect('administrador:talleresMecanico')
+        except Exception as e:
+            messages.error(request, f'Error al registrar el taller: {str(e)}')
+
+    # Obtener listas de administradores y mecánicos para el formulario
+    administradores = Administrador.objects.all()
+    mecanicos = Mecanico.objects.all()
+    return render(request, 'insertarTaller.html', {
+        'administradores': administradores,
+        'mecanicos': mecanicos
+    })
 
 
 
@@ -89,13 +117,19 @@ def eliminar_mecanico(request, id_usuario):
 
 
 def mantenimientos (request):
-    return render(request, 'mantenimientos.html')
+      mantenimientos = Mantenimiento.objects.all()
+      return render(request, 'mantenimientos.html', {'mantenimientos': mantenimientos})
 
 def historialesVehiculo (request):
-    return render(request, 'historialesVehiculo.html')
+    # Obtener todos los vehículos
+    vehiculos = Vehiculo.objects.all()
+    
+    # Pasar los datos a la plantilla
+    return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
 
 def talleresMecanico (request):
-    return render(request, 'talleresMecanico.html')
+    talleres = TallerMecanico.objects.all()
+    return render(request, 'talleresMecanico.html', {'talleres': talleres})
 
 def mecanicos (request):
     # Obtener todos los mecánicos con sus usuarios asociados
@@ -105,13 +139,61 @@ def mecanicos (request):
     return render(request, 'mecanicos.html', {'mecanicos': mecanicos})
 
 def peritajes (request):
-    return render(request, 'peritajes.html')
+    peritajes = Peritaje.objects.all()
+    return render(request, 'peritajes.html', {'peritajes': peritajes})
 
 def modificarPeritaje (request):
     return render(request, 'modificarPeritaje.html')
 
-def modificarTaller (request):
-    return render(request, 'modificarTaller.html')
 
-def modificarMantenimiento (request):
-    return render(request, 'modificarMantenimiento.html')
+
+def modificarTaller(request, id_taller_mecanico):
+    taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
+
+    if request.method == 'POST':
+        taller.nombre = request.POST.get('nombre')
+        taller.direccion = request.POST.get('direccion')
+        taller.telefono = request.POST.get('telefono')
+        taller.horario_de_atencion = request.POST.get('horario')
+        taller.id_administrador = Administrador.objects.get(id_administrador=request.POST.get('idAdministrador'))
+        taller.id_mecanico = Mecanico.objects.get(id_mecanico=request.POST.get('idMecanico'))
+        taller.save()
+
+        messages.success(request, 'Taller modificado exitosamente.')
+
+    administradores = Administrador.objects.all()
+    mecanicos = Mecanico.objects.all()
+    return render(request, 'modificarTaller.html', {
+        'taller': taller,
+        'administradores': administradores,
+        'mecanicos': mecanicos
+    })
+
+
+def eliminarTaller(request, id_taller):
+    taller = get_object_or_404(TallerMecanico, id_taller=id_taller)
+    taller.delete()
+    messages.success(request, 'Taller eliminado exitosamente.')
+    return redirect('administrador:talleresMecanico')
+
+
+def modificarMantenimiento (request, id_mantenimiento):
+    mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
+
+    if request.method == 'POST':
+        mantenimiento.tipo_mantenimiento = request.POST.get('tipoMantenimiento')
+        mantenimiento.descripcion = request.POST.get('descripcionMantenimiento')
+        mantenimiento.costo = request.POST.get('costoMantenimiento')
+        mantenimiento.notas_adicionales = request.POST.get('notasAdicionalesMantenimiento')
+        mantenimiento.save()
+
+        messages.success(request, 'Mantenimiento modificado exitosamente.')
+        return redirect('administrador:mantenimientos')
+
+    return render(request, 'modificarMantenimiento.html', {'mantenimiento': mantenimiento})
+
+def eliminar_mantenimiento(request, id_mantenimiento):
+    mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
+    mantenimiento.delete()
+    messages.success(request, 'Mantenimiento eliminado exitosamente.')
+    return redirect('administrador:mantenimientos')

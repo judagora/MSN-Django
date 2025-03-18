@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
     <link rel="stylesheet" href="{% static 'found/css/HistorialV.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/colores.css' %}">
@@ -18,7 +17,7 @@
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
+    <!-- Barra de Navegación -->
     <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
@@ -26,13 +25,13 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
@@ -42,7 +41,6 @@
             </a>
         </div>
     </header>
-
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -105,58 +103,45 @@
                         <table id="HistorialV" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Id Vehículo</th>
-                                    <th>modelo</th>
-                                    <th>tipo</th>
-                                    <th>marca</th>
-                                    <th>placa</th>
-                                    <th>color</th>
-                                    <th>kilometraje</th>
+                                    <th>Modelo</th>
+                                    <th>Tipo</th>
+                                    <th>Marca</th>
+                                    <th>Placa</th>
+                                    <th>Color</th>
+                                    <th>Kilometraje</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="vehiculo : ${vehiculos}">
-                                    <td></td>
-                                    <td></td>
-                                    <td ></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                {% for vehiculo in vehiculos %}
+                                <tr>
+                                    <td>{{ vehiculo.modelo }}</td>
+                                    <td>{{ vehiculo.tipo }}</td>
+                                    <td>{{ vehiculo.marca }}</td>
+                                    <td>{{ vehiculo.placa }}</td>
+                                    <td>{{ vehiculo.color }}</td>
+                                    <td>{{ vehiculo.kilometraje }}</td>
                                 </tr>
-                                </tfoot>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <!-- Codigo para las data tables -->
-                    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-                    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
-
-                    <script>
-                        new DataTable('#HistorialV');
-                    </script>
-
-                    <!-- Codigo para ventana de advertencia -->
-                    <script>
-                        function confirmarEliminacion() {
-                            // Muestra un cuadro de diálogo de confirmación
-                            var confirmacion = confirm("¿Está seguro de eliminar este Historial?");
-
-                            // Si el usuario confirma, redirige o realiza la acción de eliminación
-                            if (confirmacion) {
-                                // Aquí puedes redirigir al usuario a la página de eliminación o realizar una acción de eliminación
-                                alert("El Historial se ha eliminado correctamente"); // Solo una alerta como ejemplo
-                            }
-                        }
-                    </script>
-
-                    <script>
-                        function toggleSubMenu() {
-                            const submenu = document.querySelector('.submenu');
-                            submenu.classList.toggle('show');
-                        }
-                    </script>
-
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script>
+        new DataTable('#HistorialV');
+    </script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
 </body>
 
 </html>

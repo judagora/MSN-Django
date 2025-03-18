@@ -12,11 +12,14 @@ urlpatterns = [
     path('mantenimientos/', views.mantenimientos, name='mantenimientos'),
     path('historialesVehiculo/', views.historialesVehiculo, name='historialesVehiculo'),
     path('talleresMecanico/', views.talleresMecanico, name='talleresMecanico'),
-    path('insertarMantenimiento/', views.insertarMantenimiento, name='insertarMantenimiento'),
-    path('insertarTaller/', views.peritajes, name='peritajes'),
+    path('insertarTaller/', views.insertarTaller, name='insertarTaller'),
     path('modificarPeritaje/', views.modificarPeritaje, name='modificarPeritaje'),
-    path('modificarMantenimiento/', views.modificarMantenimiento, name='modificarMantenimiento'),
+    path('modificarMantenimiento/<int:id_mantenimiento>/', views.modificarMantenimiento, name='modificarMantenimiento'),
     path('peritajes/', views.peritajes, name='peritajes'),
-    path('modificarTaller/', views.modificarTaller, name='modificarTaller'),
+    path('modificarTaller/<int:id_taller_mecanico>/', views.modificarTaller, name='modificarTaller'),
+    path('eliminarMantenimiento/<int:id_mantenimiento>/', views.eliminar_mantenimiento, name='eliminar_mantenimiento'),
+    path('eliminarTaller/<int:id_taller_mecanico>/', views.eliminarTaller, name='eliminar_taller'),
+
+
 
 ]

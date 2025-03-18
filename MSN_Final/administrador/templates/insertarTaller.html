@@ -98,62 +98,66 @@
             <div class="col-8">
                 <div class="row mt-3">
                     <div>
-                        <h1 class="Insert">Agregar Taller Mecanico</h1>
+                        <h1 class="Insert">Insertar Taller</h1>
                     </div>
 
                     <!-- Formulario de inserción de taller -->
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation" action="/registrarTaller" novalidate method="post">
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip02" class="form-label">Nombre del taller</label>
-                                <input type="text" class="form-control" name="nombre" id="validationTooltip02" required>
+                        <form class="row g-3 needs-validation" action="{% url 'administrador:insertarTaller' %}" method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="col-md-4">
+                                <label for="nombre" class="form-label">Nombre del taller</label>
+                                <input type="text" class="form-control" name="nombre" required>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip02" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" name="direccion" id="validationTooltip02" required>
+                            <div class="col-md-4">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="direccion" required>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltipUsername" class="form-label">Teléfono</label>
-                                <div class="input-group has-validation">
-                                    <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                                    <input type="text" class="form-control" name="telefono" id="validationTooltipUsername" aria-describedby="validationTooltipUsernamePrepend" required>
-                                </div>
+                            <div class="col-md-4">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="telefono" required>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip02" class="form-label">Horario de atención</label>
-                                <input type="time" class="form-control" name="horario" id="validationTooltip02" required>
+                            <div class="col-md-4">
+                                <label for="horario" class="form-label">Horario de atención</label>
+                                <input type="time" class="form-control" name="horario" required>
                             </div>
-                            <div class="col-md-4 position-relative">
+                            <div class="col-md-4">
                                 <label for="idAdministrador" class="form-label">Administrador</label>
-                                <select id="idAdministrador" name="idAdministrador" class="form-select" required>
+                                <select class="form-select" name="idAdministrador" required>
                                     <option value="" disabled selected>Seleccione un Administrador</option>
-                                    <th:block th:each="admin : ${usuarios}">
-                                        <option th:value="${admin.idUsuario}" th:text="${admin.nombres + ' ' + admin.apellidos}"></option>
-                                    </th:block>
+                                    {% for admin in administradores %}
+                                        <option value="{{ admin.id_administrador }}">{{ admin.id_usuario.nombres }} {{ admin.id_usuario.apellidos }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-4 position-relative">
+                            <div class="col-md-4">
                                 <label for="idMecanico" class="form-label">Mecánico</label>
-                                <select id="idMecanico" name="idMecanico" class="form-select" required>
+                                <select class="form-select" name="idMecanico" required>
                                     <option value="" disabled selected>Seleccione un Mecánico</option>
-                                    <th:block th:each="mecanico : ${mecanicos}">
-                                        <option th:value="${mecanico.idMecanico}" th:text="${mecanico.usuario.nombres}"></option>
-                                    </th:block>
+                                    {% for mecanico in mecanicos %}
+                                        <option value="{{ mecanico.id_mecanico }}">{{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
-                            <div class="espacio2">
-                                <div class="row">
-                                    <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Registrar" class="btn btn-primary">
-                                    </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center">
-                                        <a th:href="@{/moduloAdmin/talleresMecanico}" class="btn btn-primary">Volver</a>
-                                    </div>
-                                </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary">Registrar</button>
+                                <a href="{% url 'administrador:talleresMecanico' %}" class="btn btn-primary">Cancelar</a>
                             </div>
                         </form>
+                        <br>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                             <div class="col-md-6 text-center">
+                    {% for message in messages %}
+                      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
                     </div>
-
+                    
                     {% load static %}  <!-- Cargar la etiqueta static -->
                     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 

@@ -112,7 +112,7 @@
               <!-- Campo: Nombres -->
               <div class="col-md-4 position-relative">
                 <label for="id_nombres" class="form-label">Nombres</label>
-                <input type="text" name="nombres" class="form-control {% if form.nombres.errors %}is-invalid{% endif %}"
+                <input type="text" name="nombres" class="form-control {% if form.nombres.errors %}is-invalid{% endif %}" maxlength="30"
                   id="id_nombres" value="{{ form.nombres.value|default_if_none:'' }}" required>
                 {% if form.nombres.errors %}
                 <div class="invalid-feedback">
@@ -127,7 +127,7 @@
               <div class="col-md-4 position-relative">
                 <label for="id_apellidos" class="form-label">Apellidos</label>
                 <input type="text" name="apellidos"
-                  class="form-control {% if form.apellidos.errors %}is-invalid{% endif %}" id="id_apellidos"
+                  class="form-control {% if form.apellidos.errors %}is-invalid{% endif %}" id="id_apellidos" maxlength="30"
                   value="{{ form.apellidos.value|default_if_none:'' }}" required>
                 {% if form.apellidos.errors %}
                 <div class="invalid-feedback">
@@ -177,7 +177,7 @@
               <div class="col-md-4 position-relative">
                 <label for="id_nombre_usuario" class="form-label">Nombre de Usuario</label>
                 <input type="text" name="nombre_usuario"
-                  class="form-control {% if form.nombre_usuario.errors %}is-invalid{% endif %}" id="id_nombre_usuario"
+                  class="form-control {% if form.nombre_usuario.errors %}is-invalid{% endif %}" id="id_nombre_usuario" maxlength="10" minlength="8"
                   value="{{ form.nombre_usuario.value|default_if_none:'' }}" required>
                 {% if form.nombre_usuario.errors %}
                 <div class="invalid-feedback">
@@ -192,7 +192,7 @@
               <div class="col-md-4 position-relative">
                 <label for="id_password1" class="form-label">Contraseña</label>
                 <input type="password" name="password1"
-                  class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" required>
+                  class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" maxlength="10" minlength="8" required>
                 {% if form.password1.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.password1.errors %}
@@ -206,7 +206,7 @@
               <div class="col-md-4 position-relative">
                 <label for="id_password2" class="form-label">Confirmar Contraseña</label>
                 <input type="password" name="password2"
-                  class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" required>
+                  class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" maxlength="10" minlength="8" required>
                 {% if form.password2.errors %}
                 <div class="invalid-feedback">
                   {% for error in form.password2.errors %}
