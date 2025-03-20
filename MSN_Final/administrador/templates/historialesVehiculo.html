@@ -1,11 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'found/css/AgendarM.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/boostrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/HistorialV.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/colores.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
@@ -16,31 +17,31 @@
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
-    <header class="barrasup">
+      <!--  Barra de Navegación  -->
+      <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:indexAdministrador' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
+                <span>{{ user.nombre_usuario }}</span>
             </a>
-
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
+                <small>{{ user.correo_electronico }}</small>
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'logout' %}">
+            <br>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
         </div>
     </header>
-
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -96,89 +97,52 @@
             <div class="col-8 col">
                 <div class="row mt-3">
                     <div>
-                        <h1 class="AgendaT">Agendar Mantenimiento</h1>
+                        <h1 class="espacio2 col colortext" style="text-align: center;">Historial de vehículos</h1>
                     </div>
-
-                    <div class="izquierda">
-                        <form class="row g-3 needs-validation" action="/insertarMantenimientoAd" novalidate
-                            method="post">
-                            <div class="col-md-3 position-relative">
-                                <label for="validationTooltip04" class="form-label">Tipo de Mantenimiento</label>
-                                <select class="form-select" name="tipoMantenimiento" id="validationTooltip04" required>
-                                    <option selected disabled value="">...</option>
-                                    <option>Preventivo</option>
-                                    <option>Correctivo</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcionMantenimiento"
-                                    id="validationTooltip01" required>
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Costo</label>
-                                <input type="text" class="form-control" name="costoMantenimiento"
-                                    id="validationTooltip01" required>
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="validationTooltip01" class="form-label">Notas Adicionales</label>
-                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento"
-                                    id="validationTooltip01" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="validationTooltip01" class="form-label">Placa</label>
-                                <input type="text" name="placa" class="form-control" id="validationTooltip01"
-                                    maxlength="6" minlength="6" required placeholder="Ej: abc123">
-                            </div>
-                            <div class="espacio2">
-                                <div class="row">
-                                    <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Registrar" name="btnRegistrarMantenimiento"
-                                            class="btn btn-primary">
-                                    </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center">
-                                        <a href="/moduloAdmin/mantenimientos" class="btn btn-primary">volver</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div th:if="${mensajeExito}" class="alert alert-success text-center" role="alert">
-                                <span th:text="${mensajeExito}"></span>
-                            </div>
-                            <div th:if="${mensajeError}" class="alert alert-danger text-center" role="alert">
-                                <span th:text="${mensajeError}"></span>
-                            </div>
-                        </form>
+                    <!-- Tabla de datos -->
+                    <div class="tabla table-responsive" style="margin-left: 5%; margin-bottom: 10%; margin-top: 3%;">
+                        <table id="HistorialV" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>Tipo</th>
+                                    <th>Marca</th>
+                                    <th>Placa</th>
+                                    <th>Color</th>
+                                    <th>Kilometraje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vehiculo in vehiculos %}
+                                <tr>
+                                    <td>{{ vehiculo.modelo }}</td>
+                                    <td>{{ vehiculo.tipo }}</td>
+                                    <td>{{ vehiculo.marca }}</td>
+                                    <td>{{ vehiculo.placa }}</td>
+                                    <td>{{ vehiculo.color }}</td>
+                                    <td>{{ vehiculo.kilometraje }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {% load static %}  <!-- Cargar la etiqueta static -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script>
+        new DataTable('#HistorialV');
+    </script>
     <script>
         function toggleSubMenu() {
             const submenu = document.querySelector('.submenu');
             submenu.classList.toggle('show');
         }
     </script>
-    <script>
-        (() => {
-            'use strict';
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        })();
-    </script>
-
-
 </body>
 
 </html>

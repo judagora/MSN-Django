@@ -1,12 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'found/css/AgendarM.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/boostrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/colores.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -24,17 +25,17 @@
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:indexAdministrador' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <!--<span>{{ request.user.nombres }}</span>-->
             </a>
-
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'logout' %}">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -94,74 +95,92 @@
             </div>
 
 
-            <div class="col-8 col  ">
-                <div class="row mt-3 ">
+            <div class="col-8">
+                <div class="row mt-3">
                     <div>
-                        <h1 class="AgendaT">Modificar Mantenimiento</h1>
+                        <h1 class="Insert">Insertar Taller</h1>
                     </div>
 
+                    <!-- Formulario de inserción de taller -->
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation"
-                            th:action="@{/moduloAdmin/mantenimientos/{id}(id=${mantenimiento.idMantenimiento})}"
-                            novalidate method="post">
-                            <div class="col-md-4 position-relative">
-                                <label for="txtIdMantenimiento" class="form-label">Id Mantenimiento</label>
-                                <input type="text" class="form-control" name="idMantenimiento" required readonly
-                                    th:value="${mantenimiento.idMantenimiento}">
+                        <form class="row g-3 needs-validation" action="{% url 'administrador:insertarTaller' %}" method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="col-md-4">
+                                <label for="nombre" class="form-label">Nombre del taller</label>
+                                <input type="text" class="form-control" name="nombre" required  maxlength="20">
                             </div>
-                            <div class="col-md-3 position-relative">
-                                <label for="txtTipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
-                                <select class="form-select" name="tipoMantenimiento" required>
-                                    <option disabled>Elegir...</option>
-                                    <option th:value="'Preventivo'" th:text="'Preventivo'"
-                                        th:selected="${mantenimiento.tipoMantenimiento == 'Preventivo'}">Preventivo
-                                    </option>
-                                    <option th:value="'Correctivo'" th:text="'Correctivo'"
-                                        th:selected="${mantenimiento.tipoMantenimiento == 'Correctivo'}">Correctivo
-                                    </option>
+                            <div class="col-md-4">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="direccion" required  maxlength="50">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="number" class="form-control" name="telefono" required  maxlength="8">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="horario" class="form-label">Horario de atención</label>
+                                <input type="time" class="form-control" name="horario" required  maxlength="8">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="idAdministrador" class="form-label">Administrador</label>
+                                <select class="form-select" name="idAdministrador" required>
+                                    <option value="" disabled selected>Seleccione un Administrador</option>
+                                    {% for admin in administradores %}
+                                        <option value="{{ admin.id_administrador }}">{{ admin.id_usuario.nombres }} {{ admin.id_usuario.apellidos }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="txtDescripcion" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcionMantenimiento" required
-                                    th:value="${mantenimiento.descripcionMantenimiento}">
+                            <div class="col-md-4">
+                                <label for="idMecanico" class="form-label">Mecánico</label>
+                                <select class="form-select" name="idMecanico" required>
+                                    <option value="" disabled selected>Seleccione un Mecánico</option>
+                                    {% for mecanico in mecanicos %}
+                                        <option value="{{ mecanico.id_mecanico }}">{{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="txtCosto" class="form-label">Costo</label>
-                                <input type="text" class="form-control" name="costoMantenimiento" required
-                                    th:value="${mantenimiento.costoMantenimiento}">
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label for="txtNotasAdicionales" class="form-label">Notas Adicionales</label>
-                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento" required
-                                    th:value="${mantenimiento.notasAdicionalesMantenimiento}">
-                            </div>
+                             <!-- Botones -->
+                             <div class="row mt-3">
+                                <div class="col-6 d-flex justify-content-end">
+                                    <button class="btn w-100" type="submit"
+                                        style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                        Insertar
+                                    </button>
+                                </div>
 
-                            <div class="espacio2">
-                                <div class="row">
-                                    <div class="col-6 d-flex justify-content-end align-items-center">
-                                        <input type="submit" value="Editar" name="btnEditarMantenimiento"
-                                            class="btn btn-primary">
-                                    </div>
-                                    <div class="col-6 d-flex justify-content-start align-items-center ">
-                                        <a href="/moduloAdmin/mantenimientos" class="btn btn-primary">Cancelar</a>
-                                    </div>
+                                <div class="col-6 d-flex justify-content-start">
+                                    <a href="{% url 'administrador:talleresMecanico' %}"
+                                        class="btn btn-secondary w-100">Cancelar</a>
                                 </div>
                             </div>
                         </form>
+                        <br>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                             <div class="col-md-6 text-center">
+                    {% for message in messages %}
+                      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
                     </div>
-
-
+                    
                     {% load static %}  <!-- Cargar la etiqueta static -->
                     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
                     <script>
                         function toggleSubMenu() {
                             const submenu = document.querySelector('.submenu');
-                            submenu.classList.toggle('show');
+                            submenu.classList.toggle('d-none');
                         }
                     </script>
-
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

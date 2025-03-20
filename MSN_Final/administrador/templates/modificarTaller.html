@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'found/css/AgendarM.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <title>Modificar Taller Mecánico</title>
+</head>
+
+<body class="fuente">
+      <!--  Barra de Navegación  -->
+      <header class="barrasup">
+        <div class="logo">
+            <a class="link" href="{% url 'index' %}">
+                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+            </a>
+            <h1>Motors Safety Net</h1>
+        </div>
+  
+        <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+                <i class="lni lni-user"></i>
+                <span>{{ user.nombre_usuario }}</span>
+            </a>
+  
+            <a class="correo text-white text-decoration-none d-flex align-items-center">
+                <small>{{ user.correo_electronico }}</small>
+            </a>
+            <br>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
+                <i class="lni lni-exit"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenido de la página -->
+    <div class="col">
+        <div class="row">
+            <!-- Columna del menú -->
+            <div class="col-lg-3 bg-light-subtle">
+                <ul class="nav flex-column col color1">
+                    <div class="espaciobarranav">
+                        <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
+                            <li class="nav-item d-flex justify-content-center align-items-center">
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                            </li>
+                        </div>
+                        <ul class="submenu">
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                            </div>
+                            <div class="cambiocolor">
+                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center" aria-current="page" href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i class="lni lni-agenda"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i class="lni lni-delivery"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i class="lni lni-cogs"></i></a></h3>
+                        </li>
+                    </div>
+                    <div class="espaciobarranav cambiocolor">
+                        <li class="nav-item d-flex justify-content-center align-items-center">
+                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+            <!-- Contenido Principal -->
+            <div class="col-8">
+                <br>
+                <div class="row mt-3">
+                    <h1 class="AgendaT">Modificar Taller</h1>
+                    <div class="izquierda">
+                        <form class="row g-3 needs-validation" action="{% url 'administrador:modificarTaller' taller.id_taller_mecanico %}" method="post" novalidate>
+                            {% csrf_token %}
+                            <!-- Campo: Nombre del Taller -->
+                            <div class="col-md-4 position-relative">
+                                <label for="nombre" class="form-label">Nombre del Taller</label>
+                                <input type="text" class="form-control" name="nombre" id="nombre" value="{{ taller.nombre }}" required>
+                            </div>
+
+                            <!-- Campo: Dirección -->
+                            <div class="col-md-4 position-relative">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="direccion" id="direccion" value="{{ taller.direccion }}" required>
+                            </div>
+
+                            <!-- Campo: Teléfono -->
+                            <div class="col-md-4 position-relative">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="telefono" id="telefono" value="{{ taller.telefono }}" required>
+                            </div>
+
+                            <!-- Campo: Horario de Atención -->
+                            <div class="col-md-4 position-relative">
+                                <label for="horario" class="form-label">Horario de Atención</label>
+                                <input type="time" class="form-control" name="horario" id="horario" value="{{ taller.horario_de_atencion|time:'H:i' }}" required>
+                            </div>
+
+                            <!-- Campo: Administrador -->
+                            <div class="col-md-4 position-relative">
+                                <label for="idAdministrador" class="form-label">Administrador</label>
+                                <select class="form-select" name="idAdministrador" id="idAdministrador" required>
+                                    <option value="" disabled>Seleccione un Administrador</option>
+                                    {% for admin in administradores %}
+                                        <option value="{{ admin.id_administrador }}" {% if admin.id_administrador == taller.id_administrador.id_administrador %}selected{% endif %}>
+                                            {{ admin.id_usuario.nombres }} {{ admin.id_usuario.apellidos }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Campo: Mecánico -->
+                            <div class="col-md-4 position-relative">
+                                <label for="idMecanico" class="form-label">Mecánico</label>
+                                <select class="form-select" name="idMecanico" id="idMecanico" required>
+                                    <option value="" disabled>Seleccione un Mecánico</option>
+                                    {% for mecanico in mecanicos %}
+                                        <option value="{{ mecanico.id_mecanico }}" {% if mecanico.id_mecanico == taller.id_mecanico.id_mecanico %}selected{% endif %}>
+                                            {{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                                   <!-- Botones -->
+                                   <div class="row mt-3">
+                                    <div class="col-6 d-flex justify-content-end">
+                                        <button class="btn w-100" type="submit"
+                                            style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                            Modificar
+                                        </button>
+                                    </div>
+    
+                                    <div class="col-6 d-flex justify-content-start">
+                                        <a href="{% url 'administrador:talleresMecanico' %}"
+                                            class="btn btn-secondary w-100">Volver</a>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+                <br>
+                  <!-- Mostrar mensajes de Django -->
+                  {% if messages %}
+                  <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+              {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    {% load static %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
+</body>
+
+</html>

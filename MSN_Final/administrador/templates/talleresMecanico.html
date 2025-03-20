@@ -1,12 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'found/css/bienvenidoAD.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/boostrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'found/css/colores.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/TallerM.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -16,25 +17,26 @@
 
 <body class="fuente">
 
-    <!--  Barra de Navegación  -->
-    <header class="barrasup">
+     <!--  Barra de Navegación  -->
+     <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:indexAdministrador' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
+                <span>{{ user.nombre_usuario }}</span>
             </a>
-
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
+                <small>{{ user.correo_electronico }}</small>
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'logout' %}">
+            <br>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -96,94 +98,97 @@
             <div class="col-8 col">
                 <div class="row mt-3">
                     <div>
-                        <h1 class="espacio2 col colortext" style="display: flex; justify-content: center;">Peritajes
-                        </h1>
+                        <h1 class="espacio2 col colortext" style="display: flex; justify-content: center;">Talleres
+                            Mecánico</h1>
                         <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
                             <i class="lni lni-cog"
-                                style="font-size: 32px; margin-left: 30%; color: black;"></i></a>Modificar Peritaje
+                                style="font-size: 32px; margin-left: 30%; color: black;"></i></a>Modificar Taller
                             <i class="lni lni-circle-minus"
-                                style="font-size: 32px; margin-left: 5%;  color: black;"></i></a>Eliminar Peritaje
-                            <a th:href="@{/moduloAdmin/insertarPeritaje}"><i class="lni lni-circle-plus"
-                                    style="font-size: 32px; color: black; margin-left: 50px;"></i></a>Agregar Peritage
+                                style="font-size: 32px; margin-left: 5%;  color: black;"></i></a>Eliminar taller
+                            <a  href="{% url 'administrador:insertarTaller' %}"><i class="lni lni-circle-plus"
+                                    style="font-size: 32px; color: black; margin-left:50px;"></i></a>Insertar Taller
                         </div>
                     </div>
                     <!-- Tabla de datos -->
                     <div class="tabla table-responsive" style=" margin-left: 5%; margin-bottom: 10%;">
-                        <table id="Peritaje" class="display" style="width:100%">
+                        <table id="TallerM" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Id Peritaje</th>
-                                    <th>Descripción</th>
-                                    <th>Accion</th>
+                                    <th>Nombre</th>
+                                    <th>Dirección</th>
+                                    <th>Teléfono</th>
+                                    <th>Horario</th>
+                                    <th>Mecánico</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <tr th:each="peritaje : ${peritajes}">
-                                    <td th:text="${peritaje.idPeritaje}"></td>
-                                    <td th:text="${peritaje.descripcion}"></td>
+                                {% for taller in talleres %}
+                                <tr>
+                                    <td>{{ taller.nombre }}</td>
+                                    <td>{{ taller.direccion }}</td>
+                                    <td>{{ taller.telefono }}</td>
+                                    <td>{{ taller.horario_de_atencion }}</td>
+                                    <td>{{ taller.id_mecanico.id_usuario.nombres }}</td>
                                     <td>
-                                        <a th:href="@{/moduloAdmin/modificarPeritaje/{id}(id=${peritaje.idPeritaje})}"><i
-                                                class="lni lni-cog" style="font-size: 32px; color: black;"></i></a>
-                                        <!-- Enlace para eliminar el peritaje con confirmación -->
-                                        <!-- Enlace para eliminar el peritaje con confirmación -->
-                                        <form
-                                            th:action="@{/moduloAdmin/eliminarPeritaje/{id}(id=${peritaje.idPeritaje})}"
-                                            method="post" class="eliminar-form">
-                                            <button type="submit" style="background:none; border:none; padding:0;">
-                                                <i class="lni lni-circle-minus"
-                                                    style="font-size: 32px; color: black;"></i>
-                                            </button>
-                                            <div th:if="${success}" class="alert alert-success" role="alert">
-                                                <p th:text="${success}"></p>
-                                            </div>
-                                            <div th:if="${error}" class="alert alert-danger" role="alert">
-                                                <p th:text="${error}"></p>
-                                            </div>
-                                        </form>
+                                        <!-- Botón para modificar -->
+                                        <a href="{% url 'administrador:modificarTaller' taller.id_taller_mecanico %}">
+                                            <i class="lni lni-cog" style="font-size: 32px; color: black;"></i>
+                                        </a>
+            
+                                        <!-- Botón para abrir el modal de eliminación -->
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ taller.id_taller_mecanico }}">
+                                            <i class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i>
+                                        </a>
                                     </td>
                                 </tr>
-
+            
+                                <!-- Modal de Confirmación de Eliminación -->
+                                <div class="modal fade" id="confirmarEliminacion{{ taller.id_taller_mecanico }}" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro de que deseas eliminar el taller <strong>{{ taller.nombre }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <!-- Formulario para eliminar el taller -->
+                                                <form action="{% url 'administrador:eliminar_taller' taller.id_taller_mecanico %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}                                    </td>
+                                </tr>
                                 </tfoot>
                         </table>
                     </div>
 
                     <!-- Codigo para las data tables -->
                     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-
-                    <script>
-                        $(document).ready(function () {
-                            // Cuando el formulario de eliminación es enviado
-                            $('form.eliminar-form').submit(function (event) {
-                                event.preventDefault(); // Previene el envío tradicional del formulario
-
-                                var form = $(this);
-                                var url = form.attr('action'); // Obtiene la URL del formulario
-
-                                // Confirmación de eliminación
-                                if (confirm("¿Estás seguro de que quieres eliminar este peritaje?")) {
-                                    $.ajax({
-                                        url: url,
-                                        type: 'POST',
-                                        data: form.serialize(), // Serializa los datos del formulario
-                                        success: function (response) {
-                                            // Actualizar solo la tabla con el contenido retornado
-                                            $('div#tablaPeritajes').html($(response).find('#tablaPeritajes').html());
-                                        },
-                                        error: function (xhr, status, error) {
-                                            alert("Ocurrió un error al eliminar el peritaje.");
-                                        }
-                                    });
-                                }
-                            });
-                        });
-                    </script>
-
                     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
 
                     <script>
-                        new DataTable('#Peritaje');
+                        new DataTable('#TallerM');
                     </script>
+
+                    <script>
+                        function confirmarEliminacion(idTaller) {
+                            // Ventana de confirmación
+                            if (confirm("¿Estás seguro de que deseas eliminar este taller? Esta acción no se puede deshacer.")) {
+                                // Si el usuario confirma, enviar el formulario de eliminación
+                                document.getElementById("formEliminarTaller_" + idTaller).submit();
+                            }
+                        }
+                    </script>
+
 
                     <script>
                         function toggleSubMenu() {

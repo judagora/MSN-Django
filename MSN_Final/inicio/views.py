@@ -64,7 +64,7 @@ def login_view(request):
                         print("Redirigiendo a: cliente:inicio")
                         return redirect('cliente:inicio')
                     elif grupo == "Administrador":
-                        return redirect('administrador:index')
+                        return redirect('administrador:inicio')
                     elif grupo == "Mecanico":
                         return redirect('mecanico:inicio')
 
