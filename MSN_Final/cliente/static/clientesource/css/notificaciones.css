@@ -25,6 +25,7 @@ input[type="text"],
 input[type="date"],
 input[type="time"],
 input[list="tipo"],
+input[type="number"],
 select[list="tipo-m"] {
     width: 100%;
     padding: 10px;
@@ -38,6 +39,10 @@ select[list="tipo-m"] {
 
 .modNoti{ 
     width: 96%; 
+}
+
+#a{
+    margin-top: 20px; 
 }
 
 
@@ -88,7 +93,7 @@ select[list="tipo-m"] {
 }
 
 .editar-b:hover {
-    background-color: #b2b2b2;
+    background-color: #3fb19d;
 }
 
 .eliminar-b:hover {

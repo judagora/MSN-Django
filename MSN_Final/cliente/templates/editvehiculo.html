@@ -1,0 +1,135 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Vehículo</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/styleLogin.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/signin.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="#">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Edición de Vehiculo</h2>
+        <form action="" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="idVehiculo" value="{{ vehiculo.id_vehiculo }}">
+          <div class="form-group">
+            <label for="modelo">Modelo:</label>
+            <input minlength="4" maxlength="4" value="{{ form.modelo.value|default:'' }}" type="number"  id="modelo" name="modelo" required>
+            {% if form.modelo.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.modelo.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="tipo">Tipo de vehículo:</label>
+            <select id="tipoLista" name="tipo"  required>
+                <option value="Automovil" {% if form.tipo.value == "Automovil" %}selected{% endif %}>Automóvil</option>
+                <option value="Camioneta" {% if form.tipo.value == "Camioneta" %}selected{% endif %}>Camioneta</option>
+                <option value="Motocicleta" {% if form.tipo.value == "Motocicleta" %}selected{% endif %}>Motocicleta</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="marca">Marca:</label>
+            <input maxlength="10" minlength="3" value="{{ form.marca.value|default:'' }}" type="text" id="marca" name="marca"  required>
+            {% if form.marca.errors %}
+            <div class="alert-danger">
+                <span>{{ form.marca.errors.0 }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="placa">Placa:</label>
+            <input maxlength="6" minlength="6" value="{{ form.placa.value|default:'' }}" type="text" id="placa" name="placa"  required>
+            {% if form.placa.errors %}
+            <div class="alert-danger">
+                <span>{{ form.placa.errors.0 }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="color">Color:</label>
+            <input type="text" class="form-control form-control-color" value="{{ form.color.value|default:'' }}" id="color" name="color"  required>
+            {% if form.color.errors %}
+            <div class="alert-danger">
+                <span>{{ form.color.errors.0 }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="kilometraje">Kilometraje:</label>
+            <input minlength="1" maxlength="7" type="number" value="{{ form.kilometraje.value|default:'' }}" id="kilometraje" name="kilometraje"  required>
+            {% if form.kilometraje.errors %}
+            <div class="alert-danger">
+                <span>{{ form.kilometraje.errors.0 }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <input type="submit" value="Actualizar Vehiculo" name="btnActualizarVehiculo" class="enviar">
+          <a class="btn-volver" id="btn-volver" href="{% url 'cliente:vehiculo' vehiculo.id_vehiculo %}">Volver</a>
+        </form>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+    {% if edit_exitoso %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    title: "¡Actualización exitosa!",
+                    text: "El vehículo ha sido actualizado correctamente.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#369685",
+                    iconColor: "#369685"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'cliente:vehiculo' id_vehiculo=vehiculo.id_vehiculo %}";
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+
+    
+</body>
+</html>

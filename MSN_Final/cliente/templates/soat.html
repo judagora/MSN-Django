@@ -1,0 +1,168 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOAT</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+</head>
+<body>
+
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="{% url 'cliente:cuenta'%}">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario|capfirst}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+    <main class="container-fluid">
+
+        <div class="row">
+            <div class="col-9 ">
+
+                <div class="formulario formulario-m">
+                    <h4>Registra el SOAT de tu vehículo</h4>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="numero_poliza">Numero de Poliza:</label>
+                            <input type="number" name="numero_poliza" id="" placeholder="Ej: 2023123456789">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_emision">Fecha de emision</label>
+                            <input type="date" name="fecha_emision" id="">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_emision">Fecha de vencimiento</label>
+                            <input type="date" name="fecha_vencimiento" id="">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_emision">Valor del SOAT</label>
+                            <input type="number" name="valor_soat" id="" placeholder="Ej: 117,900">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_emision">Nombre de la Aseguradora</label>
+                            <input type="text" name="aseguradora" placeholder="Sura" id="">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehiculo">Vehículo relacionado al seguro :</label>
+                            <select list="tipo-m" id="vehiculo" name="id_vehiculo" required>
+                                <option value="" disabled selected>Selecciona un vehículo</option>
+                                {% for vehiculo in vehiculos %}
+                                    <option value="{{ vehiculo.id_vehiculo }}">
+                                        {{ vehiculo.marca }} - {{ vehiculo.placa|upper }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="a">
+                            <input type="submit" value="Registrar Vehiculo" name="btnRegistrarVehiculo" class="enviar">
+                        </div>
+                        
+                    </form>
+                </div>
+
+                <div class=" notificacion">
+                    <h4>SOAT Registrados</h4>
+                    <div class="table-responsive">
+                        <table id="notificationTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Numero de Poliza</th>
+                                    <th>Fecha de vencimiento</th>
+                                    <th>Aseguradora</th>
+                                    <th>Vehículo</th>
+                                    <th>Hora</th>
+                                    <th>Notas</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="notificationTableBody">
+                                    <tr>
+                                        <td>Preventivo</td>
+                                        <td>Pedro Perez</td>
+                                        <td>Chevrolet</td>
+                                        <td>12-01-2025</td>
+                                        <td>8:40 am</td>
+                                        <td>
+                                            <a href="" class="eliminar-b" id="btnEliminarNotificacion">
+                                                <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar notificacion" title="Eliminar notificacion">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="" class="editar-b">
+                                                <img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar notificacion">
+                                            </a>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-3  columna">
+                <div class="menu">
+
+                    <ul>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/notificacionesCliente}">Notificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/soat}">SOAT</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/cuenta}">Cuenta</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+</body>
+</html>
