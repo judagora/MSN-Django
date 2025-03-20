@@ -104,18 +104,20 @@
                                     <th>Fecha de vencimiento</th>
                                     <th>Aseguradora</th>
                                     <th>Vehículo</th>
-                                    <th>Hora</th>
+                                    <th>Placa</th>
                                     <th>Notas</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody id="notificationTableBody">
+
+                                {% for soat in soats %}
                                     <tr>
-                                        <td>Preventivo</td>
-                                        <td>Pedro Perez</td>
-                                        <td>Chevrolet</td>
-                                        <td>12-01-2025</td>
-                                        <td>8:40 am</td>
+                                        <td>{{ soat.numero_poliza }}</td>
+                                        <td>{{ soat.fecha_vencimiento}}</td>
+                                        <td>{{ soat.aseguradora }}</td>
+                                        <td>{{ soat.id_vehiculo.marca }}</td>
+                                        <td>{{ soat.id_vehiculo.placa }}</td>
                                         <td>
                                             <a href="" class="eliminar-b" id="btnEliminarNotificacion">
                                                 <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar notificacion" title="Eliminar notificacion">
@@ -127,6 +129,8 @@
                                             </a>
                                         </td>
                                     </tr>
+                                {% endfor %}
+
                             </tbody>
                         </table>
                     </div>
@@ -163,6 +167,26 @@
         </div>
 
     </main>
+
+
+    {% if registro_soat %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    title: "Registro exitoso!",
+                    text: "El SOAT ha sido asociado correctamente.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#369685",
+                    iconColor: "#369685"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'cliente:soat' %}";
+                    }
+                });
+            });
+        </script>
+    {% endif %}
     
 </body>
 </html>

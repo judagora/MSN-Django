@@ -94,6 +94,40 @@ class SoatForm(forms.ModelForm):
             'valor_soat': forms.NumberInput(attrs={'min': 0}),
         }
 
+        error_messages = {
+            'numero_poliza': {
+                'required': "El número de póliza es obligatorio.",
+                'max_length': "El número de póliza no puede tener más de 50 caracteres.",
+                'min_length': "El número de póliza debe tener al menos 10 caracteres.",
+                'unique': "Este número de póliza ya está registrado.",
+            },
+            'fecha_emision': {
+                'required': "La fecha de emisión es obligatoria.",
+                'invalid': "Ingrese una fecha de emisión válida.",
+            },
+            'fecha_vencimiento': {
+                'required': "La fecha de vencimiento es obligatoria.",
+                'invalid': "Ingrese una fecha de vencimiento válida.",
+                'future_date': "La fecha de vencimiento debe ser posterior a la fecha de emisión.",
+            },
+            'valor_soat': {
+                'required': "El valor del SOAT es obligatorio.",
+                'invalid': "Ingrese un valor numérico válido.",
+                'min_value': "El valor del SOAT debe ser mayor a 0.",
+            },
+            'aseguradora': {
+                'required': "El nombre de la aseguradora es obligatorio.",
+                'max_length': "El nombre de la aseguradora no puede superar los 50 caracteres.",
+            },
+            'id_vehiculo': {
+                'required': "Debe seleccionar un vehículo.",
+                'invalid_choice': "Seleccione un vehículo válido.",
+            },
+            
+
+
+        }
+
     def __init__(self, *args, cliente=None, **kwargs):
         super(SoatForm, self).__init__(*args, **kwargs)
         if cliente:

@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inicio.models import Cliente
-from inicio.models import Vehiculo
+from inicio.models import Vehiculo, Soat
 from django.contrib.auth import logout
 from .forms import VehiculoForm, ClienteForm, SoatForm
 from django.contrib import messages
@@ -115,17 +115,18 @@ def soat(request):
     usuario = request.user
     cliente = Cliente.objects.filter(id_usuario = usuario).first() 
     vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
-
+    soats = Soat.objects.filter(id_vehiculo__id_cliente=cliente)
+    registro_soat = False
     if request.method == "POST":
         form = SoatForm(request.POST, cliente=cliente)
         if form.is_valid():
             form.save()
             messages.success(request, "SOAT registrado correctamente.")
-            return redirect('cliente:soat')  # Cambia esto según tu estructura de URLs
+            registro_soat = True
         else:
             messages.error(request, "Corrige los errores en el formulario.")
     else:
         form = SoatForm(cliente=cliente)
-    return render(request, 'soat.html', {'form': form, 'vehiculos': vehiculos})
+    return render(request, 'soat.html', {'form': form, 'vehiculos': vehiculos, 'registro_soat': registro_soat, 'soats': soats})
 
 
