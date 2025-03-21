@@ -10,27 +10,29 @@
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <title>Modificar Taller Mecánico</title>
 </head>
 
 <body class="fuente">
-      <!--  Barra de Navegación  -->
-      <header class="barrasup">
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <small>{{ user.correo_electronico }}</small>
             </a>
@@ -51,36 +53,49 @@
                     <div class="espaciobarranav">
                         <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
                             <li class="nav-item d-flex justify-content-center align-items-center">
-                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i
+                                            class="lni lni-chevron-right-circle"></i></a></h3>
                             </li>
                         </div>
                         <ul class="submenu">
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:insertarMecanico' %}"
+                                        style="margin-top: 10%;">Registrar Mecánico</a></li>
                             </div>
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos
+                                        Registrados</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" aria-current="page" href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i class="lni lni-agenda"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center" aria-current="page"
+                                    href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                        class="lni lni-agenda"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i class="lni lni-delivery"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center"
+                                    href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                        class="lni lni-delivery"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i class="lni lni-cogs"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center"
+                                    href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                        class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center"
+                                    href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a>
+                            </h3>
                         </li>
                     </div>
                 </ul>
@@ -91,30 +106,45 @@
                 <div class="row mt-3">
                     <h1 class="AgendaT">Modificar Taller</h1>
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation" action="{% url 'administrador:modificarTaller' taller.id_taller_mecanico %}" method="post" novalidate>
+                        <form class="row g-3 needs-validation"
+                            action="{% url 'administrador:modificarTaller' taller.id_taller_mecanico %}" method="post"
+                            novalidate onsubmit="return validarFormulario()">
                             {% csrf_token %}
                             <!-- Campo: Nombre del Taller -->
                             <div class="col-md-4 position-relative">
                                 <label for="nombre" class="form-label">Nombre del Taller</label>
-                                <input type="text" class="form-control" name="nombre" id="nombre" value="{{ taller.nombre }}" required>
+                                <input type="text" class="form-control" name="nombre" id="nombre"
+                                    value="{{ taller.nombre }}" required minlength="5" maxlength="30"
+                                    pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+">
+                                <label id="errorNombre" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Dirección -->
                             <div class="col-md-4 position-relative">
                                 <label for="direccion" class="form-label">Dirección</label>
-                                <input type="text" class="form-control" name="direccion" id="direccion" value="{{ taller.direccion }}" required>
+                                <input type="text" class="form-control" name="direccion" id="direccion"
+                                    value="{{ taller.direccion }}" required minlength="5" maxlength="50">
+                                <label id="errorDireccion" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Teléfono -->
                             <div class="col-md-4 position-relative">
                                 <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" name="telefono" id="telefono" value="{{ taller.telefono }}" required>
+                                <input type="number" class="form-control" name="telefono" id="telefono"
+                                    value="{{ taller.telefono }}" required maxlength="10">
+                                <label id="errorTelefono" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Horario de Atención -->
                             <div class="col-md-4 position-relative">
                                 <label for="horario" class="form-label">Horario de Atención</label>
-                                <input type="time" class="form-control" name="horario" id="horario" value="{{ taller.horario_de_atencion|time:'H:i' }}" required>
+                                <input type="time" class="form-control" name="horario" id="horario"
+                                    value="{{ taller.horario_de_atencion|time:'H:i' }}" required>
+                                <label id="errorHorario" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Administrador -->
@@ -128,6 +158,8 @@
                                         </option>
                                     {% endfor %}
                                 </select>
+                                <label id="errorAdministrador" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Mecánico -->
@@ -137,44 +169,34 @@
                                     <option value="" disabled>Seleccione un Mecánico</option>
                                     {% for mecanico in mecanicos %}
                                         <option value="{{ mecanico.id_mecanico }}" {% if mecanico.id_mecanico == taller.id_mecanico.id_mecanico %}selected{% endif %}>
-                                            {{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}
+                                        {{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}
                                         </option>
                                     {% endfor %}
                                 </select>
+                                <label id="errorMecanico" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
 
-                                   <!-- Botones -->
-                                   <div class="row mt-3">
-                                    <div class="col-6 d-flex justify-content-end">
-                                        <button class="btn w-100" type="submit"
-                                            style="background-color: #128C7E; border-color: #128C7E; color: white;">
-                                            Modificar
-                                        </button>
-                                    </div>
-    
-                                    <div class="col-6 d-flex justify-content-start">
-                                        <a href="{% url 'administrador:talleresMecanico' %}"
-                                            class="btn btn-secondary w-100">Volver</a>
-                                    </div>
+
+
+
+                            <!-- Botones -->
+                            <div class="row mt-3">
+                                <div class="col-6 d-flex justify-content-end">
+                                    <button class="btn w-100" type="submit"
+                                        style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                        Modificar
+                                    </button>
                                 </div>
+
+                                <div class="col-6 d-flex justify-content-start">
+                                    <a href="{% url 'administrador:talleresMecanico' %}"
+                                        class="btn btn-secondary w-100">Volver</a>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
-                <br>
-                  <!-- Mostrar mensajes de Django -->
-                  {% if messages %}
-                  <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 text-center">
-                            {% for message in messages %}
-                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-              {% endif %}
             </div>
         </div>
     </div>
@@ -186,6 +208,76 @@
         function toggleSubMenu() {
             const submenu = document.querySelector('.submenu');
             submenu.classList.toggle('show');
+        }
+
+        function validarFormulario() {
+            // Obtener los valores de los campos
+            let nombre = document.getElementById("nombre").value;
+            let direccion = document.getElementById("direccion").value;
+            let telefono = document.getElementById("telefono").value;
+            let horario = document.getElementById("horario").value;
+            let idAdministrador = document.getElementById("idAdministrador").value;
+            let idMecanico = document.getElementById("idMecanico").value;
+
+            // Obtener las etiquetas de error
+            let errorNombre = document.getElementById("errorNombre");
+            let errorDireccion = document.getElementById("errorDireccion");
+            let errorTelefono = document.getElementById("errorTelefono");
+            let errorHorario = document.getElementById("errorHorario");
+            let errorAdministrador = document.getElementById("errorAdministrador");
+            let errorMecanico = document.getElementById("errorMecanico");
+
+            // Limpiar mensajes de error anteriores
+            errorNombre.style.display = "none";
+            errorDireccion.style.display = "none";
+            errorTelefono.style.display = "none";
+            errorHorario.style.display = "none";
+            errorAdministrador.style.display = "none";
+            errorMecanico.style.display = "none";
+
+            // Validar nombre del taller
+            if (nombre.length < 5 || nombre.length > 30 || !/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(nombre)) {
+                errorNombre.innerText = "El nombre debe tener entre 5 y 30 caracteres y solo puede contener letras.";
+                errorNombre.style.display = "block";
+                return false;
+            }
+
+            // Validar dirección
+            if (direccion.length < 5 || direccion.length > 50) {
+                errorDireccion.innerText = "La dirección debe tener entre 5 y 50 caracteres.";
+                errorDireccion.style.display = "block";
+                return false;
+            }
+
+            // Validar teléfono
+            if (!/^[0-9]{7,10}$/.test(telefono)) {
+                errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
+                errorTelefono.style.display = "block";
+                return false;
+            }
+
+            // Validar horario
+            if (!horario) {
+                errorHorario.innerText = "Debe seleccionar un horario de atención.";
+                errorHorario.style.display = "block";
+                return false;
+            }
+
+            // Validar administrador
+            if (idAdministrador === "") {
+                errorAdministrador.innerText = "Debe seleccionar un administrador.";
+                errorAdministrador.style.display = "block";
+                return false;
+            }
+
+            // Validar mecánico
+            if (idMecanico === "") {
+                errorMecanico.innerText = "Debe seleccionar un mecánico.";
+                errorMecanico.style.display = "block";
+                return false;
+            }
+
+            return true; // Si todo está correcto, enviar el formulario
         }
     </script>
 </body>

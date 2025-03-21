@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'found/css/AgendarM.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -16,21 +17,22 @@
 </head>
 
 <body class="fuente">
-      <!--  Barra de Navegación  -->
-      <header class="barrasup">
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <small>{{ user.correo_electronico }}</small>
             </a>
@@ -51,36 +53,49 @@
                     <div class="espaciobarranav">
                         <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
                             <li class="nav-item d-flex justify-content-center align-items-center">
-                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i
+                                            class="lni lni-chevron-right-circle"></i></a></h3>
                             </li>
                         </div>
                         <ul class="submenu">
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:insertarMecanico' %}"
+                                        style="margin-top: 10%;">Registrar Mecánico</a></li>
                             </div>
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos
+                                        Registrados</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" aria-current="page" href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i class="lni lni-agenda"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center" aria-current="page"
+                                    href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                        class="lni lni-agenda"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i class="lni lni-delivery"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center"
+                                    href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                        class="lni lni-delivery"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i class="lni lni-cogs"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center"
+                                    href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                        class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
-                            <h3><a class="nav-link text-light text-center" href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                            <h3><a class="nav-link text-light text-center"
+                                    href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a>
+                            </h3>
                         </li>
                     </div>
                 </ul>
@@ -91,7 +106,7 @@
                 <div class="row mt-3">
                     <h1 class="AgendaT">Modificar Mantenimiento</h1>
                     <div class="izquierda">
-                        <form class="row g-3 needs-validation" action="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}" method="post" novalidate>
+                        <form class="row g-3 needs-validation" action="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}" method="post" novalidate onsubmit="return validarFormularioMantenimiento()">
                             {% csrf_token %}
                             <!-- Campo: Tipo de Mantenimiento -->
                             <div class="col-md-3 position-relative">
@@ -100,40 +115,52 @@
                                     <option value="Preventivo" {% if mantenimiento.tipo_mantenimiento == 'Preventivo' %}selected{% endif %}>Preventivo</option>
                                     <option value="Correctivo" {% if mantenimiento.tipo_mantenimiento == 'Correctivo' %}selected{% endif %}>Correctivo</option>
                                 </select>
+                                <label id="errorTipoMantenimiento" class="text-danger" style="display: none;"></label>
                             </div>
 
                             <!-- Campo: Descripción -->
                             <div class="col-md-4 position-relative">
                                 <label for="descripcionMantenimiento" class="form-label">Descripción</label>
-                                <input type="text" class="form-control" name="descripcionMantenimiento" id="descripcionMantenimiento" value="{{ mantenimiento.descripcion }}" required>
+                                <input type="text" class="form-control" name="descripcionMantenimiento"
+                                    id="descripcionMantenimiento" value="{{ mantenimiento.descripcion }}" required
+                                    minlength="8" maxlength="200">
+                                <label id="errorDescripcionMantenimiento" class="text-danger"
+                                    style="display: none;"></label>
                             </div>
 
                             <!-- Campo: Costo -->
                             <div class="col-md-4 position-relative">
                                 <label for="costoMantenimiento" class="form-label">Costo</label>
-                                <input type="text" class="form-control" name="costoMantenimiento" id="costoMantenimiento" value="{{ mantenimiento.costo }}" required>
+                                <input type="number" class="form-control" name="costoMantenimiento"
+                                    id="costoMantenimiento" value="{{ mantenimiento.costo }}" required
+                                    placeholder="Se esperan valores mayores a 50000">
+                                <label id="errorCostoMantenimiento" class="text-danger" style="display: none;"></label>
                             </div>
 
                             <!-- Campo: Notas Adicionales -->
                             <div class="col-md-4 position-relative">
                                 <label for="notasAdicionalesMantenimiento" class="form-label">Notas Adicionales</label>
-                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento" id="notasAdicionalesMantenimiento" value="{{ mantenimiento.notas_adicionales }}">
+                                <input type="text" class="form-control" name="notasAdicionalesMantenimiento"
+                                    id="notasAdicionalesMantenimiento" value="{{ mantenimiento.notas_adicionales }}"
+                                    minlength="8" maxlength="200">
+                                <label id="errorNotasAdicionalesMantenimiento" class="text-danger"
+                                    style="display: none;"></label>
                             </div>
 
-                                  <!-- Botones -->
-                                  <div class="row mt-3">
-                                    <div class="col-6 d-flex justify-content-end">
-                                        <button class="btn w-100" type="submit"
-                                            style="background-color: #128C7E; border-color: #128C7E; color: white;">
-                                            Modificar
-                                        </button>
-                                    </div>
-    
-                                    <div class="col-6 d-flex justify-content-start">
-                                        <a href="{% url 'administrador:mantenimientos' %}"
-                                            class="btn btn-secondary w-100">Volver</a>
-                                    </div>
+                            <!-- Botones -->
+                            <div class="row mt-3">
+                                <div class="col-6 d-flex justify-content-end">
+                                    <button class="btn w-100" type="submit"
+                                        style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                        Modificar
+                                    </button>
                                 </div>
+
+                                <div class="col-6 d-flex justify-content-start">
+                                    <a href="{% url 'administrador:mantenimientos' %}"
+                                        class="btn btn-secondary w-100">Volver</a>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -149,6 +176,57 @@
             const submenu = document.querySelector('.submenu');
             submenu.classList.toggle('show');
         }
+
+        function validarFormularioMantenimiento() {
+            // Obtener los valores de los campos
+            let tipoMantenimiento = document.getElementById("tipoMantenimiento").value;
+            let descripcion = document.getElementById("descripcionMantenimiento").value;
+            let costo = document.getElementById("costoMantenimiento").value;
+            let notasAdicionales = document.getElementById("notasAdicionalesMantenimiento").value;
+
+            // Obtener las etiquetas de error
+            let errorTipoMantenimiento = document.getElementById("errorTipoMantenimiento");
+            let errorDescripcion = document.getElementById("errorDescripcionMantenimiento");
+            let errorCosto = document.getElementById("errorCostoMantenimiento");
+            let errorNotasAdicionales = document.getElementById("errorNotasAdicionalesMantenimiento");
+
+            // Limpiar mensajes de error anteriores
+            errorTipoMantenimiento.style.display = "none";
+            errorDescripcion.style.display = "none";
+            errorCosto.style.display = "none";
+            errorNotasAdicionales.style.display = "none";
+
+            // Validar Tipo de Mantenimiento
+            if (tipoMantenimiento === "") {
+                errorTipoMantenimiento.innerText = "Debe seleccionar un tipo de mantenimiento.";
+                errorTipoMantenimiento.style.display = "block";
+                return false;
+            }
+
+            // Validar Descripción
+            if (descripcion.length < 5 || descripcion.length > 200) {
+                errorDescripcion.innerText = "La descripción debe tener entre 5 y 200 caracteres.";
+                errorDescripcion.style.display = "block";
+                return false;
+            }
+
+            // Validar Costo
+            if (costo === "" || isNaN(costo) || parseFloat(costo) <= 50000) {
+                errorCosto.innerText = "El costo debe ser un número mayor a 50000.";
+                errorCosto.style.display = "block";
+                return false;
+            }
+
+            // Validar Notas Adicionales (opcional, pero si se ingresa, debe cumplir con la longitud)
+            if (notasAdicionales !== "" && (notasAdicionales.length < 8 || notasAdicionales.length > 200)) {
+                errorNotasAdicionales.innerText = "Las notas adicionales deben tener entre 5 y 200 caracteres.";
+                errorNotasAdicionales.style.display = "block";
+                return false;
+            }
+
+            return true; // Si todo está correcto, enviar el formulario
+        }
+
     </script>
 </body>
 
