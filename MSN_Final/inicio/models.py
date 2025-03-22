@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils.timezone import now
 
 
 
@@ -34,7 +35,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     id_usuario = models.AutoField(primary_key=True)
     nombres = models.CharField(max_length=30)
     apellidos = models.CharField(max_length=30)
-    telefono = models.CharField(max_length=20)
+    telefono = models.CharField(max_length=20, unique=True)
     correo_electronico = models.EmailField(unique=True, max_length=40)
     nombre_usuario = models.CharField(unique=True, max_length=30)
     rol_usuario = models.CharField(max_length=30, choices=[
@@ -126,7 +127,7 @@ class Vehiculo(models.Model):
     modelo = models.CharField(max_length=4)
     tipo = models.CharField(max_length=20, choices=[('Automovil', 'Automovil'), ('Camioneta', 'Camioneta'), ('Motocicleta', 'Motocicleta')])
     marca = models.CharField(max_length=30)
-    placa = models.CharField(max_length=6)
+    placa = models.CharField(max_length=6 , unique=True)
     color = models.CharField(max_length=20)
     kilometraje = models.IntegerField()
     id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
@@ -140,13 +141,15 @@ class Vehiculo(models.Model):
 
 class Soat(models.Model):
     id_soat = models.AutoField(primary_key=True)
-    estado_poliza = models.CharField(max_length=20, choices=[('Activa', 'Activa'), ('Espera', 'Espera'), ('En espera', 'En espera')])
-    aseguradora = models.CharField(max_length=30)
-    fecha_vencimiento = models.DateField()
-    id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+    numero_poliza = models.CharField(max_length=50, default="0000000000", unique=True)  
+    fecha_emision = models.DateField(default=now)  
+    fecha_vencimiento = models.DateField()  
+    valor_soat = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
+    aseguradora = models.CharField(max_length=50) 
+    id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE) 
 
     def __str__(self):
-        return f"SOAT {self.id_soat} - {self.aseguradora}"
+        return f"SOAT {self.numero_poliza} - {self.aseguradora}"
 
 
 class Mecanico(models.Model):

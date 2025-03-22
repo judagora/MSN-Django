@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'found/css/MantenimientoP.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,24 +20,25 @@
 
 <body class="fuente">
 
-    <!-- Barra de Navegación -->
-    <header class="barrasup">
+      <!--  Barra de Navegación  -->
+      <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-
+  
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
+                <span>{{ user.nombre_usuario }}</span>
             </a>
-
+  
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
+                <small>{{ user.correo_electronico }}</small>
             </a>
+            <br>
             <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
@@ -160,23 +162,9 @@
                             </div>
                             {% endfor %}
                         </tbody>
-                    </table>
-                    <!-- Mostrar mensajes de Django -->
-                  {% if messages %}
-                  <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 text-center">
-                            {% for message in messages %}
-                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+                    </table>                 
                 </div>
             </div>
-              {% endif %}
         </div>
     </div>
 

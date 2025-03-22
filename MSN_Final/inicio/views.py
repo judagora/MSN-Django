@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from .forms import RegistroForm, LoginForm
-from .models import Usuario
+from .models import Usuario, Cliente
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.contrib import messages
@@ -25,6 +25,10 @@ def registro(request):
             usuario = form.save(commit=False)
             usuario.set_password(form.cleaned_data["password1"])  # Encripta la contraseña
             usuario.save()
+
+            if usuario.rol_usuario == "Cliente":
+                Cliente.objects.create(id_usuario=usuario, estado_de_la_cuenta="ACTIVO")
+
             return render(request, 'register.html', {'form': RegistroForm(), 'registro_exitoso': True})  # Redirige a la página de registro con un mensaje de éxito
         else:
             messages.error(request, "Corrige los errores en el formulario.")
@@ -43,11 +47,17 @@ def login_view(request):
 
             usuario = authenticate(request, username=correo, password=password)
             print("Usuario autenticado:", usuario)
+            
             if usuario is not None:
+                if not usuario.is_active:
+                    messages.error(request, "Tu cuenta ha sido desactivada. Contacta con soporte para más información.")
+                    return redirect('login_view')
+
                 auth_login(request, usuario)
                 print("Usuario en sesión:", request.user)
                 grupo = usuario.rol_usuario  # Obtiene el primer grupo del usuario
                 print("Grupo del usuario:", grupo) 
+
                 if grupo:
                     print("Nombre del grupo:", grupo)
                     if grupo == "Cliente":

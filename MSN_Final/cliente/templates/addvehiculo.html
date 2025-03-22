@@ -1,0 +1,141 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Vehículo</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/styleLogin.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/signin.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="#">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <h2>Registro de Vehículo</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+          <div class="form-group">
+            <label for="modelo">Modelo:</label>
+            <input minlength="4" maxlength="4" type="number" placeholder="Ej: 2023" min="1900" max="{{ año_actual }}" id="modelo" name="modelo" value="{{ form.modelo.value|default:'' }}" required>
+            {% if form.modelo.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.modelo.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="tipo">Tipo de vehículo:</label>
+            <select id="tipoLista" name="tipo" required>
+                <option value="" disabled {% if not form.tipo.value %}selected{% endif %}>Selecciona un tipo</option>
+                <option value="Automovil" {% if form.tipo.value == "Automovil" %}selected{% endif %}>Automóvil</option>
+                <option value="Camioneta" {% if form.tipo.value == "Camioneta" %}selected{% endif %}>Camioneta</option>
+                <option value="Motocicleta" {% if form.tipo.value == "Motocicleta" %}selected{% endif %}>Motocicleta</option>
+            </select>
+            {% if form.tipo.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.tipo.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="marca">Marca:</label>
+            <input maxlength="10" minlength="3" type="text" id="marca" name="marca" value="{{ form.marca.value|default:'' }}" placeholder="Ej: Mazda" required>
+            {% if form.marca.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.marca.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="placa">Placa:</label>
+            <input maxlength="6" minlength="6" type="text" id="placa" placeholder="Ej: AAA123" name="placa" required>
+            {% if form.placa.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.placa.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="color">Color:</label>
+            <input type="text" class="form-control form-control-color" value="{{ form.color.value|default:'' }}" id="color" name="color" placeholder="Ej: Azul">
+            {% if form.color.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.color.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="kilometraje">Kilometraje:</label>
+            <input minlength="1" maxlength="6" type="number" id="kilometraje" value="{{ form.kilometraje.value|default:'' }}" placeholder="15000" name="kilometraje"
+              required>
+            {% if form.kilometraje.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.kilometraje.errors.0 }}</span>
+                </div>
+            {% endif %}
+          </div>
+          <input type="submit" value="Registrar Vehiculo" name="btnRegistrarVehiculo" class="enviar">
+          <a class="btn-volver" id="btn-volver" href="{%url 'cliente:inicio'%}">Volver</a>
+        </form>
+      </div>
+
+
+    {% if registro_exitoso %}
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+            title: "¡Registro exitoso!",
+            text: "¡Vehículo registrado exitosamente!",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: '#369685',
+            iconColor: '#369685',
+            }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{% url 'cliente:inicio' %}";  // Redirige al inicio del cliente
+            }
+            });
+        });
+        </script>
+    {% endif %}
+    
+</body>
+</html>

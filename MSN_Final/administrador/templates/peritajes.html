@@ -1,21 +1,20 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'found/css/bienvenidoAD.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/TallerM.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <title>Motors Safety Net</title>
+    <title>Peritajes</title>
 </head>
-
 <body class="fuente">
+    
 
     <!--  Barra de Navegación  -->
     <header class="barrasup">
@@ -29,12 +28,13 @@
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
             <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
+                <span>{{ user.nombre_usuario }}</span>
             </a>
   
             <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
+                <small>{{ user.correo_electronico }}</small>
             </a>
+            <br>
             <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
@@ -94,90 +94,85 @@
                 </ul>
             </div>
 
-            <div class="col-8 col">
-                <div class="row mt-3">
-                    <div>
-                        <h1 class="espacio2 col colortext" style="display: flex; justify-content: center;">Peritajes
-                        </h1>
-                        <br>
-                        <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
-                            <i class="lni lni-cog"
-                                style="font-size: 32px; margin-left: 30%; color: black;"></i></a>Modificar Peritaje
-                            <i class="lni lni-circle-minus"
-                                style="font-size: 32px; margin-left: 5%;  color: black;"></i></a>Eliminar Peritaje
+    <div class="col-8">
+        <div class="row mt-3 text-center">
+            <h1 class="espacio2 col colortext" style="display: flex; justify-content: center; margin-bottom: 5%; margin-top: 5%;">Peritajes</h1>
+            <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
+                <i class="lni lni-cog" style="font-size: 32px; margin-left: 35%; color: black;"></i>Modificar Peritaje
+                <i class="lni lni-circle-minus" style="font-size: 32px; margin-left: 5%; color: black;"></i>Eliminar Peritaje
+            </div>
+            <!-- Tabla de datos -->
+            <div class="tabla table-responsive" style=" margin-left: 5%; margin-bottom: 10%;">
+                <table id="Peritajes" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id Peritaje</th>
+                            <th>Descripción</th>
+                            <th>Costo</th>
+                            <th>Notas Adicionales</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for peritaje in peritajes %}
+                        <tr>
+                            <td>{{ peritaje.id_peritaje }}</td>
+                            <td>{{ peritaje.descripcion }}</td>
+                            <td>{{ peritaje.costo }}</td>
+                            <td>{{ peritaje.notas_adicionales }}</td>
+                            <td>
+                                <a href="{% url 'administrador:modificarPeritaje' peritaje.id_peritaje %}">
+                                    <i class="lni lni-cog" style="font-size: 32px; color: black;"></i>
+                                </a>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ peritaje.id_peritaje }}">
+                                    <i class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <!-- Modal de Confirmación de Eliminación -->
+                        <div class="modal fade" id="confirmarEliminacion{{ peritaje.id_peritaje }}" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ¿Estás seguro de que deseas eliminar el peritaje <strong>{{ peritaje.descripcion }}</strong>?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <!-- Formulario para eliminar el peritaje -->
+                                        <form action="{% url 'administrador:eliminar_peritaje' peritaje.id_peritaje %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Tabla de datos -->
-                    <div class="tabla table-responsive" style=" margin-left: 5%; margin-bottom: 10%;">
-                        <table id="Peritaje" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Id Peritaje</th>
-                                    <th>Descripción</th>
-                                    <th>Accion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                                <tr th:each="peritaje : ${peritajes}">
-                                    <td th:text="${peritaje.idPeritaje}"></td>
-                                    <td th:text="${peritaje.descripcion}"></td>
-                                    <td>
-                                        <a th:href="@{/moduloAdmin/modificarPeritaje/{id}(id=${peritaje.idPeritaje})}"><i
-                                                class="lni lni-cog" style="font-size: 32px; color: black;"></i></a>
-                                        <!-- Enlace para eliminar el peritaje con confirmación -->
-                                        <!-- Enlace para eliminar el peritaje con confirmación -->
-                                    </td>
-                                </tr>
-
-                                </tfoot>
-                        </table>
-                    </div>
-
-                    <!-- Codigo para las data tables -->
-                    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-
-                    <script>
-                        $(document).ready(function () {
-                            // Cuando el formulario de eliminación es enviado
-                            $('form.eliminar-form').submit(function (event) {
-                                event.preventDefault(); // Previene el envío tradicional del formulario
-
-                                var form = $(this);
-                                var url = form.attr('action'); // Obtiene la URL del formulario
-
-                                // Confirmación de eliminación
-                                if (confirm("¿Estás seguro de que quieres eliminar este peritaje?")) {
-                                    $.ajax({
-                                        url: url,
-                                        type: 'POST',
-                                        data: form.serialize(), // Serializa los datos del formulario
-                                        success: function (response) {
-                                            // Actualizar solo la tabla con el contenido retornado
-                                            $('div#tablaPeritajes').html($(response).find('#tablaPeritajes').html());
-                                        },
-                                        error: function (xhr, status, error) {
-                                            alert("Ocurrió un error al eliminar el peritaje.");
-                                        }
-                                    });
-                                }
-                            });
-                        });
-                    </script>
-
-                    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
-
-                    <script>
-                        new DataTable('#Peritaje');
-                    </script>
-
-                    <script>
-                        function toggleSubMenu() {
-                            const submenu = document.querySelector('.submenu');
-                            submenu.classList.toggle('show');
-                        }
-                    </script>
-
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Scripts de DataTables -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script>
+        new DataTable('#Peritajes');
+    </script>
+    <script>
+        function toggleSubMenu() {
+            const submenu = document.querySelector('.submenu');
+            submenu.classList.toggle('show');
+        }
+    </script>
 </body>
-
 </html>

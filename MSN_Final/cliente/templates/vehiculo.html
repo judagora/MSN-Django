@@ -1,0 +1,195 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Vehículo</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/vehiculo.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
+
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="#">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario|capfirst}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+    <main class="container-fluid">
+
+        <div class="row">
+            <div class="col-9 ">
+
+                <div class=" contenido">
+                    <div class="icono-nom">
+                        {% if vehiculo.tipo == "Automovil" or vehiculo.tipo == "Camioneta" %}
+                        <img src="{% static 'clientesource/img/carro.svg' %}" alt="Vehículo">
+                        {% else%}
+                        <img src="{% static 'clientesource/img/moto.svg' %}" alt="Vehículo">
+                        {% endif %}
+
+                        <h4 text="">{{vehiculo.marca}}</h4>
+                    </div>
+                    <div class="informacion-vehi">
+                        <table>
+                            <tr>
+                                <th>Marca:</th>
+                                <td>
+                                    <h3 text="">{{vehiculo.marca|capfirst}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Modelo:</th>
+                                <td>
+                                    <h3 text="">{{vehiculo.modelo}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Kilómetros:</th>
+                                <td>
+                                    <h3 text="">{{vehiculo.kilometraje}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Color:</th>
+                                <td>
+                                    <h3 text="">{{vehiculo.color|capfirst}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Placa:</th>
+                                <td>
+                                    <h3 text="">{{vehiculo.placa|upper}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Tipo de Vehiculo</th>
+                                <td>
+                                    <h3 text="">{{vehiculo.tipo}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+      
+                                <td>
+                                    <a href="{% url 'cliente:eliminar_vehiculo' vehiculo.id_vehiculo %}" class="borrar eliminar-vehiculo" id="btnEliminarVehiculo"
+                                        data-id="{{ vehiculo.id_vehiculo }}">
+                                        <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar Vehículo">
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a href="{% url 'cliente:editar_vehiculo' vehiculo.id_vehiculo%}"
+                                        class="editar"><img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar Vehiculo">
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="col-3  columna">
+                <div class="menu">
+
+                    <ul>
+                        <li>
+                            <a class="opcion" href="{%url 'cliente:inicio'%}">Inicio</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="">Notificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="">Mantenimientos</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="">Modificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="">SOAT</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="">Cuenta</a>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".eliminar-vehiculo").forEach(boton => {
+                boton.addEventListener("click", function (event) {
+                    event.preventDefault(); // Detiene la redirección automática
+    
+                    let url = this.getAttribute("href"); // Guarda la URL de eliminación
+    
+                    Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "No podrás recuperar este vehículo.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        iconColor: "#369685",
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#369685",
+                        confirmButtonText: "Sí, eliminar",
+                        cancelButtonText: "Cancelar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = url; // Redirige solo si el usuario confirma
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+   
+
+</body>
+
+</html>

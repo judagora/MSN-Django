@@ -38,7 +38,8 @@ class RegistroForm(UserCreationForm):
             'telefono': {
                 'required': "El teléfono es obligatorio.",
                 'min_length': "El teléfono debe tener al menos 10 dígitos.",
-                'max_length': "El teléfono no puede tener más de 10 dígitos."
+                'max_length': "El teléfono no puede tener más de 10 dígitos.",
+                'unique': "Este teléfono ya está en uso."
             },
             'password1': {
                 'required': "La contraseña es obligatoria.",
@@ -78,4 +79,9 @@ class LoginForm(AuthenticationForm):
         label="Contraseña",
         widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Contraseña"})
     )
+
+    error_messages = {
+        'invalid_login': "Correo o contraseña incorrectos. Inténtalo de nuevo.",
+        'inactive': "Tu cuenta está inactiva. Contacta al administrador."
+    }
     

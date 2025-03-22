@@ -1,0 +1,138 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar cuenta</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/styleLogin.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/signin.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="#">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario|capfirst}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 >Editar Información</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombres">Nombres:</label>
+                <input minlength="3" maxlength="30" value="{{ user.nombres }}" type="text" id="nombres"
+                    name="nombres" required>
+                {% if form.nombres.errors %}
+                <div class="alert-danger">
+                    <span class="alert-danger">{{ form.nombres.errors.0 }}</span>
+                </div>
+
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="apellidos">Apellidos:</label>
+                <input minlength="3" maxlength="30" type="text" value="{{ user.apellidos }}"
+                    id="apellidos" name="apellidos" required>
+                {% if form.apellidos.errors %}
+                <div class="alert-danger">
+                    <span class="">{{ form.apellidos.errors.0 }}</span>
+                </div>
+
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="correo_electronico">Correo Electrónico:</label>
+                <input minlength="10" maxlength="50" type="email" value="{{ form.correo_electronico.value|default:'' }}"
+                    id="correo_electronico" name="correo_electronico" required>
+                {% if form.correo_electronico.errors %}
+                <div class="alert-danger">
+                    <span class="">{{ form.correo_electronico.errors.0 }}</span>
+                </div>
+
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="nombre_usuario">Nombre de Usuario:</label>
+                <input minlength="3" maxlength="30" type="text" value="{{ user.nombre_usuario }}"
+                    id="nombre_usuario" name="nombre_usuario" required>
+                {% if form.nombre_usuario.errors %}
+                <div class="alert-danger">
+                    <span class="">{{ form.nombre_usuario.errors.0 }}</span>
+                </div>
+
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="number" name="telefono" value="{{ user.telefono }}" id="telefono"
+                    minlength="10" maxlength="10" required>
+                {% if form.telefono.errors %}
+                <div class="alert-danger">
+                    <span class="">{{ form.telefono.errors.0 }}</span>
+                </div>
+
+                {% endif %}
+            </div>
+            <input type="submit" value="Actualizar Datos" name="btnEditarCliente" class="enviar">
+            <a class="btn-volver" id="btn-volver" href="{% url 'cliente:cuenta'%}">Volver</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if edit_exitoso %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "¡Actualización exitosa!",
+                text: "La información ha sido actualizado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#369685",
+                iconColor: "#369685"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'cliente:cuenta' %}";
+                }
+            });
+        });
+    </script>
+{% endif %}
+
+</body>
+
+</html>

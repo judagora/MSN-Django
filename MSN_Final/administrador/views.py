@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import RegistroMecanicoForm
+from .forms import RegistroMecanicoForm, CambiarContraseñaForm
+from django.core.mail import send_mail
+from django.urls import reverse
 from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico
 from django.contrib import messages  # Para mostrar mensajes en la interfaz
-from django.contrib.auth.hashers import make_password  # Para hashear la contraseña manualmente
+from django.contrib.auth import update_session_auth_hash
+
+
 
 
 # Create your views here.
@@ -30,7 +34,6 @@ def insertarTaller(request):
                 id_administrador=administrador,
                 id_mecanico=mecanico
             )
-            messages.success(request, 'Taller registrado exitosamente.')
             return redirect('administrador:talleresMecanico')
         except Exception as e:
             messages.error(request, f'Error al registrar el taller: {str(e)}')
@@ -56,7 +59,8 @@ def modificarMecanico(request, id_usuario):
             mecanico.horario_de_trabajo = form.cleaned_data['horario_de_trabajo']
             mecanico.experiencia_laboral = form.cleaned_data['experiencia_laboral']
             mecanico.save()
-            messages.success(request, 'Mecánico modificado exitosamente.')            
+            return redirect('administrador:mecanicos')
+           
         else:
             # Imprimir errores en la consola para depuración
             print("Errores del formulario:", form.errors)
@@ -82,7 +86,7 @@ def insertarMecanico(request):
                 usuario.save()
                 print(f"Usuario creado con ID: {usuario.id_usuario}")
 
-                # Verificar si usuario se guardó correctamente
+                # Verificar si el usuario se guardó correctamente
                 if usuario.id_usuario:
                     mecanico = Mecanico.objects.create(
                         id_usuario=usuario,
@@ -91,19 +95,91 @@ def insertarMecanico(request):
                     )
                     print(f"Mecánico creado con ID: {mecanico.id_mecanico}")
 
-                    messages.success(request, "El mecánico se ha registrado correctamente.")
+                    # Enviar correo electrónico al mecánico
+                    subject = 'Bienvenido a Motors Safety Net'
+                    message = f'''
+                        Hola {usuario.nombres},
+
+                        Te has registrado como mecánico en Motors Safety Net. Aquí están tus credenciales:
+
+                        Correo Electrónico: {usuario.correo_electronico}
+                        Contraseña: {form.cleaned_data['password1']}
+
+                        Por favor ingresa al siguiente link para modificar tu contraseña:
+                        {request.build_absolute_uri(reverse('administrador:cambiar_contraseña'))}
+
+                        Gracias,
+                        Equipo de Motors Safety Net
+                    '''
+                    from_email = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
+                    recipient_list = [usuario.correo_electronico]  # Correo del mecánico
+
+                    # Enviar el correo
+                    try:
+                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                        print("Correo enviado correctamente")
+                        messages.success(request, "El mecánico se ha registrado correctamente y se ha enviado un correo.")
+                    except Exception as e:
+                        print(f"Error al enviar el correo: {str(e)}")
+                        messages.error(request, f"Error al enviar el correo: {str(e)}")
                 else:
                     messages.error(request, "No se pudo obtener el ID del usuario.")
             except Exception as e:
                 messages.error(request, f"Error al registrar el mecánico: {str(e)}")
                 print(f"Error al registrar el mecánico: {str(e)}")  # Depuración en consola
         else:
-            messages.error(request, "El formulario no es válido. Corrige los errores.")
             print("Errores del formulario:", form.errors)  # Imprime los errores del formulario en la consola
+            messages.error(request, "Hubo un error en el formulario. Por favor, corrige los errores.")
     else:
         form = RegistroMecanicoForm()
 
     return render(request, 'insertarMecanico.html', {'form': form})
+
+
+
+
+def cambiar_contraseña(request):
+    if request.method == 'POST':
+        form = CambiarContraseñaForm(request.user, request.POST)
+        if form.is_valid():
+            usuario = form.save()  # Cambia la contraseña
+            update_session_auth_hash(request, usuario)  # Actualiza la sesión para evitar que el usuario sea desconectado
+
+            # Obtén la nueva contraseña
+            nueva_contraseña = form.cleaned_data['new_password1']
+
+            # Enviar correo electrónico con la nueva contraseña
+            subject = 'Contraseña actualizada en Motors Safety Net'
+            message = f'''
+                Hola {usuario.nombres},
+
+                Tu contraseña en Motors Safety Net ha sido actualizada. Aquí está tu nueva contraseña:
+
+                Nueva contraseña: {nueva_contraseña}
+
+                Por seguridad, te recomendamos cambiar esta contraseña después de iniciar sesión.
+
+                Gracias,
+                Equipo de Motors Safety Net
+            '''
+            from_email = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
+            recipient_list = [usuario.email]  # Correo del usuario
+
+            try:
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                messages.success(request, "Tu contraseña ha sido actualizada y se ha enviado un correo con la nueva contraseña.")
+            except Exception as e:
+                messages.error(request, f"Error al enviar el correo: {str(e)}")
+
+            return redirect('inicio')  # Redirige al inicio después de cambiar la contraseña
+        else:
+            messages.error(request, "Por favor, corrige los errores en el formulario.")
+    else:
+        form = CambiarContraseñaForm(request.user)
+
+    return render(request, 'cambiar_contraseña.html', {'form': form})
+
+
 
 
 
@@ -138,12 +214,26 @@ def mecanicos (request):
     # Pasar los datos a la plantilla
     return render(request, 'mecanicos.html', {'mecanicos': mecanicos})
 
+
+
 def peritajes (request):
     peritajes = Peritaje.objects.all()
     return render(request, 'peritajes.html', {'peritajes': peritajes})
 
-def modificarPeritaje (request):
-    return render(request, 'modificarPeritaje.html')
+
+
+def modificarPeritaje(request, id_peritaje):
+    peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
+
+    if request.method == 'POST':
+        peritaje.descripcion = request.POST.get('descripcion')
+        peritaje.costo = request.POST.get('costo')
+        peritaje.notas_adicionales = request.POST.get('notas_adicionales')
+        peritaje.save()
+
+        return redirect('administrador:peritajes')
+
+    return render(request, 'modificarPeritaje.html', {'peritaje': peritaje})
 
 
 
@@ -159,7 +249,8 @@ def modificarTaller(request, id_taller_mecanico):
         taller.id_mecanico = Mecanico.objects.get(id_mecanico=request.POST.get('idMecanico'))
         taller.save()
 
-        messages.success(request, 'Taller modificado exitosamente.')
+        return redirect('administrador:talleresMecanico')
+
 
     administradores = Administrador.objects.all()
     mecanicos = Mecanico.objects.all()
@@ -170,11 +261,20 @@ def modificarTaller(request, id_taller_mecanico):
     })
 
 
+
 def eliminarTaller(request, id_taller):
     taller = get_object_or_404(TallerMecanico, id_taller=id_taller)
     taller.delete()
     messages.success(request, 'Taller eliminado exitosamente.')
     return redirect('administrador:talleresMecanico')
+
+
+
+def eliminarPeritaje(request, id_peritaje):
+    peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
+    peritaje.delete()
+    messages.success(request, 'Peritaje eliminado exitosamente.')
+    return redirect('administrador:peritajes')
 
 
 def modificarMantenimiento (request, id_mantenimiento):
