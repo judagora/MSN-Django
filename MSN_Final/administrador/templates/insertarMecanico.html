@@ -107,100 +107,166 @@
 
           <!-- Formulario -->
           <div class="izquierda">
-            <form method="post" class="row g-3 needs-validation" novalidate onsubmit="return validarFormularioMecanico()">
+            <form method="post" class="row g-3 needs-validation" novalidate
+              onsubmit="return validarFormularioMecanico()">
               {% csrf_token %}
-          
+
               <!-- Campo: Nombres -->
               <div class="col-md-4 position-relative">
-                  <label for="nombres" class="form-label">Nombres</label>
-                  <input type="text" name="nombres" class="form-control" id="nombres" minlength="5" maxlength="30" required>
-                  <label id="errorNombres" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Apellidos -->
-              <div class="col-md-4 position-relative">
-                  <label for="apellidos" class="form-label">Apellidos</label>
-                  <input type="text" name="apellidos" class="form-control" id="apellidos" minlength="5" maxlength="30" required>
-                  <label id="errorApellidos" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Teléfono -->
-              <div class="col-md-4 position-relative">
-                  <label for="telefono" class="form-label">Teléfono</label>
-                  <div class="input-group has-validation">
-                      <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                      <input type="number" name="telefono" class="form-control" id="telefono" maxlength="10" required>
-                  </div>
-                  <label id="errorTelefono" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Correo Electrónico -->
-              <div class="col-md-4 position-relative">
-                  <label for="correo" class="form-label">Correo Electrónico</label>
-                  <input type="email" name="correo_electronico" class="form-control" id="correo" required minlength="8" maxlength="30">
-                  <label id="errorCorreo" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Nombre de Usuario -->
-              <div class="col-md-4 position-relative">
-                  <label for="nombre_usuario" class="form-label">Nombre de Usuario</label>
-                  <input type="text" name="nombre_usuario" class="form-control" id="nombre_usuario" minlength="5" maxlength="20" required>
-                  <label id="errorNombreUsuario" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Contraseña -->
-              <div class="col-md-4 position-relative">
-                  <label for="password1" class="form-label">Contraseña</label>
-                  <input type="password" name="password1" class="form-control" id="password1" minlength="8" required>
-                  <label id="errorPassword1" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Confirmar Contraseña -->
-              <div class="col-md-4 position-relative">
-                  <label for="password2" class="form-label">Confirmar Contraseña</label>
-                  <input type="password" name="password2" class="form-control" id="password2" minlength="8" required>
-                  <label id="errorPassword2" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Horario de Trabajo -->
-              <div class="col-md-4 position-relative">
-                  <label for="horario" class="form-label">Horario de Trabajo</label>
-                  <input type="time" name="horario_de_trabajo" class="form-control" id="horario" step="60" required>
-                  <label id="errorHorario" class="text-danger" style="display: none;"></label>
-              </div>
-          
-              <!-- Campo: Experiencia Laboral -->
-              <div class="col-md-4 position-relative">
-                  <label for="experiencia" class="form-label">Experiencia Laboral</label>
-                  <textarea name="experiencia_laboral" class="form-control" id="experiencia" minlength="4" maxlength="30" required></textarea>
-                  <label id="errorExperiencia" class="text-danger" style="display: none;"></label>
+                <label for="nombres" class="form-label">Nombres</label>
+                <input type="text" name="nombres" class="form-control" id="nombres" minlength="5" maxlength="30"
+                  required>
+                {% if form.nombres.errors %}
+                <label id="errorNombres" class="text-danger">
+                  {% for error in form.nombres.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorNombres" class="text-danger" style="display: none;"></label>
+                {% endif %}
               </div>
 
-                 <!-- Campo Oculto: rol_usuario -->
-                 <input type="hidden" name="rol_usuario" value="Mecánico">
-          
+              <!-- Campo: Apellidos -->
+              <div class="col-md-4 position-relative">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" name="apellidos" class="form-control" id="apellidos" minlength="5" maxlength="30"
+                  required>
+                {% if form.apellidos.errors %}
+                <label id="errorApellidos" class="text-danger">
+                  {% for error in form.apellidos.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorApellidos" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Teléfono -->
+              <div class="col-md-4 position-relative">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <div class="input-group has-validation">
+                  <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
+                  <input type="number" name="telefono" class="form-control" id="telefono" maxlength="10" required>
+                </div>
+                {% if form.telefono.errors %}
+                <label id="errorTelefono" class="text-danger">
+                  {% for error in form.telefono.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorTelefono" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Correo Electrónico -->
+              <div class="col-md-4 position-relative">
+                <label for="correo" class="form-label">Correo Electrónico</label>
+                <input type="email" name="correo_electronico" class="form-control" id="correo" required minlength="8"
+                  maxlength="30">
+                {% if form.correo_electronico.errors %}
+                <label id="errorCorreo" class="text-danger">
+                  {% for error in form.correo_electronico.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorCorreo" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Nombre de Usuario -->
+              <div class="col-md-4 position-relative">
+                <label for="nombre_usuario" class="form-label">Nombre de Usuario</label>
+                <input type="text" name="nombre_usuario" class="form-control" id="nombre_usuario" minlength="5"
+                  maxlength="20" required>
+                {% if form.nombre_usuario.errors %}
+                <label id="errorNombreUsuario" class="text-danger">
+                  {% for error in form.nombre_usuario.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorNombreUsuario" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Contraseña -->
+              <div class="col-md-4 position-relative">
+                <label for="password1" class="form-label">Contraseña</label>
+                <input type="password" name="password1" class="form-control" id="password1" minlength="8" required>
+                {% if form.password1.errors %}
+                <label id="errorPassword1" class="text-danger">
+                  {% for error in form.password1.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorPassword1" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Confirmar Contraseña -->
+              <div class="col-md-4 position-relative">
+                <label for="password2" class="form-label">Confirmar Contraseña</label>
+                <input type="password" name="password2" class="form-control" id="password2" minlength="8" required>
+                {% if form.password2.errors %}
+                <label id="errorPassword2" class="text-danger">
+                  {% for error in form.password2.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorPassword2" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Horario de Trabajo -->
+              <div class="col-md-4 position-relative">
+                <label for="horario" class="form-label">Horario de Trabajo</label>
+                <input type="time" name="horario_de_trabajo" class="form-control" id="horario" step="60" required>
+                {% if form.horario_de_trabajo.errors %}
+                <label id="errorHorario" class="text-danger">
+                  {% for error in form.horario_de_trabajo.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorHorario" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo: Experiencia Laboral -->
+              <div class="col-md-4 position-relative">
+                <label for="experiencia" class="form-label">Experiencia Laboral</label>
+                <textarea name="experiencia_laboral" class="form-control" id="experiencia" minlength="4" maxlength="30"
+                  required></textarea>
+                {% if form.experiencia_laboral.errors %}
+                <label id="errorExperiencia" class="text-danger">
+                  {% for error in form.experiencia_laboral.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorExperiencia" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Campo Oculto: rol_usuario -->
+              <input type="hidden" name="rol_usuario" value="Mecánico">
+
               <!-- Botón de envío -->
               <div class="row mt-3">
-                  <div class="col-5">
-                      <button class="btn w-100" type="submit"
-                          style="background-color: #128C7E; border-color: #128C7E; color: white; margin-left: 80%;">
-                          Insertar
-                      </button>
-                  </div>
-              </div>
-          </form>
-            {% if messages %}
-            <div class="row mt-3">
-                <div class="col-md-8 mx-auto">  <!-- Centrar el mensaje en la página -->
-                    {% for message in messages %}
-                        <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+                <div class="col-5">
+                  <button class="btn w-100" type="submit"
+                    style="background-color: #128C7E; border-color: #128C7E; color: white; margin-left: 80%;">
+                    Insertar
+                  </button>
                 </div>
-            </div>
-            {% endif %}
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -216,106 +282,112 @@
     }
 
     function validarFormularioMecanico() {
-    // Obtener los valores de los campos
-    let nombres = document.getElementById("nombres").value;
-    let apellidos = document.getElementById("apellidos").value;
-    let telefono = document.getElementById("telefono").value;
-    let correo = document.getElementById("correo").value;
-    let nombreUsuario = document.getElementById("nombre_usuario").value;
-    let password1 = document.getElementById("password1").value;
-    let password2 = document.getElementById("password2").value;
-    let horario = document.getElementById("horario").value;
-    let experiencia = document.getElementById("experiencia").value;
+      // Obtener los valores de los campos
+      let nombres = document.getElementById("nombres").value;
+      let apellidos = document.getElementById("apellidos").value;
+      let telefono = document.getElementById("telefono").value;
+      let correo = document.getElementById("correo").value;
+      let nombreUsuario = document.getElementById("nombre_usuario").value;
+      let password1 = document.getElementById("password1").value;
+      let password2 = document.getElementById("password2").value;
+      let horario = document.getElementById("horario").value;
+      let experiencia = document.getElementById("experiencia").value;
 
-    // Obtener las etiquetas de error
-    let errorNombres = document.getElementById("errorNombres");
-    let errorApellidos = document.getElementById("errorApellidos");
-    let errorTelefono = document.getElementById("errorTelefono");
-    let errorCorreo = document.getElementById("errorCorreo");
-    let errorNombreUsuario = document.getElementById("errorNombreUsuario");
-    let errorPassword1 = document.getElementById("errorPassword1");
-    let errorPassword2 = document.getElementById("errorPassword2");
-    let errorHorario = document.getElementById("errorHorario");
-    let errorExperiencia = document.getElementById("errorExperiencia");
+      // Obtener las etiquetas de error
+      let errorNombres = document.getElementById("errorNombres");
+      let errorApellidos = document.getElementById("errorApellidos");
+      let errorTelefono = document.getElementById("errorTelefono");
+      let errorCorreo = document.getElementById("errorCorreo");
+      let errorNombreUsuario = document.getElementById("errorNombreUsuario");
+      let errorPassword1 = document.getElementById("errorPassword1");
+      let errorPassword2 = document.getElementById("errorPassword2");
+      let errorHorario = document.getElementById("errorHorario");
+      let errorExperiencia = document.getElementById("errorExperiencia");
 
-    // Limpiar mensajes de error anteriores
-    errorNombres.style.display = "none";
-    errorApellidos.style.display = "none";
-    errorTelefono.style.display = "none";
-    errorCorreo.style.display = "none";
-    errorNombreUsuario.style.display = "none";
-    errorPassword1.style.display = "none";
-    errorPassword2.style.display = "none";
-    errorHorario.style.display = "none";
-    errorExperiencia.style.display = "none";
+      // Limpiar mensajes de error anteriores
+      errorNombres.style.display = "none";
+      errorApellidos.style.display = "none";
+      errorTelefono.style.display = "none";
+      errorCorreo.style.display = "none";
+      errorNombreUsuario.style.display = "none";
+      errorPassword1.style.display = "none";
+      errorPassword2.style.display = "none";
+      errorHorario.style.display = "none";
+      errorExperiencia.style.display = "none";
 
-    // Validar nombres
-    if (nombres.length < 5) {
+      // Validar nombres
+      if (nombres.length < 5) {
         errorNombres.innerText = "Los nombres deben tener al menos 5 caracteres.";
         errorNombres.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar apellidos
-    if (apellidos.length < 3) {
+      // Validar apellidos
+      if (apellidos.length < 5) {
         errorApellidos.innerText = "Los apellidos deben tener al menos 5 caracteres.";
         errorApellidos.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar teléfono
-    if (!/^[0-9]{7,10}$/.test(telefono)) {
+      // Validar teléfono
+      if (!/^[0-9]{7,10}$/.test(telefono)) {
         errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
         errorTelefono.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar correo electrónico
-    let correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!correoRegex.test(correo)) {
-        errorCorreo.innerText = "Ingrese un correo electrónico válido.";
+      // Validar correo electrónico
+      let correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!correoRegex.test(correo)) {
+        errorCorreo.innerText = "Ingrese un correo electrónico válido. Utiliza un @";
         errorCorreo.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar nombre de usuario
-    if (nombreUsuario.length < 5) {
+      // Validar nombre de usuario
+      if (nombreUsuario.length < 5) {
         errorNombreUsuario.innerText = "El nombre de usuario debe tener al menos 5 caracteres.";
         errorNombreUsuario.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar contraseña
-    if (password1.length < 8) {
+      // Validar contraseña
+      if (password1.length < 8) {
         errorPassword1.innerText = "La contraseña debe tener al menos 8 caracteres.";
         errorPassword1.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar que las contraseñas coincidan
-    if (password1 !== password2) {
+      // Validar que las contraseñas coincidan
+      if (password1 !== password2) {
         errorPassword2.innerText = "Las contraseñas no coinciden.";
         errorPassword2.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar horario
-    let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
-    if (!horarioRegex.test(horario)) {
+      // Validar horario
+      let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
+      if (!horarioRegex.test(horario)) {
         errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
         errorHorario.style.display = "block";
         return false;
-    }
+      }
 
-    // Validar experiencia
-    if (experiencia.trim() === "") {
+      // Validar experiencia
+      if (experiencia.trim() === "") {
         errorExperiencia.innerText = "Debe ingresar la experiencia del mecánico.";
         errorExperiencia.style.display = "block";
         return false;
-    }
+      } else if (experiencia.trim().length < 5) {
+        errorExperiencia.innerText = "La experiencia debe tener al menos 5 caracteres.";
+        errorExperiencia.style.display = "block";
+        return false;
+      }
 
-    return true; // Si todo está correcto, enviar el formulario
-}
+
+
+      return true; // Si todo está correcto, enviar el formulario
+    }
   </script>
 </body>
 

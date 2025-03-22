@@ -59,8 +59,8 @@ def modificarMecanico(request, id_usuario):
             mecanico.horario_de_trabajo = form.cleaned_data['horario_de_trabajo']
             mecanico.experiencia_laboral = form.cleaned_data['experiencia_laboral']
             mecanico.save()
+            messages.success(request, "El mecánico se ha modificado correctamente.")
             return redirect('administrador:mecanicos')
-           
         else:
             # Imprimir errores en la consola para depuración
             print("Errores del formulario:", form.errors)
@@ -122,6 +122,9 @@ def insertarMecanico(request):
                     except Exception as e:
                         print(f"Error al enviar el correo: {str(e)}")
                         messages.error(request, f"Error al enviar el correo: {str(e)}")
+
+                    # Redirigir a la lista de mecánicos
+                    return redirect('administrador:mecanicos')  # Redirige al apartado de mecánicos
                 else:
                     messages.error(request, "No se pudo obtener el ID del usuario.")
             except Exception as e:
@@ -129,7 +132,9 @@ def insertarMecanico(request):
                 print(f"Error al registrar el mecánico: {str(e)}")  # Depuración en consola
         else:
             print("Errores del formulario:", form.errors)  # Imprime los errores del formulario en la consola
-            messages.error(request, "Hubo un error en el formulario. Por favor, corrige los errores.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = RegistroMecanicoForm()
 
