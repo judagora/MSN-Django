@@ -129,4 +129,29 @@ def soat(request):
         form = SoatForm(cliente=cliente)
     return render(request, 'soat.html', {'form': form, 'vehiculos': vehiculos, 'registro_soat': registro_soat, 'soats': soats})
 
+@login_required
+def editar_soat(request, id_soat):
+    usuario = request.user
+    cliente = Cliente.objects.filter(id_usuario = usuario).first() 
+    vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
+    soat = get_object_or_404(Soat, id_soat=id_soat)
+    act_soat = False
+    if request.method == "POST":
+        form = SoatForm(request.POST, instance=soat)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "SOAT actualizado correctamente.")
+            act_soat = True
+        else:
+            messages.error(request, "Corrige los errores en el formulario.")
+    else:
+        form = SoatForm(instance=soat)
+    return render(request, 'editarsoat.html', {'form': form, 'soat': soat, 'vehiculos': vehiculos, 'act_soat': act_soat})
+
+@login_required
+def eliminar_soat(request, id_soat):
+    soat = get_object_or_404(Soat, id_soat=id_soat)
+    soat.delete()
+    messages.success(request, "SOAT eliminado correctamente.")
+    return redirect('cliente:soat')
 

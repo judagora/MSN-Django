@@ -105,6 +105,20 @@ select[list="tipo-m"] {
     
 }
 
+.alert-danger {
+    color: #721c24; 
+    background-color: #f8d7da; 
+    border-color: #f5c6cb; 
+    border-radius: 5px; 
+    padding: 15px; 
+    margin-top: 12px; 
+    font-size: 16px; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+}
+
 @media only screen and (max-width: 540px) {
     header {
         padding-bottom: 200px;

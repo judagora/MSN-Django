@@ -13,5 +13,7 @@ urlpatterns = [
     path('editar_cuenta/', views.editar_cuenta, name='editar_cuenta'),
     path('desactivar_cuenta/', views.desactivar_cuenta, name='desactivar_cuenta'),
     path('soat/', views.soat, name='soat'),
+    path('editar_soat/<int:id_soat>', views.editar_soat, name='editar_soat'),
+    path('eliminar_soat/<int:id_soat>', views.eliminar_soat, name='eliminar_soat'),
 ]
 

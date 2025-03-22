@@ -1,0 +1,169 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar SOAT</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/styleLogin.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/signin.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+
+</head>
+<body>
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="#">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <h1 >Editar Información del SOAT</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="numero_poliza">Numero de Poliza:</label>
+                <input type="number" name="numero_poliza" value="{{ form.numero_poliza.value }}"  minlength="10" maxlength="20" pattern="\d{10,20}" id="" placeholder="Ej: 2023123456789" required>
+                {% if form.numero_poliza.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.numero_poliza.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="fecha_emision">Fecha de emision</label>
+                <input type="date" name="fecha_emision" value="{{ form.fecha_emision.value|date:'Y-m-d' }}" id="fecha_emision" required>
+                {% if form.fecha_emision.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.fecha_emision.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="fecha_emision">Fecha de vencimiento</label>
+                <input type="date" name="fecha_vencimiento" value="{{ form.fecha_vencimiento.value|date:'Y-m-d' }}" id="fecha_vencimiento" readonly>
+                {% if form.fecha_vencimiento.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.fecha_vencimiento.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="fecha_emision">Valor del SOAT</label>
+                <input type="number" name="valor_soat" value="{{ form.valor_soat.value|floatformat:'0' }}" id="" placeholder="Ej: 117,900" required>
+                {% if form.valor_soat.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.valor_soat.errors.0 }}</span>
+                </div>
+                {% endif %}
+                
+            </div>
+            <div class="form-group">
+                <label for="fecha_emision">Nombre de la Aseguradora</label>
+                <input type="text" name="aseguradora" placeholder="Sura" value="{{ form.aseguradora.value }}" id="" required>
+                {% if form.aseguradora.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.aseguradora.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="vehiculo">Vehículo relacionado al seguro :</label>
+                <select id="vehiculo" name="id_vehiculo" required>
+                    <option value="" disabled>Selecciona un vehículo</option>
+                    {% for vehiculo in vehiculos %}
+                        <option value="{{ vehiculo.id_vehiculo }}" {% if vehiculo.id_vehiculo == form.id_vehiculo.value %}selected{% endif %}>
+                            {{ vehiculo.marca }} - {{ vehiculo.placa|upper }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if form.id_vehiculo.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.id_vehiculo.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <input type="submit" value="Actualizar Datos" name="btnEditarCliente" class="enviar">
+            <a class="btn-volver" id="btn-volver" href="{% url 'cliente:soat'%}">Volver</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    {% if act_soat %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "¡Actualización exitosa!",
+                text: "El SOAT ha sido actualizado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#369685",
+                iconColor: "#369685"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'cliente:soat'  %}";
+                }
+            });
+        });
+    </script>
+    {% endif %}
+
+    <script>
+        document.getElementById('fecha_emision').addEventListener('change', function() {
+            let fechaEmision = new Date(this.value);
+            let fechaVencimiento = new Date(fechaEmision);
+            fechaVencimiento.setFullYear(fechaEmision.getFullYear() + 1);
+            document.getElementById('fecha_vencimiento').value = fechaVencimiento.toISOString().split('T')[0];
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let today = new Date();
+            let currentYear = today.getFullYear();
+            let minYear = currentYear - 1;  // Año pasado
+
+            // Formato YYYY-MM-DD
+            let minDate = `${minYear}-01-01`;
+            let maxDate = `${currentYear}-12-31`;
+
+            let inputFecha = document.getElementById("fecha_emision");
+            inputFecha.setAttribute("min", minDate);
+            inputFecha.setAttribute("max", maxDate);
+        });
+    </script>
+    
+</body>
+</html>

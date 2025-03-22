@@ -1,6 +1,7 @@
 from django import forms
 from inicio.models import Vehiculo, Usuario, Soat, Cliente
 from datetime import datetime
+from django.core.exceptions import ValidationError
 
 class VehiculoForm(forms.ModelForm):
     class Meta:
@@ -88,11 +89,7 @@ class SoatForm(forms.ModelForm):
     class Meta:
         model = Soat
         fields = ['numero_poliza', 'fecha_emision', 'fecha_vencimiento', 'valor_soat', 'aseguradora', 'id_vehiculo']
-        widgets = {
-            'fecha_emision': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_vencimiento': forms.DateInput(attrs={'type': 'date'}),
-            'valor_soat': forms.NumberInput(attrs={'min': 0}),
-        }
+
 
         error_messages = {
             'numero_poliza': {
@@ -132,3 +129,39 @@ class SoatForm(forms.ModelForm):
         super(SoatForm, self).__init__(*args, **kwargs)
         if cliente:
             self.fields['id_vehiculo'].queryset = Vehiculo.objects.filter(id_cliente=cliente)
+
+    def clean_id_vehiculo(self):
+        id_vehiculo = self.cleaned_data.get('id_vehiculo')
+        if self.instance.pk:
+            if Soat.objects.filter(id_vehiculo=id_vehiculo).exclude(pk=self.instance.pk).exists():
+                raise ValidationError("Este vehículo ya tiene un SOAT registrado.")
+        else:
+            if Soat.objects.filter(id_vehiculo=id_vehiculo).exists():
+                raise ValidationError("Este vehículo ya tiene un SOAT registrado.")
+        return id_vehiculo
+    
+    def clean_valor_soat(self):
+        valor_soat = self.cleaned_data.get('valor_soat')
+        if valor_soat < 100000 or valor_soat > 1400000:
+            raise ValidationError("El valor del SOAT debe estar entre $100,000 y $1,400,000.")
+        return valor_soat
+    
+    def clean_fecha_emision(self):
+        fecha_emision = self.cleaned_data.get('fecha_emision')
+        annio_actual = datetime.now().year
+        if fecha_emision.year < annio_actual-1:
+            raise ValidationError(f"La fecha de emisión no puede ser menor a {annio_actual-1}.")
+        return fecha_emision
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_emision = cleaned_data.get("fecha_emision")
+        fecha_vencimiento = cleaned_data.get("fecha_vencimiento")
+
+        if fecha_emision and fecha_vencimiento:
+            if fecha_vencimiento != fecha_emision.replace(year=fecha_emision.year + 1):
+                raise ValidationError({
+                    "fecha_vencimiento": "La fecha de vencimiento debe ser exactamente un año después de la fecha de emisión."
+                })
+
+        return cleaned_data
