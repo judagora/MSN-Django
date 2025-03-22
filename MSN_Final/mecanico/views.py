@@ -331,8 +331,8 @@ def insertarRepuestoMc(request):
             costo = float(costo)
             print(f'Costo recibido: {costo}')  # Depuración
 
-            if costo < 50000:  # Permite 50,000 exactos
-                raise ValidationError('El costo debe ser igual o mayor a 50,000.')
+            if costo < 10000:  # Permite 10,000 exactos
+                raise ValidationError('El costo debe ser igual o mayor a 10,000.')
 
             # Buscar el vehículo por placa
             vehiculo = Vehiculo.objects.get(placa=placa)
