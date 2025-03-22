@@ -155,3 +155,7 @@ def eliminar_soat(request, id_soat):
     messages.success(request, "SOAT eliminado correctamente.")
     return redirect('cliente:soat')
 
+
+@login_required
+def notificaciones(request):
+    return render(request, 'notificaciones.html')
