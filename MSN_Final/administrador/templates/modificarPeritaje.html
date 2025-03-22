@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <title>Motors Safety Net</title>
@@ -17,21 +18,22 @@
 
 <body class="fuente">
 
-      <!--  Barra de Navegación  -->
-      <header class="barrasup">
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <small>{{ user.correo_electronico }}</small>
             </a>
@@ -114,20 +116,26 @@
                             <div class="izquierda">
                                 <form class="row g-3 needs-validation"
                                     action="{% url 'administrador:modificarPeritaje' peritaje.id_peritaje %}"
-                                    method="post" novalidate>
+                                    method="post" novalidate onsubmit="return validarFormularioPeritaje()">
                                     {% csrf_token %}
+
                                     <!-- Campo: Descripción -->
                                     <div class="col-md-8 position-relative">
                                         <label for="descripcion" class="form-label">Descripción</label>
                                         <textarea class="form-control" name="descripcion" id="descripcion"
                                             required>{{ peritaje.descripcion }}</textarea>
+                                        <label id="errorDescripcion" class="text-danger" style="display: none;"></label>
+                                        <!-- Mensaje de error -->
                                     </div>
 
                                     <!-- Campo: Costo -->
                                     <div class="col-md-4 position-relative">
                                         <label for="costo" class="form-label">Costo</label>
                                         <input type="text" class="form-control" name="costo" id="costo"
-                                            value="{{ peritaje.costo }}" required>
+                                            placeholder="Se esperan costos mayores a 50000" value="{{ peritaje.costo }}"
+                                            required>
+                                        <label id="errorCosto" class="text-danger" style="display: none;"></label>
+                                        <!-- Mensaje de error -->
                                     </div>
 
                                     <!-- Campo: Notas Adicionales -->
@@ -135,6 +143,8 @@
                                         <label for="notas_adicionales" class="form-label">Notas Adicionales</label>
                                         <textarea class="form-control" name="notas_adicionales"
                                             id="notas_adicionales">{{ peritaje.notas_adicionales }}</textarea>
+                                        <label id="errorNotasAdicionales" class="text-danger"
+                                            style="display: none;"></label> <!-- Mensaje de error -->
                                     </div>
 
                                     <!-- Botones -->
@@ -155,26 +165,68 @@
                                 <br>
                                 <div class="container">
                                     <div class="row justify-content-center">
-                                         <div class="col-md-6 text-center">
-                                {% for message in messages %}
-                                  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                                      {{ message }}
-                                  </div>
-                              {% endfor %}
-                          </div>
-                      </div>
-                  </div>
+                                        <div class="col-md-6 text-center">
+                                            {% for message in messages %}
+                                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show"
+                                                role="alert">
+                                                {{ message }}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
 
 
-                        {% load static %} <!-- Cargar la etiqueta static -->
-                        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+                                {% load static %} <!-- Cargar la etiqueta static -->
+                                <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
-                        <script>
-                            function toggleSubMenu() {
-                                const submenu = document.querySelector('.submenu');
-                                submenu.classList.toggle('show');
-                            }
-                        </script>
+                                <script>
+                                    function toggleSubMenu() {
+                                        const submenu = document.querySelector('.submenu');
+                                        submenu.classList.toggle('show');
+                                    }
+                                    function validarFormularioPeritaje() {
+                                        // Obtener los valores de los campos
+                                        let descripcion = document.getElementById("descripcion").value.trim();
+                                        let costo = document.getElementById("costo").value.trim();
+                                        let notasAdicionales = document.getElementById("notas_adicionales").value.trim();
+
+                                        // Obtener las etiquetas de error
+                                        let errorDescripcion = document.getElementById("errorDescripcion");
+                                        let errorCosto = document.getElementById("errorCosto");
+                                        let errorNotasAdicionales = document.getElementById("errorNotasAdicionales");
+
+                                        // Limpiar mensajes de error anteriores
+                                        errorDescripcion.style.display = "none";
+                                        errorCosto.style.display = "none";
+                                        errorNotasAdicionales.style.display = "none";
+
+                                        // Validar descripción
+                                        if (descripcion === "") {
+                                            errorDescripcion.innerText = "La descripción es obligatoria.";
+                                            errorDescripcion.style.display = "block";
+                                            return false;
+                                        }
+
+                                        // Validar costo
+                                        if (costo === "") {
+                                            errorCosto.innerText = "El costo es obligatorio.";
+                                            errorCosto.style.display = "block";
+                                            return false;
+                                        }
+
+                                        if (isNaN(costo) || parseFloat(costo) < 50000) {
+                                            errorCosto.innerText = "El costo debe ser un número mayor o igual a 50,000.";
+                                            errorCosto.style.display = "block";
+                                            return false;
+                                        }
+
+                                        // Si todo está correcto, enviar el formulario
+                                        return true;
+                                    }
+                                </script>
+
+                                </script>
 
 </body>
 

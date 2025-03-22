@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from inicio.models import Usuario
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class ModificarMecanicoForm(forms.ModelForm):
@@ -22,6 +23,39 @@ class ModificarMecanicoForm(forms.ModelForm):
         fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'rol_usuario']
 
 
+class CambiarContraseñaForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Personaliza los campos
+        self.fields['old_password'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Contraseña actual'
+        })
+        self.fields['new_password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Nueva contraseña'
+        })
+        self.fields['new_password2'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Confirmar nueva contraseña'
+        })
+
+        # Personaliza los mensajes de error
+        self.fields['old_password'].error_messages = {
+            'required': ("El campo de contraseña actual es obligatorio."),
+            'password_incorrect': ("La contraseña actual es incorrecta."),
+        }
+
+        self.fields['new_password1'].error_messages = {
+            'required': ("El campo de nueva contraseña es obligatorio."),
+            'min_length': "La contraseña debe tener al menos 8 caracteres."
+        }
+
+        self.fields['new_password2'].error_messages = {
+            'required': ("El campo de confirmación de contraseña es obligatorio."),
+        }
+    
 
 
 class RegistroMecanicoForm(UserCreationForm):

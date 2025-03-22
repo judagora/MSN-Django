@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
   <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+  <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
   <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -17,31 +18,32 @@
 
 <body class="fuente">
 
-   <!--  Barra de Navegación  -->
-   <header class="barrasup">
+  <!--  Barra de Navegación  -->
+  <header class="barrasup">
     <div class="logo">
-        <a class="link" href="{% url 'index' %}">
-            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-        </a>
-        <h1>Motors Safety Net</h1>
+      <a class="link" href="{% url 'index' %}">
+        <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+      </a>
+      <h1>Motors Safety Net</h1>
     </div>
 
     <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-        <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
-            <i class="lni lni-user"></i>
-            <span>{{ user.nombre_usuario }}</span>
-        </a>
+      <a class="usuario text-white text-decoration-none d-flex align-items-center"
+        href="{% url 'administrador:inicio' %}">
+        <i class="lni lni-user"></i>
+        <span>{{ user.nombre_usuario }}</span>
+      </a>
 
-        <a class="correo text-white text-decoration-none d-flex align-items-center">
-            <small>{{ user.correo_electronico }}</small>
-        </a>
-        <br>
-        <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
-            <i class="lni lni-exit"></i>
-            <span>Cerrar Sesión</span>
-        </a>
+      <a class="correo text-white text-decoration-none d-flex align-items-center">
+        <small>{{ user.correo_electronico }}</small>
+      </a>
+      <br>
+      <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
+        <i class="lni lni-exit"></i>
+        <span>Cerrar Sesión</span>
+      </a>
     </div>
-</header>
+  </header>
 
   <!-- Contenido de la página -->
   <div class="col">
@@ -103,149 +105,152 @@
             <h1 class="Insert">Insertar Mecánico</h1>
           </div>
 
-
           <!-- Formulario -->
           <div class="izquierda">
-            <form method="post" class="row g-3 needs-validation" novalidate>
+            <form method="post" class="row g-3 needs-validation" novalidate
+              onsubmit="return validarFormularioMecanico()">
               {% csrf_token %}
 
               <!-- Campo: Nombres -->
               <div class="col-md-4 position-relative">
-                <label for="id_nombres" class="form-label">Nombres</label>
-                <input type="text" name="nombres" class="form-control {% if form.nombres.errors %}is-invalid{% endif %}" maxlength="30"
-                  id="id_nombres" value="{{ form.nombres.value|default_if_none:'' }}" required>
+                <label for="nombres" class="form-label">Nombres</label>
+                <input type="text" name="nombres" class="form-control" id="nombres" minlength="5" maxlength="30"
+                  required>
                 {% if form.nombres.errors %}
-                <div class="invalid-feedback">
+                <label id="errorNombres" class="text-danger">
                   {% for error in form.nombres.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorNombres" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Apellidos -->
               <div class="col-md-4 position-relative">
-                <label for="id_apellidos" class="form-label">Apellidos</label>
-                <input type="text" name="apellidos"
-                  class="form-control {% if form.apellidos.errors %}is-invalid{% endif %}" id="id_apellidos" maxlength="30"
-                  value="{{ form.apellidos.value|default_if_none:'' }}" required>
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" name="apellidos" class="form-control" id="apellidos" minlength="5" maxlength="30"
+                  required>
                 {% if form.apellidos.errors %}
-                <div class="invalid-feedback">
+                <label id="errorApellidos" class="text-danger">
                   {% for error in form.apellidos.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorApellidos" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Teléfono -->
               <div class="col-md-4 position-relative">
-                <label for="id_telefono" class="form-label">Teléfono</label>
+                <label for="telefono" class="form-label">Teléfono</label>
                 <div class="input-group has-validation">
                   <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                  <input type="number" name="telefono"
-                    class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="id_telefono"
-                    value="{{ form.telefono.value|default_if_none:'' }}"  maxlength="10" required>
+                  <input type="number" name="telefono" class="form-control" id="telefono" maxlength="10" required>
                 </div>
                 {% if form.telefono.errors %}
-                <div class="invalid-feedback">
+                <label id="errorTelefono" class="text-danger">
                   {% for error in form.telefono.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorTelefono" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Correo Electrónico -->
               <div class="col-md-4 position-relative">
-                <label for="id_correo_electronico" class="form-label">Correo Electrónico</label>
-                <input type="email" name="correo_electronico"
-                  class="form-control {% if form.correo_electronico.errors %}is-invalid{% endif %}"
-                  id="id_correo_electronico" value="{{ form.correo_electronico.value|default_if_none:'' }}" required  maxlength="30">
+                <label for="correo" class="form-label">Correo Electrónico</label>
+                <input type="email" name="correo_electronico" class="form-control" id="correo" required minlength="8"
+                  maxlength="30">
                 {% if form.correo_electronico.errors %}
-                <div class="invalid-feedback">
+                <label id="errorCorreo" class="text-danger">
                   {% for error in form.correo_electronico.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorCorreo" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
-
-
               <!-- Campo: Nombre de Usuario -->
               <div class="col-md-4 position-relative">
-                <label for="id_nombre_usuario" class="form-label">Nombre de Usuario</label>
-                <input type="text" name="nombre_usuario"
-                  class="form-control {% if form.nombre_usuario.errors %}is-invalid{% endif %}" id="id_nombre_usuario" maxlength="10" minlength="8"
-                  value="{{ form.nombre_usuario.value|default_if_none:'' }}" required  maxlength="20">
+                <label for="nombre_usuario" class="form-label">Nombre de Usuario</label>
+                <input type="text" name="nombre_usuario" class="form-control" id="nombre_usuario" minlength="5"
+                  maxlength="20" required>
                 {% if form.nombre_usuario.errors %}
-                <div class="invalid-feedback">
+                <label id="errorNombreUsuario" class="text-danger">
                   {% for error in form.nombre_usuario.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorNombreUsuario" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Contraseña -->
               <div class="col-md-4 position-relative">
-                <label for="id_password1" class="form-label">Contraseña</label>
-                <input type="password" name="password1"
-                  class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" maxlength="20" required>
+                <label for="password1" class="form-label">Contraseña</label>
+                <input type="password" name="password1" class="form-control" id="password1" minlength="8" required>
                 {% if form.password1.errors %}
-                <div class="invalid-feedback">
+                <label id="errorPassword1" class="text-danger">
                   {% for error in form.password1.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorPassword1" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Confirmar Contraseña -->
               <div class="col-md-4 position-relative">
-                <label for="id_password2" class="form-label">Confirmar Contraseña</label>
-                <input type="password" name="password2"
-                  class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2"  maxlength="20" required>
+                <label for="password2" class="form-label">Confirmar Contraseña</label>
+                <input type="password" name="password2" class="form-control" id="password2" minlength="8" required>
                 {% if form.password2.errors %}
-                <div class="invalid-feedback">
+                <label id="errorPassword2" class="text-danger">
                   {% for error in form.password2.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorPassword2" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Horario de Trabajo -->
-              <!-- Campo: Horario de Trabajo -->
               <div class="col-md-4 position-relative">
-                <label for="id_horario_de_trabajo" class="form-label">Horario de Trabajo</label>
-                <input type="time" name="horario_de_trabajo"
-                  class="form-control {% if form.horario_de_trabajo.errors %}is-invalid{% endif %}"
-                  id="id_horario_de_trabajo" value="{{ form.horario_de_trabajo.value|default_if_none:'' }}" step="60"
-                  required  maxlength="30">
+                <label for="horario" class="form-label">Horario de Trabajo</label>
+                <input type="time" name="horario_de_trabajo" class="form-control" id="horario" step="60" required>
                 {% if form.horario_de_trabajo.errors %}
-                <div class="invalid-feedback">
+                <label id="errorHorario" class="text-danger">
                   {% for error in form.horario_de_trabajo.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorHorario" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
               <!-- Campo: Experiencia Laboral -->
               <div class="col-md-4 position-relative">
-                <label for="id_experiencia_laboral" class="form-label">Experiencia Laboral</label>
-                <textarea name="experiencia_laboral"
-                  class="form-control {% if form.experiencia_laboral.errors %}is-invalid{% endif %}"
-                  id="id_experiencia_laboral"  maxlength="30"
-                  required>{{ form.experiencia_laboral.value|default_if_none:'' }}</textarea>
+                <label for="experiencia" class="form-label">Experiencia Laboral</label>
+                <textarea name="experiencia_laboral" class="form-control" id="experiencia" minlength="4" maxlength="30"
+                  required></textarea>
                 {% if form.experiencia_laboral.errors %}
-                <div class="invalid-feedback">
+                <label id="errorExperiencia" class="text-danger">
                   {% for error in form.experiencia_laboral.errors %}
                   {{ error }}
                   {% endfor %}
-                </div>
+                </label>
+                {% else %}
+                <label id="errorExperiencia" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
@@ -253,24 +258,17 @@
               <input type="hidden" name="rol_usuario" value="Mecánico">
 
               <!-- Botón de envío -->
-              <div class="col-12 text-center">
-                <input type="submit" value="Insertar" class="btn btn-primary">
+              <div class="row mt-3">
+                <div class="col-5">
+                  <button class="btn w-100" type="submit"
+                    style="background-color: #128C7E; border-color: #128C7E; color: white; margin-left: 80%;">
+                    Insertar
+                  </button>
+                </div>
               </div>
             </form>
           </div>
         </div>
-        <br>
-        <div class="container">
-          <div class="row justify-content-center">
-              <div class="col-md-6 text-center">
-                  {% for message in messages %}
-                      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                          {{ message }}
-                      </div>
-                  {% endfor %}
-              </div>
-          </div>
-      </div>
       </div>
     </div>
   </div>
@@ -282,26 +280,114 @@
       const submenu = document.querySelector('.submenu');
       submenu.classList.toggle('show');
     }
-  </script>
-  <script>
-    (() => {
-      'use strict'
 
-      // Fetch all the forms we want to apply custom Bootstrap validation styles to
-      const forms = document.querySelectorAll('.needs-validation')
+    function validarFormularioMecanico() {
+      // Obtener los valores de los campos
+      let nombres = document.getElementById("nombres").value;
+      let apellidos = document.getElementById("apellidos").value;
+      let telefono = document.getElementById("telefono").value;
+      let correo = document.getElementById("correo").value;
+      let nombreUsuario = document.getElementById("nombre_usuario").value;
+      let password1 = document.getElementById("password1").value;
+      let password2 = document.getElementById("password2").value;
+      let horario = document.getElementById("horario").value;
+      let experiencia = document.getElementById("experiencia").value;
 
-      // Loop over them and prevent submission
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-          if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-          }
+      // Obtener las etiquetas de error
+      let errorNombres = document.getElementById("errorNombres");
+      let errorApellidos = document.getElementById("errorApellidos");
+      let errorTelefono = document.getElementById("errorTelefono");
+      let errorCorreo = document.getElementById("errorCorreo");
+      let errorNombreUsuario = document.getElementById("errorNombreUsuario");
+      let errorPassword1 = document.getElementById("errorPassword1");
+      let errorPassword2 = document.getElementById("errorPassword2");
+      let errorHorario = document.getElementById("errorHorario");
+      let errorExperiencia = document.getElementById("errorExperiencia");
 
-          form.classList.add('was-validated')
-        }, false)
-      })
-    })()
+      // Limpiar mensajes de error anteriores
+      errorNombres.style.display = "none";
+      errorApellidos.style.display = "none";
+      errorTelefono.style.display = "none";
+      errorCorreo.style.display = "none";
+      errorNombreUsuario.style.display = "none";
+      errorPassword1.style.display = "none";
+      errorPassword2.style.display = "none";
+      errorHorario.style.display = "none";
+      errorExperiencia.style.display = "none";
+
+      // Validar nombres
+      if (nombres.length < 5) {
+        errorNombres.innerText = "Los nombres deben tener al menos 5 caracteres.";
+        errorNombres.style.display = "block";
+        return false;
+      }
+
+      // Validar apellidos
+      if (apellidos.length < 5) {
+        errorApellidos.innerText = "Los apellidos deben tener al menos 5 caracteres.";
+        errorApellidos.style.display = "block";
+        return false;
+      }
+
+      // Validar teléfono
+      if (!/^[0-9]{7,10}$/.test(telefono)) {
+        errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
+        errorTelefono.style.display = "block";
+        return false;
+      }
+
+      // Validar correo electrónico
+      let correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!correoRegex.test(correo)) {
+        errorCorreo.innerText = "Ingrese un correo electrónico válido. Utiliza un @";
+        errorCorreo.style.display = "block";
+        return false;
+      }
+
+      // Validar nombre de usuario
+      if (nombreUsuario.length < 5) {
+        errorNombreUsuario.innerText = "El nombre de usuario debe tener al menos 5 caracteres.";
+        errorNombreUsuario.style.display = "block";
+        return false;
+      }
+
+      // Validar contraseña
+      if (password1.length < 8) {
+        errorPassword1.innerText = "La contraseña debe tener al menos 8 caracteres.";
+        errorPassword1.style.display = "block";
+        return false;
+      }
+
+      // Validar que las contraseñas coincidan
+      if (password1 !== password2) {
+        errorPassword2.innerText = "Las contraseñas no coinciden.";
+        errorPassword2.style.display = "block";
+        return false;
+      }
+
+      // Validar horario
+      let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
+      if (!horarioRegex.test(horario)) {
+        errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
+        errorHorario.style.display = "block";
+        return false;
+      }
+
+      // Validar experiencia
+      if (experiencia.trim() === "") {
+        errorExperiencia.innerText = "Debe ingresar la experiencia del mecánico.";
+        errorExperiencia.style.display = "block";
+        return false;
+      } else if (experiencia.trim().length < 5) {
+        errorExperiencia.innerText = "La experiencia debe tener al menos 5 caracteres.";
+        errorExperiencia.style.display = "block";
+        return false;
+      }
+
+
+
+      return true; // Si todo está correcto, enviar el formulario
+    }
   </script>
 </body>
 

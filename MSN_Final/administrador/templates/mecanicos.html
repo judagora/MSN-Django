@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'found/css/MantenimientoP.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -111,7 +112,6 @@
                                 <th>Teléfono</th>
                                 <th>Correo Electrónico</th>
                                 <th>Nombre de Usuario</th>
-                                <th>Rol Usuario</th>
                                 <th>Horario de Trabajo</th>
                                 <th>Experiencia Laboral</th>
                                 <th>Acción</th>
@@ -125,7 +125,6 @@
                                 <td>{{ mecanico.id_usuario.telefono }}</td>
                                 <td>{{ mecanico.id_usuario.correo_electronico }}</td>
                                 <td>{{ mecanico.id_usuario.nombre_usuario }}</td>
-                                <td>{{ mecanico.id_usuario.rol_usuario }}</td>
                                 <td>{{ mecanico.horario_de_trabajo|time:"H:i" }}</td>
                                 <td>{{ mecanico.experiencia_laboral }}</td>
                                 <td>
@@ -161,23 +160,9 @@
                             </div>
                             {% endfor %}
                         </tbody>
-                    </table>
-                    <!-- Mostrar mensajes de Django -->
-                  {% if messages %}
-                  <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 text-center">
-                            {% for message in messages %}
-                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+                    </table>                 
                 </div>
             </div>
-              {% endif %}
         </div>
     </div>
 

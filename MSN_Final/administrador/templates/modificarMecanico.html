@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
@@ -16,21 +17,22 @@
 
 <body class="fuente">
 
-      <!--  Barra de Navegación  -->
-      <header class="barrasup">
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
         </div>
-  
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'administrador:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
-  
+
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <small>{{ user.correo_electronico }}</small>
             </a>
@@ -51,43 +53,49 @@
                     <div class="espaciobarranav">
                         <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
                             <li class="nav-item d-flex justify-content-center align-items-center">
-                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i
+                                            class="lni lni-chevron-right-circle"></i></a></h3>
                             </li>
                         </div>
                         <ul class="submenu">
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:insertarMecanico' %}"
+                                        style="margin-top: 10%;">Registrar Mecánico</a></li>
                             </div>
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos
+                                        Registrados</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center" aria-current="page"
-                                href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                    href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
                                         class="lni lni-agenda"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                    href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
                                         class="lni lni-delivery"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                    href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
                                         class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                                    href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a>
+                            </h3>
                         </li>
                     </div>
                 </ul>
@@ -102,95 +110,114 @@
 
                     <!-- Formulario -->
                     <div class="izquierda">
-                        <form method="post" class="row g-3 needs-validation" novalidate>
+                        <form method="post" class="row g-3 needs-validation" novalidate
+                            onsubmit="return validarFormularioMecanico()">
                             {% csrf_token %}
-                            
+
                             <!-- Campo: Nombres -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_nombres" class="form-label">Nombres</label>
-                                <input type="text" name="nombres" class="form-control" id="id_nombres" value="{{ form.instance.nombres }}" required  maxlength="30">
+                                <label for="nombres" class="form-label">Nombres</label>
+                                <input type="text" name="nombres" class="form-control" id="nombres"
+                                    value="{{ form.instance.nombres }}" required minlength="5" maxlength="30">
+                                <label id="errorNombres" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
-                        
+
                             <!-- Campo: Apellidos -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_apellidos" class="form-label">Apellidos</label>
-                                <input type="text" name="apellidos" class="form-control" id="id_apellidos" value="{{ form.instance.apellidos }}" required  maxlength="30">
+                                <label for="apellidos" class="form-label">Apellidos</label>
+                                <input type="text" name="apellidos" class="form-control" id="apellidos"
+                                    value="{{ form.instance.apellidos }}" required minlength="5" maxlength="30">
+                                <label id="errorApellidos" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
-                        
+
                             <!-- Campo: Teléfono -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_telefono" class="form-label">Teléfono</label>
+                                <label for="telefono" class="form-label">Teléfono</label>
                                 <div class="input-group has-validation">
                                     <span class="input-group-text" id="validationTooltipUsernamePrepend">+57</span>
-                                    <input type="number" name="telefono" class="form-control" id="id_telefono" value="{{ form.instance.telefono }}" required>
+                                    <input type="number" name="telefono" class="form-control" id="telefono"
+                                        value="{{ form.instance.telefono }}" required maxlength="10">
                                 </div>
+                                <label id="errorTelefono" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
-                        
+
                             <!-- Campo: Correo Electrónico -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_correo_electronico" class="form-label">Correo Electrónico</label>
-                                <input type="email" name="correo_electronico" class="form-control" id="id_correo_electronico" value="{{ form.instance.correo_electronico }}" required  maxlength="30">
+                                <label for="correo" class="form-label">Correo Electrónico</label>
+                                <input type="email" name="correo_electronico" class="form-control" id="correo" required
+                                    minlength="8" maxlength="30" value="{{ form.instance.correo_electronico }}">
+                                {% if form.correo_electronico.errors %}
+                                <label id="errorCorreo" class="text-danger">
+                                    {% for error in form.correo_electronico.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </label>
+                                {% else %}
+                                <label id="errorCorreo" class="text-danger" style="display: none;"></label>
+                                {% endif %}
                             </div>
-                        
+
                             <!-- Campo: Nombre de Usuario -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_nombre_usuario" class="form-label">Nombre de Usuario</label>
-                                <input type="text" name="nombre_usuario" class="form-control" id="id_nombre_usuario" value="{{ form.instance.nombre_usuario }}" required  maxlength="20">
+                                <label for="nombre_usuario" class="form-label">Nombre de Usuario</label>
+                                <input type="text" name="nombre_usuario" class="form-control" id="nombre_usuario"
+                                    minlength="5" maxlength="20" required value="{{ form.instance.nombre_usuario }}">
+                                {% if form.nombre_usuario.errors %}
+                                <label id="errorNombreUsuario" class="text-danger">
+                                    {% for error in form.nombre_usuario.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </label>
+                                {% else %}
+                                <label id="errorNombreUsuario" class="text-danger" style="display: none;"></label>
+                                {% endif %}
                             </div>
-                        
+
                             <!-- Campo: Horario de Trabajo -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_horario_de_trabajo" class="form-label">Horario de Trabajo</label>
-                                <input type="time" name="horario_de_trabajo" class="form-control" id="id_horario_de_trabajo" value="{{ form.horario_de_trabajo.value|default_if_none:'' }}" required  maxlength="20">
+                                <label for="horario" class="form-label">Horario de Trabajo</label>
+                                <input type="time" name="horario_de_trabajo" class="form-control" id="horario"
+                                    value="{{ form.horario_de_trabajo.value|default_if_none:'' }}" required step="60">
+                                <label id="errorHorario" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
-                        
+
                             <!-- Campo: Experiencia Laboral -->
                             <div class="col-md-4 position-relative">
-                                <label for="id_experiencia_laboral" class="form-label">Experiencia Laboral</label>
-                                <textarea name="experiencia_laboral" class="form-control" id="id_experiencia_laboral" required>{{ form.experiencia_laboral.value|default_if_none:'' }}</textarea  maxlength="50">
+                                <label for="experiencia" class="form-label">Experiencia Laboral</label>
+                                <textarea name="experiencia_laboral" class="form-control" id="experiencia" required
+                                    minlength="4"
+                                    maxlength="30">{{ form.experiencia_laboral.value|default_if_none:'' }}</textarea>
+                                <label id="errorExperiencia" class="text-danger" style="display: none;"></label>
+                                <!-- Mensaje de error -->
                             </div>
-                        
-                                   <!-- Botones -->
-                                   <div class="row mt-3">
-                                    <div class="col-6 d-flex justify-content-end">
-                                        <button class="btn w-100" type="submit"
-                                            style="background-color: #128C7E; border-color: #128C7E; color: white;">
-                                            Modificar
-                                        </button>
-                                    </div>
-    
-                                    <div class="col-6 d-flex justify-content-start">
-                                        <a href="{% url 'administrador:mecanicos' %}"
-                                            class="btn btn-secondary w-100">Volver</a>
-                                    </div>
+                            <!-- Botones -->
+                            <div class="row mt-3">
+                                <div class="col-6 d-flex justify-content-end">
+                                    <button class="btn w-100" type="submit"
+                                        style="background-color: #128C7E; border-color: #128C7E; color: white;">
+                                        Modificar
+                                    </button>
                                 </div>
-                        
+
+                                <div class="col-6 d-flex justify-content-start">
+                                    <a href="{% url 'administrador:mecanicos' %}"
+                                        class="btn btn-secondary w-100">Volver</a>
+                                </div>
+                            </div>
+
                             <!-- Campo Oculto: rol_usuario -->
                             <input type="hidden" name="rol_usuario" value="Mecánico">
-                        
+
                             <!-- Campos Ocultos: contraseñas -->
                             <input type="hidden" name="password1" value="{{ form.instance.password }}">
                             <input type="hidden" name="password2" value="{{ form.instance.password }}">
-                        </form>    
+                        </form>
                     </div>
                 </div>
-
-                <br>
-                  <!-- Mostrar mensajes de Django -->
-                  {% if messages %}
-                  <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 text-center">
-                            {% for message in messages %}
-                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-              {% endif %}
-
             </div>
         </div>
     </div>
@@ -201,6 +228,92 @@
         function toggleSubMenu() {
             const submenu = document.querySelector('.submenu');
             submenu.classList.toggle('show');
+        }
+
+        function validarFormularioMecanico() {
+            // Obtener los valores de los campos
+            let nombres = document.getElementById("nombres").value;
+            let apellidos = document.getElementById("apellidos").value;
+            let telefono = document.getElementById("telefono").value;
+            let correo = document.getElementById("correo").value;
+            let nombreUsuario = document.getElementById("nombre_usuario").value;
+            let horario = document.getElementById("horario").value;
+            let experiencia = document.getElementById("experiencia").value;
+
+            // Obtener las etiquetas de error
+            let errorNombres = document.getElementById("errorNombres");
+            let errorApellidos = document.getElementById("errorApellidos");
+            let errorTelefono = document.getElementById("errorTelefono");
+            let errorCorreo = document.getElementById("errorCorreo");
+            let errorNombreUsuario = document.getElementById("errorNombreUsuario");
+            let errorHorario = document.getElementById("errorHorario");
+            let errorExperiencia = document.getElementById("errorExperiencia");
+
+            // Limpiar mensajes de error anteriores
+            errorNombres.style.display = "none";
+            errorApellidos.style.display = "none";
+            errorTelefono.style.display = "none";
+            errorCorreo.style.display = "none";
+            errorNombreUsuario.style.display = "none";
+            errorHorario.style.display = "none";
+            errorExperiencia.style.display = "none";
+
+            // Validar nombres
+            if (nombres.length < 5) {
+                errorNombres.innerText = "Los nombres deben tener al menos 5 caracteres.";
+                errorNombres.style.display = "block";
+                return false;
+            }
+
+            // Validar apellidos
+            if (apellidos.length < 5) {
+                errorApellidos.innerText = "Los apellidos deben tener al menos 5 caracteres.";
+                errorApellidos.style.display = "block";
+                return false;
+            }
+
+            // Validar teléfono
+            if (!/^[0-9]{7,10}$/.test(telefono)) {
+                errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
+                errorTelefono.style.display = "block";
+                return false;
+            }
+
+            // Validar correo electrónico
+            let correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!correoRegex.test(correo)) {
+                errorCorreo.innerText = "Ingrese un correo electrónico válido.";
+                errorCorreo.style.display = "block";
+                return false;
+            }
+
+            // Validar nombre de usuario
+            if (nombreUsuario.length < 5) {
+                errorNombreUsuario.innerText = "El nombre de usuario debe tener al menos 5 caracteres.";
+                errorNombreUsuario.style.display = "block";
+                return false;
+            }
+
+            // Validar horario
+            let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
+            if (!horarioRegex.test(horario)) {
+                errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
+                errorHorario.style.display = "block";
+                return false;
+            }
+
+            // Validar experiencia
+            if (experiencia.trim() === "") {
+                errorExperiencia.innerText = "Debe ingresar la experiencia del mecánico.";
+                errorExperiencia.style.display = "block";
+                return false;
+            } else if (experiencia.trim().length < 5) {
+                errorExperiencia.innerText = "La experiencia debe tener al menos 5 caracteres.";
+                errorExperiencia.style.display = "block";
+                return false;
+            }
+
+            return true; // Si todo está correcto, enviar el formulario
         }
     </script>
 </body>
