@@ -169,6 +169,23 @@ class MecanicoMantenimiento(models.Model):
     def __str__(self):
         return f"Mecánico {self.id_mecanico} - Mantenimiento {self.id_mantenimiento}"
 
+    
+class MecanicoPeritaje(models.Model):
+    id_mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
+    id_peritaje = models.ForeignKey(Peritaje, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Mecánico {self.id_mecanico} - Peritaje {self.id_peritaje}"
+
+
+class MecanicoRepuestosModificados(models.Model):
+    id_mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
+    id_repuestos_modificados = models.ForeignKey(RepuestosModificados, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Mecánico {self.id_mecanico} - Repuesto Modificado {self.id_repuestos_modificados}"
+
+
 
 class VehiculoMantenimiento(models.Model):
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
