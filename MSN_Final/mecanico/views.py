@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
-from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Peritaje, VehiculoPeritaje, VehiculoRepuestosModificados, RepuestosModificados  
+from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Peritaje, VehiculoPeritaje, VehiculoRepuestosModificados, RepuestosModificados, Mecanico, MecanicoMantenimiento, MecanicoPeritaje, MecanicoRepuestosModificados 
 
 def inicio(request):
     return render(request, 'indexMecanicoMc.html')
@@ -49,12 +49,25 @@ def insertarMantenimientoMc(request):
                 id_mantenimiento=mantenimiento
             )
 
+            # Obtener el mecánico asociado al usuario autenticado
+            usuario_actual = request.user  # Usuario autenticado
+            mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+
+            # Asociar el mantenimiento al mecánico en la tabla MecanicoMantenimiento
+            MecanicoMantenimiento.objects.create(
+                id_mecanico=mecanico,
+                id_mantenimiento=mantenimiento
+            )
+
             # Mensaje de éxito
             messages.success(request, 'Mantenimiento registrado correctamente.')
             return redirect('mecanico:modificarMantenimientoMc')
         except Vehiculo.DoesNotExist:
             # Mensaje de error si el vehículo no existe
             messages.error(request, 'El vehículo con la placa proporcionada no existe.')
+        except Mecanico.DoesNotExist:
+            # Mensaje de error si el usuario no es un mecánico
+            messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
         except ValidationError as e:
             # Mensaje de error si el costo no es válido
             messages.error(request, str(e))
@@ -209,13 +222,25 @@ def insertarPeritajeMc(request):
                 id_peritaje=peritaje
             )
 
+            # Obtener el mecánico asociado al usuario autenticado
+            usuario_actual = request.user  # Usuario autenticado
+            mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+
+            # Asociar el peritaje al mecánico en la tabla MecanicoPeritaje
+            MecanicoPeritaje.objects.create(
+                id_mecanico=mecanico,
+                id_peritaje=peritaje
+            )
+
             # Mensaje de éxito
             messages.success(request, 'Peritaje registrado correctamente.')
             return redirect('mecanico:modificarPeritajeMc')
-
         except Vehiculo.DoesNotExist:
             # Mensaje de error si el vehículo no existe
             messages.error(request, 'El vehículo con la placa proporcionada no existe.')
+        except Mecanico.DoesNotExist:
+            # Mensaje de error si el usuario no es un mecánico
+            messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
         except ValidationError as e:
             # Mensaje de error si el costo no es válido
             messages.error(request, str(e))
@@ -356,13 +381,25 @@ def insertarRepuestoMc(request):
                 id_repuestos_modificados=repuesto_modificado
             )
 
+            # Obtener el mecánico asociado al usuario autenticado
+            usuario_actual = request.user  # Usuario autenticado
+            mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+
+            # Asociar el repuesto modificado al mecánico en la tabla MecanicoRepuestosModificados
+            MecanicoRepuestosModificados.objects.create(
+                id_mecanico=mecanico,
+                id_repuestos_modificados=repuesto_modificado
+            )
+
             # Mensaje de éxito
             messages.success(request, 'Repuesto modificado registrado correctamente.')
             return redirect('mecanico:modificarRepuestoMc')
-
         except Vehiculo.DoesNotExist:
             # Mensaje de error si el vehículo no existe
             messages.error(request, 'El vehículo con la placa proporcionada no existe.')
+        except Mecanico.DoesNotExist:
+            # Mensaje de error si el usuario no es un mecánico
+            messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
         except ValidationError as e:
             # Mensaje de error si el costo no es válido
             messages.error(request, str(e))
