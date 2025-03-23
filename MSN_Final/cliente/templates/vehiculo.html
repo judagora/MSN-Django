@@ -32,7 +32,7 @@
         <nav class="barraNav">
             <ul>
                 <li>
-                    <a class="count" href="#">
+                    <a class="count" href="{% url 'cliente:cuenta'%}">
                         <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
                         <h3 text="">
                             {{user.nombre_usuario|capfirst}}
@@ -136,7 +136,7 @@
                             <a class="opcion" href="{%url 'cliente:inicio'%}">Inicio</a>
                         </li>
                         <li>
-                            <a class="opcion" href="">Notificaciones</a>
+                            <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
                         <li>
                             <a class="opcion" href="">Mantenimientos</a>
@@ -145,10 +145,10 @@
                             <a class="opcion" href="">Modificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="">SOAT</a>
+                            <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
                         </li>
                         <li>
-                            <a class="opcion" href="">Cuenta</a>
+                            <a class="opcion" href="{% url 'cliente:cuenta'%}">Cuenta</a>
                         </li>
                     </ul>
 

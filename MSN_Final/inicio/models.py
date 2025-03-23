@@ -142,8 +142,8 @@ class Vehiculo(models.Model):
 class Soat(models.Model):
     id_soat = models.AutoField(primary_key=True)
     numero_poliza = models.CharField(max_length=50, default="0000000000", unique=True)  
-    fecha_emision = models.DateField(default=now)  
-    fecha_vencimiento = models.DateField()  
+    fecha_emision = models.DateField(null=False, blank=False, default=now)  
+    fecha_vencimiento = models.DateField(null=False, blank=False)  
     valor_soat = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  
     aseguradora = models.CharField(max_length=50) 
     id_vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE) 
