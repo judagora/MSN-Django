@@ -201,9 +201,10 @@ def mantenimientos (request):
       mantenimientos = Mantenimiento.objects.all()
       return render(request, 'mantenimientos.html', {'mantenimientos': mantenimientos})
 
-def historialesVehiculo (request):
-    # Obtener todos los vehículos
-    vehiculos = Vehiculo.objects.all()
+def historialesVehiculo(request):
+    # Obtener todos los vehículos con la información del cliente y el usuario
+    vehiculos = Vehiculo.objects.select_related('id_cliente__id_usuario').all()
+    return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
     
     # Pasar los datos a la plantilla
     return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})

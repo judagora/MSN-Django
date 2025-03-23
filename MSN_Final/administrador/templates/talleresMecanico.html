@@ -115,7 +115,7 @@
                         <table id="TallerM" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
+                                    <th>Nombre del Taller</th>
                                     <th>Dirección</th>
                                     <th>Teléfono</th>
                                     <th>Horario</th>
@@ -130,7 +130,7 @@
                                     <td>{{ taller.direccion }}</td>
                                     <td>{{ taller.telefono }}</td>
                                     <td>{{ taller.horario_de_atencion }}</td>
-                                    <td>{{ taller.id_mecanico.id_usuario.nombres }}</td>
+                                    <td>{{ taller.id_mecanico.id_usuario.nombres }} {{ taller.id_mecanico.id_usuario.apellidos }}</td>
                                     <td>
                                         <!-- Botón para modificar -->
                                         <a href="{% url 'administrador:modificarTaller' taller.id_taller_mecanico %}">

@@ -163,18 +163,6 @@
                                     </div>
                                 </form>
                                 <br>
-                                <div class="container">
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-6 text-center">
-                                            {% for message in messages %}
-                                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show"
-                                                role="alert">
-                                                {{ message }}
-                                            </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
 
 
                                 {% load static %} <!-- Cargar la etiqueta static -->
@@ -201,9 +189,9 @@
                                         errorCosto.style.display = "none";
                                         errorNotasAdicionales.style.display = "none";
 
-                                        // Validar descripción
-                                        if (descripcion === "") {
-                                            errorDescripcion.innerText = "La descripción es obligatoria.";
+                                        // Validar Descripción
+                                        if (descripcion.length < 5 || descripcion.length > 200) {
+                                            errorDescripcion.innerText = "La descripción debe tener entre 5 y 200 caracteres.";
                                             errorDescripcion.style.display = "block";
                                             return false;
                                         }
@@ -218,6 +206,13 @@
                                         if (isNaN(costo) || parseFloat(costo) < 50000) {
                                             errorCosto.innerText = "El costo debe ser un número mayor o igual a 50,000.";
                                             errorCosto.style.display = "block";
+                                            return false;
+                                        }
+
+                                        // Validar Notas Adicionales (opcional, pero si se ingresa, debe cumplir con la longitud)
+                                        if (notasAdicionales !== "" && (notasAdicionales.length < 5 || notasAdicionales.length > 200)) {
+                                            errorNotasAdicionales.innerText = "Las notas adicionales deben tener entre 5 y 200 caracteres.";
+                                            errorNotasAdicionales.style.display = "block";
                                             return false;
                                         }
 
