@@ -218,7 +218,7 @@
             }
 
             // Validar Notas Adicionales (opcional, pero si se ingresa, debe cumplir con la longitud)
-            if (notasAdicionales !== "" && (notasAdicionales.length < 8 || notasAdicionales.length > 200)) {
+            if (notasAdicionales !== "" && (notasAdicionales.length < 5 || notasAdicionales.length > 200)) {
                 errorNotasAdicionales.innerText = "Las notas adicionales deben tener entre 5 y 200 caracteres.";
                 errorNotasAdicionales.style.display = "block";
                 return false;

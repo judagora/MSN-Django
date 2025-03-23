@@ -1,0 +1,156 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="{% url 'cliente:cuenta'%}">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario|capfirst}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+    <main class="container-fluid">
+
+        <div class="row">
+            <div class="col-9 ">
+
+                <div class="formulario">
+                    <h4>Configura tus Notificaciones</h4>
+                    <form action="@{/moduloCliente/notificacionesCliente/guardar}" method="POST">
+                        <div class="form-group">
+                            <label for="modelo">Motivo</label>
+                            <input minlength="10" maxlength="30" type="text" placeholder="Ej: Cambio de luces" name="motivo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo">Fecha de recordatorio</label>
+                            <input type="date" name="fechaRecordatorio" id="fechaRecordatorio" min="" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contraseña">Hora de recordatorio</label>
+                            <input type="time" id="horaRecordatorio" name="horaRecordatorio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Notas">Notas</label>
+                            <input maxlength="100" type="text" id="Notas" placeholder="Ej: Cambio de luces para evitar multas" name="Notas">
+                        </div>
+                        <input type="submit" value="Registrar Notificacion" name="btnRegistrarNotificacion" class="enviar">
+                    </form>
+                </div>
+
+                <div class=" notificacion">
+                    <h4>Notificaciones Registradas</h4>
+                    <div class="table-responsive">
+                        <table id="notificationTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Motivo</th>
+                                    <th>Fecha de Recordatorio</th>
+                                    <th>Hora de Recordatorio</th>
+                                    <th>Notas</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="notificationTableBody">
+                                
+                                <tr each="notificacion : ${notificaciones}">
+                                    <td text="${notificacion.motivo}"></td>
+                                    <td text="${notificacion.fechaRecordatorio}"></td>
+                                    <td text="${notificacion.horaRecordatorio}"></td>
+                                    <td text="${notificacion.notas}"></td>
+                                    <td>
+                                        <!-- Eliminar notificación -->
+                                        <a href="@{/moduloCliente/notificacionesCliente/eliminar/{id}(id=${notificacion.idNotificaciones})}" 
+                                           class="eliminar-b" 
+                                           onclick="return confirm('¿Estás seguro de eliminar esta notificación?')">
+                                            <img src="@{/img/imgCliente/delete.svg}" alt="Eliminar notificación">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <!-- Editar notificación -->
+                                        <a href="@{/moduloCliente/notificacionesCliente/editar/{id}(id=${notificacion.idNotificaciones})}" 
+                                           class="editar-b">
+                                            <img src="@{/img/imgCliente/edit.svg}" alt="Editar notificación">
+                                        </a>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-3  columna">
+                <div class="menu">
+
+                    <ul>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:cuenta'%}">Cuenta</a>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    
+</body>
+</html>

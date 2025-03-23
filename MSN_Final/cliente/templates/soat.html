@@ -58,23 +58,49 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="numero_poliza">Numero de Poliza:</label>
-                            <input type="number" name="numero_poliza" id="" placeholder="Ej: 2023123456789">
+                            <input type="number" name="numero_poliza"  minlength="10" maxlength="20" pattern="\d{10,20}" id="" placeholder="Ej: 2023123456789" required>
+                            {% if form.numero_poliza.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.numero_poliza.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="fecha_emision">Fecha de emision</label>
-                            <input type="date" name="fecha_emision" id="">
+                            <input type="date" name="fecha_emision" id="fecha_emision" required>
+                            {% if form.fecha_emision.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.fecha_emision.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="fecha_emision">Fecha de vencimiento</label>
-                            <input type="date" name="fecha_vencimiento" id="">
+                            <input type="date" name="fecha_vencimiento" id="fecha_vencimiento" readonly>
+                            {% if form.fecha_vencimiento.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.fecha_vencimiento.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="fecha_emision">Valor del SOAT</label>
-                            <input type="number" name="valor_soat" id="" placeholder="Ej: 117,900">
+                            <input type="number" name="valor_soat" id="" placeholder="Ej: 117,900" required>
+                            {% if form.valor_soat.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.valor_soat.errors.0 }}</span>
+                            </div>
+                            {% endif %}
+                            
                         </div>
                         <div class="form-group">
                             <label for="fecha_emision">Nombre de la Aseguradora</label>
-                            <input type="text" name="aseguradora" placeholder="Sura" id="">
+                            <input type="text" name="aseguradora" placeholder="Sura" id="" required>
+                            {% if form.aseguradora.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.aseguradora.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="vehiculo">Vehículo relacionado al seguro :</label>
@@ -86,9 +112,14 @@
                                     </option>
                                 {% endfor %}
                             </select>
+                            {% if form.id_vehiculo.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.id_vehiculo.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div id="a">
-                            <input type="submit" value="Registrar Vehiculo" name="btnRegistrarVehiculo" class="enviar">
+                            <input type="submit" value="Registrar SOAT" name="btnRegistrarVehiculo" class="enviar">
                         </div>
                         
                     </form>
@@ -103,9 +134,10 @@
                                     <th>Numero de Poliza</th>
                                     <th>Fecha de vencimiento</th>
                                     <th>Aseguradora</th>
+                                    <th>Valor</th>
                                     <th>Vehículo</th>
                                     <th>Placa</th>
-                                    <th>Notas</th>
+                                    <th>Acciones</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -115,17 +147,18 @@
                                     <tr>
                                         <td>{{ soat.numero_poliza }}</td>
                                         <td>{{ soat.fecha_vencimiento}}</td>
-                                        <td>{{ soat.aseguradora }}</td>
-                                        <td>{{ soat.id_vehiculo.marca }}</td>
-                                        <td>{{ soat.id_vehiculo.placa }}</td>
+                                        <td>{{ soat.aseguradora | capfirst }}</td>
+                                        <td> {{soat.valor_soat}} </td>
+                                        <td>{{ soat.id_vehiculo.marca  | capfirst }}</td>
+                                        <td>{{ soat.id_vehiculo.placa  | upper }}</td>
                                         <td>
-                                            <a href="" class="eliminar-b" id="btnEliminarNotificacion">
-                                                <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar notificacion" title="Eliminar notificacion">
+                                            <a href="{% url 'cliente:eliminar_soat' soat.id_soat %}" class="eliminar-b" id="btnEliminarSoat" onclick="confirmarEliminacion(event, this)">
+                                                <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar soat" title="Eliminar soat">
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="" class="editar-b">
-                                                <img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar notificacion">
+                                            <a href="{% url 'cliente:editar_soat' soat.id_soat %}" class="editar-b">
+                                                <img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar soat">
                                             </a>
                                         </td>
                                     </tr>
@@ -147,19 +180,19 @@
                             <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/notificacionesCliente}">Notificaciones</a>
+                            <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
+                            <a class="opcion" href="#">Mantenimientos</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
+                            <a class="opcion" href="#">Modificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/soat}">SOAT</a>
+                            <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/cuenta}">Cuenta</a>
+                            <a class="opcion" href="{% url 'cliente:cuenta'%}">Cuenta</a>
                         </li>
                     </ul>
                 </div>
@@ -168,6 +201,7 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {% if registro_soat %}
         <script>
@@ -187,6 +221,68 @@
             });
         </script>
     {% endif %}
+
+    <script>
+        function confirmarEliminacion(event, element) {
+            event.preventDefault();
+    
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "No podrás revertir esta acción.",
+                icon: "warning",
+                showCancelButton: true,
+                iconColor: "#369685",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#369685",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = element.href; // Redirige si el usuario confirma
+                }
+            });
+        }
+    </script>
+
+    {% if messages %}
+        {% for message in messages%}
+            <script>
+                Swal.fire({
+                    title: "¡Eliminado!",
+                    text: "SOAT eliminado correctamente.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    iconColor: "#369685",
+                    confirmButtonColor: "#369685",
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+        document.getElementById('fecha_emision').addEventListener('change', function() {
+            let fechaEmision = new Date(this.value);
+            let fechaVencimiento = new Date(fechaEmision);
+            fechaVencimiento.setFullYear(fechaEmision.getFullYear() + 1);
+            document.getElementById('fecha_vencimiento').value = fechaVencimiento.toISOString().split('T')[0];
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let today = new Date();
+            let currentYear = today.getFullYear();
+            let minYear = currentYear - 1;  // Año pasado
+
+            // Formato YYYY-MM-DD
+            let minDate = `${minYear}-01-01`;
+            let maxDate = `${currentYear}-12-31`;
+
+            let inputFecha = document.getElementById("fecha_emision");
+            inputFecha.setAttribute("min", minDate);
+            inputFecha.setAttribute("max", maxDate);
+        });
+    </script>
     
 </body>
 </html>

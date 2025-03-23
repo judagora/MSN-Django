@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import RegistroMecanicoForm, CambiarContraseñaForm
+from .forms import RegistroMecanicoForm
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico
 from django.contrib import messages  # Para mostrar mensajes en la interfaz
@@ -59,8 +60,8 @@ def modificarMecanico(request, id_usuario):
             mecanico.horario_de_trabajo = form.cleaned_data['horario_de_trabajo']
             mecanico.experiencia_laboral = form.cleaned_data['experiencia_laboral']
             mecanico.save()
+            messages.success(request, "El mecánico se ha modificado correctamente.")
             return redirect('administrador:mecanicos')
-           
         else:
             # Imprimir errores en la consola para depuración
             print("Errores del formulario:", form.errors)
@@ -122,6 +123,9 @@ def insertarMecanico(request):
                     except Exception as e:
                         print(f"Error al enviar el correo: {str(e)}")
                         messages.error(request, f"Error al enviar el correo: {str(e)}")
+
+                    # Redirigir a la lista de mecánicos
+                    return redirect('administrador:mecanicos')  # Redirige al apartado de mecánicos
                 else:
                     messages.error(request, "No se pudo obtener el ID del usuario.")
             except Exception as e:
@@ -129,7 +133,9 @@ def insertarMecanico(request):
                 print(f"Error al registrar el mecánico: {str(e)}")  # Depuración en consola
         else:
             print("Errores del formulario:", form.errors)  # Imprime los errores del formulario en la consola
-            messages.error(request, "Hubo un error en el formulario. Por favor, corrige los errores.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = RegistroMecanicoForm()
 
@@ -140,44 +146,52 @@ def insertarMecanico(request):
 
 def cambiar_contraseña(request):
     if request.method == 'POST':
-        form = CambiarContraseñaForm(request.user, request.POST)
-        if form.is_valid():
-            usuario = form.save()  # Cambia la contraseña
-            update_session_auth_hash(request, usuario)  # Actualiza la sesión para evitar que el usuario sea desconectado
+        correo_electronico = request.POST.get('correo_electronico')
+        nueva_contraseña = request.POST.get('nueva_contraseña')
+        confirmar_contraseña = request.POST.get('confirmar_contraseña')
 
-            # Obtén la nueva contraseña
-            nueva_contraseña = form.cleaned_data['new_password1']
+        # Validar que las contraseñas coincidan
+        if nueva_contraseña != confirmar_contraseña:
+            messages.error(request, "Las contraseñas no coinciden.")
+            return redirect('administrador:cambiar_contraseña')
 
-            # Enviar correo electrónico con la nueva contraseña
-            subject = 'Contraseña actualizada en Motors Safety Net'
-            message = f'''
-                Hola {usuario.nombres},
+        # Buscar el usuario por correo electrónico
+        try:
+            usuario = Usuario.objects.get(correo_electronico=correo_electronico)
+        except Usuario.DoesNotExist:
+            messages.error(request, "No se encontró un usuario con ese correo electrónico.")
+            return redirect('administrador:cambiar_contraseña')
 
-                Tu contraseña en Motors Safety Net ha sido actualizada. Aquí está tu nueva contraseña:
+        # Cambiar la contraseña
+        usuario.set_password(nueva_contraseña)
+        usuario.save()
 
-                Nueva contraseña: {nueva_contraseña}
+        # Enviar correo electrónico con la nueva contraseña
+        subject = 'Contraseña actualizada en Motors Safety Net'
+        message = f'''
+            Hola {usuario.nombres},
 
-                Por seguridad, te recomendamos cambiar esta contraseña después de iniciar sesión.
+            Tu contraseña en Motors Safety Net ha sido actualizada. Aquí está tu nueva contraseña:
 
-                Gracias,
-                Equipo de Motors Safety Net
-            '''
-            from_email = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
-            recipient_list = [usuario.email]  # Correo del usuario
+            Nueva contraseña: {nueva_contraseña}
 
-            try:
-                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-                messages.success(request, "Tu contraseña ha sido actualizada y se ha enviado un correo con la nueva contraseña.")
-            except Exception as e:
-                messages.error(request, f"Error al enviar el correo: {str(e)}")
+            Por seguridad, te recomendamos cambiar esta contraseña después de iniciar sesión.
 
-            return redirect('inicio')  # Redirige al inicio después de cambiar la contraseña
-        else:
-            messages.error(request, "Por favor, corrige los errores en el formulario.")
-    else:
-        form = CambiarContraseñaForm(request.user)
+            Gracias,
+            Equipo de Motors Safety Net
+        '''
+        from_email = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
+        recipient_list = [correo_electronico]  # Correo del usuario
 
-    return render(request, 'cambiar_contraseña.html', {'form': form})
+        try:
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+            messages.success(request, "Tu contraseña ha sido actualizada y se ha enviado un correo con la nueva contraseña.")
+        except Exception as e:
+            messages.error(request, f"Error al enviar el correo: {str(e)}")
+
+        return redirect('administrador:cambiar_contraseña')  # Redirige al inicio después de cambiar la contraseña
+
+    return render(request, 'cambiar_contraseña.html')
 
 
 
@@ -196,9 +210,10 @@ def mantenimientos (request):
       mantenimientos = Mantenimiento.objects.all()
       return render(request, 'mantenimientos.html', {'mantenimientos': mantenimientos})
 
-def historialesVehiculo (request):
-    # Obtener todos los vehículos
-    vehiculos = Vehiculo.objects.all()
+def historialesVehiculo(request):
+    # Obtener todos los vehículos con la información del cliente y el usuario
+    vehiculos = Vehiculo.objects.select_related('id_cliente__id_usuario').all()
+    return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
     
     # Pasar los datos a la plantilla
     return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
