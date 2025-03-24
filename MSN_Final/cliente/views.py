@@ -1,11 +1,15 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inicio.models import Cliente
-from inicio.models import Vehiculo, Soat
+from inicio.models import Vehiculo, Soat, Notificaciones
 from django.contrib.auth import logout
-from .forms import VehiculoForm, ClienteForm, SoatForm
+from .forms import VehiculoForm, ClienteForm, SoatForm, NotificacionForm
 from django.contrib import messages
 from datetime import datetime
+from django.utils.timezone import now
+from django.core.mail import send_mail
+from .tasks import enviar_notificacion
+from django.http import JsonResponse
 # Create your views here.
 
 @login_required
@@ -158,4 +162,50 @@ def eliminar_soat(request, id_soat):
 
 @login_required
 def notificaciones(request):
-    return render(request, 'notificaciones.html')
+    usuario = request.user
+    cliente = Cliente.objects.filter(id_usuario = usuario).first()
+    notificaciones = Notificaciones.objects.filter(id_cliente=cliente)
+    registro_notificacion = False
+    hoy = datetime.today().strftime('%Y-%m-%d')
+    if request.method == "POST":
+        form = NotificacionForm(request.POST)
+        if form.is_valid():
+            notificacion = form.save(commit=False)
+            notificacion.id_cliente = cliente
+            notificacion.save()
+            messages.success(request, "Notificación registrada correctamente.")
+            registro_notificacion = True
+        else:
+            messages.error(request, "Corrige los errores en el formulario.")
+    else:
+        form = NotificacionForm()
+    return render(request, 'notificaciones.html', {'form': form, 'notificaciones': notificaciones, 'registro_notificacion': registro_notificacion, 'hoy': hoy})
+
+
+@login_required
+def edit_notificacion(request, id_notificacion):
+    notificacion = get_object_or_404(Notificaciones, id_notificaciones=id_notificacion)
+    act_notificacion = False
+    if request.method == "POST":
+        form = NotificacionForm(request.POST, instance=notificacion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Notificación actualizada correctamente.")
+            act_notificacion = True
+        else:
+            messages.error(request, "Corrige los errores en el formulario.")
+    else:
+        form = NotificacionForm(instance=notificacion)
+    return render(request, 'editNotificacion.html', {'form': form, 'notificacion': notificacion, 'act_notificacion': act_notificacion})
+
+@login_required
+def eliminar_notificacion(request, id_notificacion):
+    notificacion = get_object_or_404(Notificaciones, id_notificaciones=id_notificacion)
+    notificacion.delete()
+    messages.success(request, "Notificación eliminada correctamente.")
+    return redirect('cliente:notificaciones')
+
+
+def ejecutar_notificaciones(request):
+    enviar_notificacion.delay()
+    return JsonResponse({"mensaje": "Tarea de notificaciones en ejecución."})

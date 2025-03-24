@@ -53,22 +53,43 @@
 
                 <div class="formulario">
                     <h4>Configura tus Notificaciones</h4>
-                    <form action="@{/moduloCliente/notificacionesCliente/guardar}" method="POST">
+                    <form action="" method="POST">
+                        {% csrf_token %}
                         <div class="form-group">
                             <label for="modelo">Motivo</label>
                             <input minlength="10" maxlength="30" type="text" placeholder="Ej: Cambio de luces" name="motivo" required>
+                            {% if form.motivo.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.motivo.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="tipo">Fecha de recordatorio</label>
-                            <input type="date" name="fechaRecordatorio" id="fechaRecordatorio" min="" required>
+                            <input type="date" name="fecha_recordatorio" id="fecha_recordatorio" min="{{ hoy }}" required>
+                            {% if form.fecha_recordatorio.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.fecha_recordatorio.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="contraseña">Hora de recordatorio</label>
-                            <input type="time" id="horaRecordatorio" name="horaRecordatorio" required>
+                            <input type="time" id="hora_recordatorio" name="hora_recordatorio" min="06:00" max="19:00" required>
+                            {% if form.hora_recordatorio.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.hora_recordatorio.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             <label for="Notas">Notas</label>
-                            <input maxlength="100" type="text" id="Notas" placeholder="Ej: Cambio de luces para evitar multas" name="Notas">
+                            <input maxlength="100" type="text" id="notas" placeholder="Ej: Cambio de luces para evitar multas" name="notas">
+                            {% if form.notas.errors %}
+                            <div class="alert-danger">
+                                <span>{{ form.notas.errors.0 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                         <input type="submit" value="Registrar Notificacion" name="btnRegistrarNotificacion" class="enviar">
                     </form>
@@ -84,34 +105,31 @@
                                     <th>Fecha de Recordatorio</th>
                                     <th>Hora de Recordatorio</th>
                                     <th>Notas</th>
-                                    <th></th>
+                                    <th>Acciones</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody id="notificationTableBody">
-                                
-                                <tr each="notificacion : ${notificaciones}">
-                                    <td text="${notificacion.motivo}"></td>
-                                    <td text="${notificacion.fechaRecordatorio}"></td>
-                                    <td text="${notificacion.horaRecordatorio}"></td>
-                                    <td text="${notificacion.notas}"></td>
-                                    <td>
-                                        <!-- Eliminar notificación -->
-                                        <a href="@{/moduloCliente/notificacionesCliente/eliminar/{id}(id=${notificacion.idNotificaciones})}" 
-                                           class="eliminar-b" 
-                                           onclick="return confirm('¿Estás seguro de eliminar esta notificación?')">
-                                            <img src="@{/img/imgCliente/delete.svg}" alt="Eliminar notificación">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <!-- Editar notificación -->
-                                        <a href="@{/moduloCliente/notificacionesCliente/editar/{id}(id=${notificacion.idNotificaciones})}" 
-                                           class="editar-b">
-                                            <img src="@{/img/imgCliente/edit.svg}" alt="Editar notificación">
-                                        </a>
-                                    </td>
-                                </tr>
-                                
+                                {% for notificacion in notificaciones %}
+                                    <tr>
+                                        <td>{{notificacion.motivo | capfirst}}</td>
+                                        <td>{{notificacion.fecha_recordatorio}}</td>
+                                        <td>{{notificacion.hora_recordatorio |time:"h:i A"}}</td>
+                                        <td>{{notificacion.notas| default:"Sin notas" |capfirst}}</td>
+                                        <td>
+                                            <!-- Eliminar notificación -->
+                                            <a href="{% url 'cliente:eliminar_notificacion' notificacion.id_notificaciones%}" onclick="confirmarEliminacion(event, this)" class="eliminar-b">
+                                                <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar notificación">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <!-- Editar notificación -->
+                                            <a href="{% url 'cliente:editar_notificacion' notificacion.id_notificaciones %}" class="editar-b">
+                                                <img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar notificación">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -150,6 +168,64 @@
         </div>
 
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if registro_notificacion %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    title: "Registro exitoso!",
+                    text: "Notificacion registrada correctamente.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#369685",
+                    iconColor: "#369685"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'cliente:notificaciones' %}";
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+
+    <script>
+        function confirmarEliminacion(event, element) {
+            event.preventDefault();
+    
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "No podrás revertir esta acción.",
+                icon: "warning",
+                showCancelButton: true,
+                iconColor: "#369685",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#369685",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = element.href; // Redirige si el usuario confirma
+                }
+            });
+        }
+    </script>
+
+    {% if messages %}
+        {% for message in messages%}
+            <script>
+                Swal.fire({
+                    title: "¡Eliminado!",
+                    text: "Notificacion eliminada correctamente.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    iconColor: "#369685",
+                    confirmButtonColor: "#369685",
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
 
     
 </body>

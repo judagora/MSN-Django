@@ -5,29 +5,30 @@ from django.utils.timezone import now
 
 
 class UsuarioManager(BaseUserManager): # Clase para validar los campos de los usuarios
-    def create_user(self, correo_electronico, nombre_usuario, contraseña=None, rol_usuario="Cliente"):
+    def create_user(self, correo_electronico, nombre_usuario, contraseña=None, rol_usuario="Cliente", **extra_fields):
         if not correo_electronico:
             raise ValueError("El usuario debe tener un correo electrónico")
         usuario = self.model(
             correo_electronico=self.normalize_email(correo_electronico),
             nombre_usuario=nombre_usuario,
-            rol_usuario=rol_usuario
+            rol_usuario=rol_usuario,
+            **extra_fields
         )
         usuario.set_password(contraseña)
         usuario.save(using=self._db)
         return usuario
 
-    def create_superuser(self, correo_electronico, nombre_usuario, contraseña):
-        usuario = self.create_user(
+    def create_superuser(self, correo_electronico, nombre_usuario, contraseña=None, **extra_fields):
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_staff", True)
+
+        return self.create_user(
             correo_electronico,
             nombre_usuario,
             contraseña,
-            rol_usuario="Administrador"
+            rol_usuario="Administrador",
+            **extra_fields  # Agregar extra_fields para manejar otros campos adicionales
         )
-        usuario.is_superuser = True
-        usuario.is_staff = True
-        usuario.save(using=self._db)
-        return usuario
 
 
 

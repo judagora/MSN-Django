@@ -1,0 +1,117 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Notificacion</title>
+    <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/styleLogin.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/signin.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
+</head>
+<body>
+
+    <header>
+
+        <div class="logo">
+            <a class="link" href="">
+                <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
+                <h1>Motors Safety Net</h1>
+            </a>
+
+        </div>
+
+        <nav class="barraNav">
+            <ul>
+                <li>
+                    <a class="count" href="{% url 'cliente:cuenta'%}">
+                        <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
+                        <h3 text="">
+                            {{user.nombre_usuario}}
+                        </h3>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="count" href="">
+                        <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
+                    </a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <h1 >Editar Notificacion</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="modelo">Motivo</label>
+                <input minlength="10" maxlength="30" value="{{form.motivo.value}}" type="text" placeholder="Ej: Cambio de luces" name="motivo" required>
+                {% if form.motivo.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.motivo.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="tipo">Fecha de recordatorio</label>
+                <input type="date" name="fecha_recordatorio" value="{{form.fecha_recordatorio.value|date:'Y-m-d'}}" id="fecha_recordatorio" min="" required>
+                {% if form.fecha_recordatorio.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.fecha_recordatorio.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="contraseña">Hora de recordatorio</label>
+                <input type="time" id="hora_recordatorio" value="{{form.hora_recordatorio.value}}" name="hora_recordatorio" required>
+                {% if form.hora_recordatorio.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.hora_recordatorio.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="Notas">Notas</label>
+                <input maxlength="100" type="text" id="notas" value="{{form.notas.value}}" placeholder="Ej: Cambio de luces para evitar multas" name="notas">
+                {% if form.notas.errors %}
+                <div class="alert-danger">
+                    <span>{{ form.notas.errors.0 }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <input type="submit" value="Registrar Notificacion" name="btnRegistrarNotificacion" class="enviar">
+        </form>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if act_notificacion %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "¡Actualización exitosa!",
+                text: "La notificacion ha sido actualizada correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#369685",
+                iconColor: "#369685"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'cliente:notificaciones'  %}";
+                }
+            });
+        });
+    </script>
+    {% endif %}
+    
+</body>
+</html>
