@@ -257,8 +257,9 @@
             }
 
             // Validar horario
-            if (!horario) {
-                errorHorario.innerText = "Debe seleccionar un horario de atención.";
+            let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
+            if (!horarioRegex.test(horario)) {
+                errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
                 errorHorario.style.display = "block";
                 return false;
             }
