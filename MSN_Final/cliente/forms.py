@@ -1,6 +1,6 @@
 from django import forms
-from inicio.models import Vehiculo, Usuario, Soat, Cliente
-from datetime import datetime
+from inicio.models import Vehiculo, Usuario, Soat, Cliente, Notificaciones
+from datetime import datetime, time
 from django.core.exceptions import ValidationError
 
 class VehiculoForm(forms.ModelForm):
@@ -165,3 +165,23 @@ class SoatForm(forms.ModelForm):
                 })
 
         return cleaned_data
+    
+class NotificacionForm(forms.ModelForm):
+    class Meta:
+        model = Notificaciones
+        fields = ['motivo', 'fecha_recordatorio', 'hora_recordatorio', 'notas']
+
+    def clean_fecha_recordatorio(self):
+        fecha = self.cleaned_data.get('fecha_recordatorio')
+        if fecha and fecha < datetime.today().date():
+            raise ValidationError("La fecha no puede ser anterior al día actual.")
+        return fecha
+
+    def clean_hora_recordatorio(self):
+        hora = self.cleaned_data.get('hora_recordatorio')
+        hora_minima = time(6, 0)  # 6:00 AM
+        hora_maxima = time(19, 0) # 7:00 PM
+
+        if hora and (hora < hora_minima or hora > hora_maxima):
+            raise ValidationError("La hora debe estar entre las 6:00 AM y las 7:00 PM.")
+        return hora

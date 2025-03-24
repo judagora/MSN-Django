@@ -16,5 +16,7 @@ urlpatterns = [
     path('editar_soat/<int:id_soat>', views.editar_soat, name='editar_soat'),
     path('eliminar_soat/<int:id_soat>', views.eliminar_soat, name='eliminar_soat'),
     path('notificaciones/', views.notificaciones, name='notificaciones'),
+    path('editar_notificacion/<int:id_notificacion>', views.edit_notificacion, name='editar_notificacion'),
+    path('eliminar_notificacion/<int:id_notificacion>', views.eliminar_notificacion, name='eliminar_notificacion'),
 ]
 
