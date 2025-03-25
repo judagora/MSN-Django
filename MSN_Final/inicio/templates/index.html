@@ -14,7 +14,7 @@
      <header>
         
         <div class="logo">
-            <a class="link" href="{% url 'index'%}">
+            <a class="link" href="{% url 'inicio:index'%}">
                 <img  src="{% static 'iniciosource/img/logo-msn.svg'%}" alt="">
                 <h1>Motors Safety Net</h1>
             </a>
@@ -23,7 +23,7 @@
 
         <nav class="barraNav">
             <ul>
-                <li><a class="link" href="{% url 'index'%}">Inicio</a></li> 
+                <li><a class="link" href="{% url 'inicio:index'%}">Inicio</a></li> 
                 <li><a class="link" href="#servicios">Servicios</a></li> 
             </ul> 
                 
@@ -43,8 +43,8 @@
         </div>
         
         <div class="botones">
-         <a href="{% url 'login_view'%}" class="">Iniciar Sesión</a>   
-         <a href="{% url 'register'%}" class="">Registrarse</a>  
+         <a href="{% url 'inicio:login_view'%}" class="">Iniciar Sesión</a>   
+         <a href="{% url 'inicio:register'%}" class="">Registrarse</a>  
         </div>
     </section>
 

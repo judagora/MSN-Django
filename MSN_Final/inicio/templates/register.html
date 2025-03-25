@@ -17,7 +17,7 @@
     <header>
         
         <div class="logo">
-            <a class="link" href="{% url 'index'%}">
+            <a class="link" href="{% url 'inicio:index'%}">
                 <img  src="{% static 'iniciosource/img/logo-msn.svg'%}" alt="">
                 <h1>Motors Safety Net</h1>
             </a>
@@ -26,10 +26,8 @@
 
         <nav class="barraNav">
             <ul>
-                <li><a class="link" href="{% url 'index'%}">Inicio</a></li> 
-                <li><a class="link" href="#">Acerca de Nosortos</a></li> 
-                <li><a class="link" href="#">Contactanos</a></li> 
-                <li><a class="link" href="#servicios">Servicios</a></li> 
+                <li><a class="link" href="{% url 'inicio:index'%}">Inicio</a></li> 
+
             </ul> 
                 
             
@@ -41,7 +39,7 @@
     <div class="container">
         <h2>Registro de Cliente</h2>
 
-        <form action="{% url 'register'%}" id="registro-cliente" method="POST">
+        <form action="{% url 'inicio:register'%}" id="registro-cliente" method="POST">
           {% csrf_token %}
           <div class="icons">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-google" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#128C7E" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -136,7 +134,7 @@
             {% endif %}
           </div>
           <input type="submit" value="Registrarse" name="btnRegistrarCliente" class="enviar">
-          <a href="{% url 'login_view'%}">Iniciar Sesión</a>
+          <a href="{% url 'inicio:login_view'%}">Iniciar Sesión</a>
         </form>
       </div>
 

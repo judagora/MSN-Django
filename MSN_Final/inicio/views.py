@@ -80,4 +80,4 @@ def login_view(request):
     return render(request, 'login.html', {"form": form})
 def logout_view(request):
     request.session.flush()
-    return redirect('login')
+    return render(request, 'login.html')
