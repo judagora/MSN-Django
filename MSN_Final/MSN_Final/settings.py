@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'administrador',
     'cliente',
     'mecanico',
-    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -102,7 +101,6 @@ EMAIL_HOST_USER = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
 EMAIL_HOST_PASSWORD = 'whgr jcff ulox zxjy'  # Tu contraseña de Gmail o una contraseña de aplicación
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Remitente predeterminado
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

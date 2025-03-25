@@ -14,7 +14,7 @@
      <header>
         
         <div class="logo">
-            <a class="link" href="{% url 'index'%}">
+            <a class="link" href="{% url 'inicio:index'%}">
                 <img  src="{% static 'iniciosource/img/logo-msn.svg'%}" alt="">
                 <h1>Motors Safety Net</h1>
             </a>
@@ -23,9 +23,7 @@
 
         <nav class="barraNav">
             <ul>
-                <li><a class="link" href="{% url 'index'%}">Inicio</a></li> 
-                <li><a class="link" href="#">Acerca de Nosortos</a></li> 
-                <li><a class="link" href="#">Contactanos</a></li> 
+                <li><a class="link" href="{% url 'inicio:index'%}">Inicio</a></li> 
                 <li><a class="link" href="#servicios">Servicios</a></li> 
             </ul> 
                 
@@ -45,8 +43,8 @@
         </div>
         
         <div class="botones">
-         <a href="{% url 'login_view'%}" class="">Iniciar Sesión</a>   
-         <a href="{% url 'register'%}" class="">Registrarse</a>  
+         <a href="{% url 'inicio:login_view'%}" class="">Iniciar Sesión</a>   
+         <a href="{% url 'inicio:register'%}" class="">Registrarse</a>  
         </div>
     </section>
 
@@ -63,7 +61,7 @@
                   </svg>  
             </div>
 
-            <p>¡Protegiendo lo que más valoras! Descubre cómo nuestra seguridad de vanguardia te brinda tranquilidad y confianza en cada clic.</p>
+            <p>¡Protegemos cada detalle! Implementamos medidas avanzadas para asegurar la integridad de la información y el correcto funcionamiento de tu vehículo, brindándote tranquilidad en todo momento.</p>
         </section>
         <section class="servicio">
             <h3>Notificaciones</h3>
@@ -77,7 +75,7 @@
                   </svg> 
             </div>
 
-            <p>¡Mantén tu vehículo en perfecto estado! Recibe notificaciones al instante sobre mantenimientos, peritajes y mucho más, para asegurarte de que tu vehículo esté siempre listo para la carretera.</p>
+            <p>¡Mantente informado en tiempo real! Recibe alertas automáticas sobre mantenimientos, revisiones y novedades importantes, asegurando que no se te pase nada crucial para el cuidado de tu vehículo.</p>
         </section>
         <section class="servicio">
             <h3>Mantenimiento</h3>
@@ -88,30 +86,38 @@
                   </svg>
             </div>
 
-            <p>¡Mantén tu inversión protegida! Recibe notificaciones oportunas sobre mantenimientos programados, para garantizar que tu vehículo funcione de manera óptima y segura en todo momento.</p>
+            <p>Garantizamos el óptimo rendimiento de tu vehículo. Nuestro sistema gestiona y te informa sobre los mantenimientos preventivos y correctivos, mejorando la seguridad y prolongando la vida útil del automóvil.</p>
         </section>
     </div>
 
 
     <footer id="contactanos">
         <div>
-
-            <div class="linea1  mm">Diseño Elaborado Por</div>
+            <div class="linea1  mm"></div>
             <div class="linea2  mm">Juan Gonzalez</div>
             <div class="linea3  mm">Daniel Hernandez</div>
             <div class="linea4  mm">Juan Prada</div>
-            <div class="linea5  mm">Análisis y Desarrollo de Software</div>
-            <div class="linea6  mm">Ficha: 2770803</div>
-
+            <div class="linea5  mm">Motors Safety Net</div>
+            <div class="linea5  mm"></div>
+            <div class="linea6  mm"></div>
+        
             <!-- Logo de WhatsApp -->
-            <img class="imgW " src="{% static 'iniciosource/img/whatsapp_4494470.png'%}" alt=" Ícono WhatsApp" width="45" height="45"
-                title="WhatsApp">
+            <a href="https://wa.me/573203091045" target="_blank">
+                <img class="imgW " src="{% static 'iniciosource/img/whatsapp_4494470.png'%}" alt="Ícono WhatsApp" width="45" height="45"
+                    title="WhatsApp">
+            </a>
+            
             <!-- Logo de Instagram -->
+            <a href="https://www.instagram.com/msn.py/" target="_blank">
                 <img class="imgI" src="{% static 'iniciosource/img/instagram_4494468.png'%}" alt="Ícono Instagram" width="45" height="45"
-                title="Instagram">
+                    title="Instagram">
+            </a>
+            
             <!-- Logo de Facebook -->
+            <a href="https://www.facebook.com/profile.php?id=61574294232332" target="_blank">
                 <img class="imgF " src="{% static 'iniciosource/img/facebook_4494464.png'%}" alt="Ícono Facebook" width="45" height="45"
-                title="Facebook">
+                    title="Facebook">
+            </a>
         </div>
     
     </footer>

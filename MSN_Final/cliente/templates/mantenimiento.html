@@ -1,25 +1,24 @@
 {%load static%}
 
-<html lang="es">
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio Cliente</title>
+    <title>Mantenimientos</title>
     <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
-    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/Mantenimientos.css' %}">
+    <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
 </head>
-
 <body>
-
 
     <header>
 
         <div class="logo">
-            <a class="link" href="">
+            <a class="link" href="{% url 'cliente:inicio'%}">
                 <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
                 <h1>Motors Safety Net</h1>
             </a>
@@ -52,52 +51,48 @@
     <main class="container-fluid">
 
         <div class="row">
-            <div class="col-9">
-                <a href="{% url 'cliente:registrovehiculo'%}" class="card">
-                    <div class="imagen-vehiculo icono-mas">
+            <div class="col-9 ">
 
-                        <img src="{% static 'clientesource/img/add.svg' %}" alt="Añadir vehículo">
+                <div class="formulario">
+
+                    <div class="iconos">
+                        <a class="links" href="#">
+                            <img class="calendario" src="{% static 'clientesource/img/calendario1.svg' %}" alt="">
+                            <span>Programar mantenimiento</span>
+                        </a>
+                        <a class="links" href="#">
+                            <img class="calendario" src="{% static 'clientesource/img/calendario2.svg' %}" alt="">
+                            <span>Programar mantenimiento</span>
+                        </a>
+                        
                     </div>
-                    <div class="descrip">
-                        <h4>Agregar Vehículo</h4>
+
+                    <div class="agenda">
+                        
                     </div>
-                </a>
+                    
+                </div>
 
-
-
-
-
-                {% for vehiculo in vehiculos %}
-                <a href="{% url 'cliente:vehiculo' vehiculo.id_vehiculo %}"
-                    class="card">
-                    <div class="imagen-vehiculo icono-mas">
-                        {% if vehiculo.tipo == "Automovil" or vehiculo.tipo == "Camioneta" %}
-                        <img src="{% static 'clientesource/img/carro.svg' %}" alt="Vehículo">
-                        {% else%}
-                        <img src="{% static 'clientesource/img/moto.svg' %}" alt="Vehículo">
-                        {% endif %}
-                    </div>
-                    <div class="descrip">
-                        <h4 text="">{{vehiculo.marca|capfirst}}</h4>
-                    </div>
-                </a>
-                {% endfor %}
-
+                
 
 
             </div>
+
             <div class="col-3  columna">
                 <div class="menu">
 
                     <ul>
                         <li>
+                            <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
+                        </li>
+                        <li>
                             <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="{% url 'cliente:mantenimiento'%}">Mantenimientos</a>
+                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
                         </li>
                         <li>
-                            <a class="opcion" href="#">Modificaciones</a>
+                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
                         </li>
                         <li>
                             <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
@@ -114,10 +109,9 @@
 
     </main>
 
-
     
+
 
     
 </body>
-
 </html>
