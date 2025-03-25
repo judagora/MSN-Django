@@ -42,7 +42,7 @@
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <small>{{ user.correo_electronico }}</small>
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" href="#">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" href="{% url 'inicio:logout'%}">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>

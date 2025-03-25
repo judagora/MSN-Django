@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/Mantenimientos.css' %}">
     <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
 </head>
 <body>
@@ -46,6 +47,67 @@
         </nav>
     </header>
 
+
+    <main class="container-fluid">
+
+        <div class="row">
+            <div class="col-9 ">
+
+                <div class="formulario">
+
+                    <div class="iconos">
+                        <a class="links" href="#">
+                            <img class="calendario" src="{% static 'clientesource/img/calendario1.svg' %}" alt="">
+                            <span>Programar mantenimiento</span>
+                        </a>
+                        <a class="links" href="#">
+                            <img class="calendario" src="{% static 'clientesource/img/calendario2.svg' %}" alt="">
+                            <span>Programar mantenimiento</span>
+                        </a>
+                        
+                    </div>
+
+                    <div class="agenda">
+                        
+                    </div>
+                    
+                </div>
+
+                
+
+
+            </div>
+
+            <div class="col-3  columna">
+                <div class="menu">
+
+                    <ul>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
+                        </li>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:cuenta'%}">Cuenta</a>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     
 
