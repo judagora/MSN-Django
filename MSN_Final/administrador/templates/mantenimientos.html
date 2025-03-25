@@ -100,18 +100,14 @@
              <!-- Contenido Principal -->
              <div class="col-8">
                 <div class="row mt-3">
-                    <h1 class="espacio2 col colortext text-center">Mantenimientos Programados</h1>
+                    <h1 class="espacio2 col colortext text-center" style="margin-top: 5%;">Mantenimientos Programados</h1>
                     <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
-                        <i class="lni lni-cog"
-                            style="font-size: 32px; margin-left: 30%; color: black;"></i></a>Modificar Mantenimiento
-                        <i class="lni lni-circle-minus"
-                            style="font-size: 32px; margin-left: 5%;  color: black;"></i></a>Eliminar Mantenimiento
                     </div>
                 </div>
 
                 <!-- Tabla de Datos -->
-                <div class="tabla table-responsive">
-                    <table id="MantenimientoP" class="table table-bordered display nowrap" width="100%" height="100%">
+                <div class="tabla table-responsive" style="margin-left: 5%; margin-bottom: 10%; margin-top: 3%;">
+                    <table id="MantenimientoP" class="display " style="width:100% ">
                         <thead>
                             <tr>
                                 <th>Tipo de Mantenimiento</th>
@@ -168,7 +164,6 @@
     </div>
 
     
-    {% load static %}  <!-- Cargar la etiqueta static -->
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
     
@@ -199,6 +194,8 @@
             });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
     <script>
         // Inicializar DataTables
         new DataTable('#MantenimientoP');
