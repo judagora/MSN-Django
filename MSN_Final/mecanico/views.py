@@ -4,9 +4,70 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Peritaje, VehiculoPeritaje, VehiculoRepuestosModificados, RepuestosModificados, Mecanico, MecanicoMantenimiento, MecanicoPeritaje, MecanicoRepuestosModificados 
+from django.db.models import Count, Q
+from datetime import datetime, timedelta
 
 def inicio(request):
-    return render(request, 'indexMecanicoMc.html')
+    # Obtener el mecánico actual
+    mecanico = None
+    if request.user.is_authenticated:
+        try:
+            mecanico = Mecanico.objects.get(id_usuario=request.user)
+        except Mecanico.DoesNotExist:
+            pass
+    
+    # Estadísticas básicas
+    context = {
+        'user': request.user,
+        'mecanico': mecanico
+    }
+    
+    if mecanico:
+        # Estadísticas de MANTENIMIENTOS
+        mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
+            id_mecanico=mecanico
+        ).select_related('id_mantenimiento')
+        
+        vehiculos_mantenimiento = VehiculoMantenimiento.objects.filter(
+            id_mantenimiento__in=[m.id_mantenimiento for m in mantenimientos_mecanico]
+        ).values('id_vehiculo').distinct().count()
+        
+        mantenimientos_por_tipo = Mantenimiento.objects.filter(
+            id_mantenimiento__in=[m.id_mantenimiento.id_mantenimiento for m in mantenimientos_mecanico]
+        ).values('tipo_mantenimiento').annotate(total=Count('id_mantenimiento'))
+        
+        ultimos_mantenimientos = mantenimientos_mecanico.order_by('-id_mantenimiento__id_mantenimiento')[:5]
+        
+        # Estadísticas de PERITAJES
+        peritajes_mecanico = MecanicoPeritaje.objects.filter(
+            id_mecanico=mecanico
+        ).select_related('id_peritaje')
+        
+        vehiculos_peritaje = VehiculoPeritaje.objects.filter(
+            id_peritaje__in=[p.id_peritaje for p in peritajes_mecanico]
+        ).values('id_vehiculo').distinct().count()
+        
+        peritajes_por_tipo = Peritaje.objects.filter(
+            id_peritaje__in=[p.id_peritaje.id_peritaje for p in peritajes_mecanico]
+        ).extra(select={'tipo': "'Peritaje'"}).values('tipo').annotate(total=Count('id_peritaje'))
+        
+        ultimos_peritajes = peritajes_mecanico.order_by('-id_peritaje__id_peritaje')[:5]
+        
+        context.update({
+            # Datos de mantenimiento
+            'total_mantenimientos': mantenimientos_mecanico.count(),
+            'vehiculos_mantenimiento': vehiculos_mantenimiento,
+            'mantenimientos_por_tipo': list(mantenimientos_por_tipo),
+            'ultimos_mantenimientos': ultimos_mantenimientos,
+            
+            # Datos de peritaje
+            'total_peritajes': peritajes_mecanico.count(),
+            'vehiculos_peritaje': vehiculos_peritaje,
+            'peritajes_por_tipo': list(peritajes_por_tipo),
+            'ultimos_peritajes': ultimos_peritajes,
+        })
+    
+    return render(request, 'indexMecanicoMc.html', context)
 
 
 def insertarMantenimientoMc(request):
