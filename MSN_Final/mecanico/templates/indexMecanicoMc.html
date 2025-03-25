@@ -119,7 +119,7 @@
                     <div class="col d-flex justify-content-center align-items-center">
                         <span class="TB">Bienvenido Mecánico</span>
                     </div>
-                    <p class="PB">Bienvenido al Sistema de Gestión para Mecánicos de Motors Safety Net. Como mecánico, tendrás acceso a una plataforma diseñada para simplificar y optimizar tu trabajo diario. Con nuestra herramienta, podrás gestionar eficientemente todas las tareas relacionadas con el mantenimiento, el peritaje, el cambio de repuestos y el historial de los vehículos. Nuestro sistema está diseñado para proporcionarte las herramientas necesarias para llevar a cabo tus responsabilidades con precisión y eficacia. ¡Prepárate para una experiencia de trabajo más fluida y productiva!</p>
+                    <p class="PB">Bienvenido al Sistema de Gestión para Mecánicos de Motors Safety Net. Aquí podrás administrar fácilmente mantenimientos, peritajes, cambios de repuestos e historiales de vehículos, optimizando tu trabajo diario. ¡Disfruta de una experiencia más eficiente y productiva!</p>
                 </div>
                 <div class="grafica">
                     <canvas id="myChart"></canvas>
@@ -128,45 +128,48 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const ctx = document.getElementById('myChart');
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: ['Enero-Marzo Carlos Suarez', 'Abril-Junio Juliana Gonzalez', 'Julio-Septiembre Fernando Aguilar', 'Octubre-Diciembre Oscar Hernandez'],
-            datasets: [{
-              label: 'Ranking del Mecánico con más Mantenimientos por trimestre',
-              data: [25, 23, 15, 30],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
+ <!-- Scripts de Bootstrap -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        window.addEventListener('pageshow', function (event) {
-            // Verificar si la página se carga desde la caché
-            if (event.persisted) {
-                forms.forEach(form => {
-                    form.reset(); // Limpiar los campos del formulario
-                    form.classList.remove('was-validated'); // Remover clases de validación
-                });
-    
-                // Limpiar mensajes de error específicos (opcional)
-                const invalidInputs = document.querySelectorAll('.is-invalid');
-                invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-    
-                const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
-                invalidFeedbacks.forEach(feedback => feedback.remove());
-            }
-        });
-    </script>
+ <!-- Gráfica Mejorada con Chart.js -->
+ <script>
+     const ctx = document.getElementById('myChart').getContext('2d');
+
+     new Chart(ctx, {
+         type: 'line',
+         data: {
+             labels: ['Enero-Marzo', 'Abril-Junio', 'Julio-Septiembre', 'Octubre-Diciembre'],
+             datasets: [{
+                 label: 'Mantenimientos por Trimestre',
+                 data: [25, 30, 20, 40],
+                 borderColor: 'rgba(75, 192, 192, 1)',
+                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                 borderWidth: 2,
+                 tension: 0.4, // Suaviza la línea
+                 pointStyle: 'circle',
+                 pointRadius: 5,
+                 pointBackgroundColor: 'rgba(75, 192, 192, 1)'
+             }]
+         },
+         options: {
+             responsive: true,
+             plugins: {
+                 legend: {
+                     position: 'top',
+                 },
+                 title: {
+                     display: true,
+                     text: 'Rendimiento de Mantenimientos por Trimestre'
+                 }
+             },
+             scales: {
+                 y: {
+                     beginAtZero: true
+                 }
+             }
+         }
+     });
+ </script>
 </body>
 
 </html>
