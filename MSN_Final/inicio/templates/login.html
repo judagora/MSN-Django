@@ -18,7 +18,7 @@
   <header>
 
     <div class="logo">
-      <a class="link" href="{% url 'index'%}">
+      <a class="link" href="{% url 'inicio:index'%}">
         <img src="{% static 'iniciosource/img/logo-msn.svg'%}" alt="">
         <h1>Motors Safety Net</h1>
       </a>
@@ -27,7 +27,7 @@
 
     <nav class="barraNav">
         <ul>
-            <li><a class="link" href="{% url 'index'%}">Inicio</a></li>  
+            <li><a class="link" href="{% url 'inicio:index'%}">Inicio</a></li>  
         </ul> 
 
 
@@ -73,7 +73,7 @@
         <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
       </svg>
     </div>
-    <form action="{% url 'login_view'%}" method="POST">
+    <form action="{% url 'inicio:login_view'%}" method="POST">
       {% csrf_token %}
       <div class="form-group">
         <label for="correo">Correo Electrónico:</label>

@@ -38,7 +38,7 @@
                 </li>
 
                 <li>
-                    <a class="count" href="">
+                    <a class="count" href="{% url 'inicio:logout'%}">
                         <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
                     </a>
                 </li>
@@ -94,7 +94,7 @@
                             <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="#">Mantenimientos</a>
+                            <a class="opcion" href="{% url 'cliente:mantenimiento'%}">Mantenimientos</a>
                         </li>
                         <li>
                             <a class="opcion" href="#">Modificaciones</a>

@@ -10,10 +10,13 @@ from django.utils.timezone import now
 from django.core.mail import send_mail
 from .tasks import enviar_notificacion
 from django.http import JsonResponse
+from django.core.mail import send_mail
 # Create your views here.
 
 @login_required
 def inicio(request):
+    storage = messages.get_messages(request)
+    list(storage)
     usuario = request.user
 
     try:
@@ -116,6 +119,8 @@ def desactivar_cuenta(request):
 
 @login_required
 def soat(request):
+    storage = messages.get_messages(request)
+    list(storage)
     usuario = request.user
     cliente = Cliente.objects.filter(id_usuario = usuario).first() 
     vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
@@ -144,7 +149,6 @@ def editar_soat(request, id_soat):
         form = SoatForm(request.POST, instance=soat)
         if form.is_valid():
             form.save()
-            messages.success(request, "SOAT actualizado correctamente.")
             act_soat = True
         else:
             messages.error(request, "Corrige los errores en el formulario.")
@@ -162,6 +166,10 @@ def eliminar_soat(request, id_soat):
 
 @login_required
 def notificaciones(request):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     usuario = request.user
     cliente = Cliente.objects.filter(id_usuario = usuario).first()
     notificaciones = Notificaciones.objects.filter(id_cliente=cliente)
@@ -173,6 +181,19 @@ def notificaciones(request):
             notificacion = form.save(commit=False)
             notificacion.id_cliente = cliente
             notificacion.save()
+
+            cliente_correo = cliente.id_usuario.correo_electronico
+            motivo = notificacion.motivo
+            notas = notificacion.notas if notificacion.notas else "Sin notas."
+
+            send_mail(
+                subject=f"Recordatorio: {motivo}",
+                message=f"Hola {cliente.id_usuario.nombres},\n\nEste es un recordatorio:\nMotivo: {motivo}\nNotas: {notas}\n\nAtentamente, Motors Safety Net.",
+                from_email='motorssafetynet@gmail.com',
+                recipient_list=[cliente_correo],
+                fail_silently=False
+            )
+
             messages.success(request, "Notificación registrada correctamente.")
             registro_notificacion = True
         else:
@@ -190,7 +211,6 @@ def edit_notificacion(request, id_notificacion):
         form = NotificacionForm(request.POST, instance=notificacion)
         if form.is_valid():
             form.save()
-            messages.success(request, "Notificación actualizada correctamente.")
             act_notificacion = True
         else:
             messages.error(request, "Corrige los errores en el formulario.")
@@ -206,6 +226,7 @@ def eliminar_notificacion(request, id_notificacion):
     return redirect('cliente:notificaciones')
 
 
-def ejecutar_notificaciones(request):
-    enviar_notificacion.delay()
-    return JsonResponse({"mensaje": "Tarea de notificaciones en ejecución."})
+@login_required
+def mantenimiento(request):
+    return render(request, 'mantenimiento.html')
+
