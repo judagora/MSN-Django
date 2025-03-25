@@ -226,6 +226,7 @@ def eliminar_notificacion(request, id_notificacion):
     return redirect('cliente:notificaciones')
 
 
-def ejecutar_notificaciones(request):
-    enviar_notificacion.delay()
-    return JsonResponse({"mensaje": "Tarea de notificaciones en ejecución."})
+@login_required
+def mantenimiento(request):
+    return render(request, 'mantenimiento.html')
+
