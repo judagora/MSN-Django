@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'staticmecanico/css/styleheader.css' %}">
     <link rel="shortcut icon" href="{% static 'staticmecanico/img/logo-msn.svg' %}" class="pestaña">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style.css' %}">
     <title>Dashboard Mecánico</title>
     <style>
@@ -32,24 +33,104 @@
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
+            border: none;
         }
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
+        .stat-card {
+            border-left: 4px solid #6f42c1;
+        }
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        .stat-card .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
         .list-group-item {
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            margin-bottom: 8px;
+            border-radius: 8px !important;
         }
         .list-group-item:hover {
             border-left: 3px solid #6f42c1;
             background-color: #f8f9fa;
         }
+        .activity-badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .badge-preventivo {
+            background-color: #36a2eb;
+        }
+        .badge-correctivo {
+            background-color: #ff6384;
+        }
+        .badge-peritaje {
+            background-color: #9966ff;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+        .progress-thin {
+            height: 6px;
+        }
+        .welcome-card {
+            background: linear-gradient(135deg, #6f42c1 0%, #a370f7 100%);
+            color: white;
+        }
+        .welcome-card .card-title {
+            font-weight: 300;
+        }
+        .welcome-card .card-text {
+            opacity: 0.9;
+        }
+        /* Nuevos estilos para tablas compactas */
+        .fs-7 {
+            font-size: 0.8rem !important;
+        }
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .list-group-flush .list-group-item {
+            border-left: 0;
+            border-right: 0;
+            padding: 0.5rem 1rem;
+        }
+        .bg-opacity-10 {
+            background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+        }
+        .bg-purple.bg-opacity-10 {
+            background-color: rgba(111, 66, 193, 0.1) !important;
+        }
+        .compact-card .card-body {
+            padding: 1rem;
+        }
+        .compact-card .btn-sm {
+            padding: 0.15rem 0.5rem;
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 
 <body>
-    <!--  Barra de Navegación -->
+    <!-- Barra de Navegación -->
     <header class="barrasup">
         <div class="logo">
             <a class="link" href="{% url 'mecanico:inicio' %}">
@@ -73,9 +154,10 @@
         </div>
     </header>
 
-    <!--  Contenido Principal -->   
+    <!-- Contenido Principal -->   
     <div class="container-fluid">
         <div class="row">
+            <!-- Sidebar -->
             <div class="menuu col-lg-3 col-md-4 bg-black">
                 <div>
                     <a class="titulo text-white text-decoration-none p-md-2 mt-2" role="button">
@@ -141,70 +223,223 @@
                 </div>
             </div>
             
-            <!-- Contenido Principal Simplificado -->
+            <!-- Main Content -->
             <div class="col-lg-9 col-md-8 py-3">
-                <div class="row fila mb-4">
-                    <div class="col d-flex justify-content-center align-items-center">
-                        <span class="TB">Bienvenido Mecánico</span>
+                <!-- Welcome Card -->
+                <div class="card welcome-card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="card-title">Bienvenido, {{ user.nombres }} {{ user.apellidos }}</h2>
+                                <p class="card-text">Aquí puedes gestionar todos los mantenimientos, peritajes y repuestos modificados de los vehículos.</p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <i class="lni lni-cog" style="font-size: 4rem; opacity: 0.2;"></i>
+                            </div>
+                        </div>
                     </div>
-                    <p class="PB text-center">Bienvenido al Sistema de Gestión para Mecánicos de Motors Safety Net.</p>
                 </div>
 
-                <!-- Gráficos -->
+                <!-- Stats Cards -->
                 <div class="row mb-4">
-                    <!-- Gráfico de Mantenimientos -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
+                    <div class="col-md-4 mb-4">
+                        <div class="card stat-card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="lni lni-cog"></i> Distribución de Mantenimientos</h5>
-                                <div class="chart-container">
-                                    <canvas id="mantenimientosChart"></canvas>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="stat-label">MANTENIMIENTOS</h6>
+                                        <h3 class="stat-value">{{ total_mantenimientos|default:"0" }}</h3>
+                                    </div>
+                                    <i class="lni lni-cog" style="font-size: 2rem; color: #6f42c1;"></i>
                                 </div>
-                                <p class="text-center mt-2">
-                                    <strong>Total: {{ total_mantenimientos|default:"0" }} mantenimientos</strong>
-                                </p>
+                                {% if mantenimientos_por_tipo %}
+                                <div class="mt-3">
+                                    {% for tipo in mantenimientos_por_tipo %}
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>{{ tipo.tipo_mantenimiento }}</span>
+                                        <span>{{ tipo.total }}</span>
+                                    </div>
+                                    <div class="progress progress-thin mb-2">
+                                        <div class="progress-bar {% if tipo.tipo_mantenimiento == 'Preventivo' %}bg-primary{% else %}bg-danger{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {% widthratio tipo.total total_mantenimientos 100 %}%">
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Gráfico de Peritajes -->
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
+                    <div class="col-md-4 mb-4">
+                        <div class="card stat-card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="lni lni-checkmark-circle"></i> Progreso de Peritajes</h5>
-                                <div class="chart-container">
-                                    <canvas id="peritajesChart"></canvas>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="stat-label">PERITAJES</h6>
+                                        <h3 class="stat-value">{{ total_peritajes|default:"0" }}</h3>
+                                    </div>
+                                    <i class="lni lni-checkmark-circle" style="font-size: 2rem; color: #6f42c1;"></i>
                                 </div>
-                                <p class="text-center mt-2">
-                                    <strong>Total: {{ total_peritajes|default:"0" }} peritajes</strong>
-                                </p>
+                                {% if vehiculos_peritaje %}
+                                <div class="mt-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Vehículos atendidos</span>
+                                        <span>{{ vehiculos_peritaje }}</span>
+                                    </div>
+                                    <div class="progress progress-thin">
+                                        <div class="progress-bar bg-purple" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card stat-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="stat-label">VEHÍCULOS ATENDIDOS</h6>
+                                        <h3 class="stat-value">{{ vehiculos_mantenimiento|default:"0" }}</h3>
+                                    </div>
+                                    <i class="lni lni-car" style="font-size: 2rem; color: #6f42c1;"></i>
+                                </div>
+                                {% if vehiculos_mantenimiento %}
+                                <div class="mt-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Último mantenimiento</span>
+                                        <span>
+                                            {% if ultimos_mantenimientos.0 %}
+                                            {{ ultimos_mantenimientos.0.id_mantenimiento.tipo_mantenimiento }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="progress progress-thin">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Últimos Mantenimientos -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <!-- Mantenimientos Chart -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="lni lni-list"></i> Últimos Mantenimientos</h5>
-                                <div class="list-group">
+                                <h5 class="card-title d-flex justify-content-between align-items-center">
+                                    <span><i class="lni lni-cog me-2"></i>Distribución de Mantenimientos</span>
+                                    <span class="badge bg-primary">{{ total_mantenimientos|default:"0" }}</span>
+                                </h5>
+                                {% if mantenimientos_por_tipo %}
+                                <div class="chart-container">
+                                    <canvas id="mantenimientosChart"></canvas>
+                                </div>
+                                {% else %}
+                                <div class="empty-state">
+                                    <i class="lni lni-pie-chart"></i>
+                                    <p>No hay datos de mantenimientos</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Peritajes Chart -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title d-flex justify-content-between align-items-center">
+                                    <span><i class="lni lni-checkmark-circle me-2"></i>Actividad de Peritajes</span>
+                                    <span class="badge bg-purple">{{ total_peritajes|default:"0" }}</span>
+                                </h5>
+                                {% if peritajes_por_tipo %}
+                                <div class="chart-container">
+                                    <canvas id="peritajesChart"></canvas>
+                                </div>
+                                {% else %}
+                                <div class="empty-state">
+                                    <i class="lni lni-bar-chart"></i>
+                                    <p>No hay datos de peritajes</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity - Compact Version -->
+                <div class="row">
+                    <!-- Últimos Mantenimientos Compactos -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 compact-card">
+                            <div class="card-body p-3">
+                                <h5 class="card-title d-flex justify-content-between align-items-center mb-3">
+                                    <span><i class="lni lni-cog me-2"></i>Últimos Mantenimientos</span>
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}" class="btn btn-sm btn-outline-primary py-0">Ver todos</a>
+                                </h5>
+                                {% if ultimos_mantenimientos %}
+                                <div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
                                     {% for mm in ultimos_mantenimientos %}
-                                    <div class="list-group-item">
-                                        <div class="d-flex justify-content-between">
-                                            <strong>Vehículo: {{ mm.id_mantenimiento.vehiculomantenimiento_set.first.id_vehiculo.placa }}</strong>
-                                            <span class="badge bg-primary">{{ mm.id_mantenimiento.tipo_mantenimiento }}</span>
+                                    <div class="list-group-item list-group-item-action py-2 px-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <span class="activity-badge {% if mm.id_mantenimiento.tipo_mantenimiento == 'Preventivo' %}badge-preventivo{% else %}badge-correctivo{% endif %} me-2"></span>
+                                                <small class="text-muted me-2">Veh: {{ mm.id_mantenimiento.vehiculomantenimiento_set.first.id_vehiculo.placa|truncatechars:7 }}</small>
+                                                <span class="badge {% if mm.id_mantenimiento.tipo_mantenimiento == 'Preventivo' %}bg-primary{% else %}bg-danger{% endif %} bg-opacity-10 text-dark fs-7 py-0">{{ mm.id_mantenimiento.tipo_mantenimiento|slice:":3" }}.</span>
+                                            </div>
+                                            <small class="text-dark fw-bold">${{ mm.id_mantenimiento.costo }}</small>
                                         </div>
-                                        <p class="mb-1">{{ mm.id_mantenimiento.descripcion|truncatechars:60 }}</p>
-                                        <small class="text-muted">Costo: ${{ mm.id_mantenimiento.costo }}</small>
-                                    </div>
-                                    {% empty %}
-                                    <div class="list-group-item text-center py-4">
-                                        No hay mantenimientos registrados
+                                        <p class="mb-0 mt-1 small text-truncate">{{ mm.id_mantenimiento.descripcion }}</p>
                                     </div>
                                     {% endfor %}
                                 </div>
+                                {% else %}
+                                <div class="text-center py-3">
+                                    <i class="lni lni-warning text-muted" style="font-size: 2rem;"></i>
+                                    <p class="small text-muted mt-2 mb-0">No hay mantenimientos recientes</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Últimos Peritajes Compactos -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 compact-card">
+                            <div class="card-body p-3">
+                                <h5 class="card-title d-flex justify-content-between align-items-center mb-3">
+                                    <span><i class="lni lni-checkmark-circle me-2"></i>Últimos Peritajes</span>
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="btn btn-sm btn-outline-purple py-0">Ver todos</a>
+                                </h5>
+                                {% if ultimos_peritajes %}
+                                <div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
+                                    {% for mp in ultimos_peritajes %}
+                                    <div class="list-group-item list-group-item-action py-2 px-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <span class="activity-badge badge-peritaje me-2"></span>
+                                                <small class="text-muted me-2">Veh: {{ mp.id_peritaje.vehiculoperitaje_set.first.id_vehiculo.placa|truncatechars:7 }}</small>
+                                                <span class="badge bg-purple bg-opacity-10 text-dark fs-7 py-0">#{{ mp.id_peritaje.id_peritaje }}</span>
+                                            </div>
+                                            <small class="text-dark fw-bold">${{ mp.id_peritaje.costo }}</small>
+                                        </div>
+                                        <p class="mb-0 mt-1 small text-truncate">{{ mp.id_peritaje.descripcion }}</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-3">
+                                    <i class="lni lni-warning text-muted" style="font-size: 2rem;"></i>
+                                    <p class="small text-muted mt-2 mb-0">No hay peritajes recientes</p>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -220,31 +455,54 @@
         // Gráfico de Mantenimientos
         const mantenimientoCtx = document.getElementById('mantenimientosChart');
         if (mantenimientoCtx) {
+            const mantenimientoData = {
+                labels: [
+                    {% for tipo in mantenimientos_por_tipo %}
+                    '{{ tipo.tipo_mantenimiento }}'{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [{
+                    data: [
+                        {% for tipo in mantenimientos_por_tipo %}
+                        {{ tipo.total }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    backgroundColor: [
+                        '#36a2eb', // Preventivo
+                        '#ff6384'  // Correctivo
+                    ],
+                    borderWidth: 0
+                }]
+            };
+
             new Chart(mantenimientoCtx, {
                 type: 'doughnut',
-                data: {
-                    labels: ['Preventivo', 'Correctivo'],
-                    datasets: [{
-                        data: [15, 8],  // Valores de ejemplo
-                        backgroundColor: [
-                            'rgba(54, 162, 235, 0.7)',
-                            'rgba(255, 99, 132, 0.7)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
+                data: mantenimientoData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom' },
-                        title: { 
-                            display: true, 
-                            text: 'Distribución por Tipo',
-                            font: { size: 14 }
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
                     },
-                    cutout: '60%'
+                    cutout: '70%',
+                    borderRadius: 8
                 }
             });
         }
@@ -253,36 +511,37 @@
         const peritajeCtx = document.getElementById('peritajesChart');
         if (peritajeCtx) {
             new Chart(peritajeCtx, {
-                type: 'pie',
+                type: 'bar',
                 data: {
-                    labels: ['Peritajes realizados', 'Meta'],
+                    labels: ['Peritajes Realizados'],
                     datasets: [{
-                        data: [15, 5],  // Valores de ejemplo
-                        backgroundColor: [
-                            'rgba(153, 102, 255, 0.7)',
-                            'rgba(201, 203, 207, 0.2)'
-                        ],
-                        borderWidth: 1
+                        label: 'Total',
+                        data: [{{ total_peritajes|default:"0" }}],
+                        backgroundColor: '#9966ff',
+                        borderRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { 
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                pointStyle: 'circle'
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Total: ${context.raw}`;
+                                }
                             }
-                        },
-                        title: { 
-                            display: true, 
-                            text: 'Progreso de Peritajes',
-                            font: { size: 14 }
                         }
                     },
-                    rotation: -45
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
                 }
             });
         }

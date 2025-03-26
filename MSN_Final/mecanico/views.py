@@ -16,56 +16,69 @@ def inicio(request):
         except Mecanico.DoesNotExist:
             pass
     
-    # Estadísticas básicas
     context = {
         'user': request.user,
         'mecanico': mecanico
     }
     
     if mecanico:
+        # Optimización: Obtenemos todos los datos necesarios en menos consultas
         # Estadísticas de MANTENIMIENTOS
         mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
             id_mecanico=mecanico
-        ).select_related('id_mantenimiento')
+        ).select_related('id_mantenimiento').prefetch_related(
+            'id_mantenimiento__vehiculomantenimiento_set__id_vehiculo'
+        )
         
-        vehiculos_mantenimiento = VehiculoMantenimiento.objects.filter(
-            id_mantenimiento__in=[m.id_mantenimiento for m in mantenimientos_mecanico]
-        ).values('id_vehiculo').distinct().count()
+        # Preparamos datos para gráficos y estadísticas
+        if mantenimientos_mecanico.exists():
+            # Vehículos únicos con mantenimientos
+            vehiculos_mantenimiento = VehiculoMantenimiento.objects.filter(
+                id_mantenimiento__in=[m.id_mantenimiento for m in mantenimientos_mecanico]
+            ).values('id_vehiculo').distinct().count()
+            
+            # Mantenimientos por tipo (optimizado)
+            mantenimientos_por_tipo = Mantenimiento.objects.filter(
+                id_mantenimiento__in=[m.id_mantenimiento.id_mantenimiento for m in mantenimientos_mecanico]
+            ).values('tipo_mantenimiento').annotate(total=Count('id_mantenimiento'))
+            
+            # Últimos 5 mantenimientos ordenados por ID descendente
+            ultimos_mantenimientos = mantenimientos_mecanico.order_by('-id_mantenimiento__id_mantenimiento')[:5]
+            
+            context.update({
+                'total_mantenimientos': mantenimientos_mecanico.count(),
+                'vehiculos_mantenimiento': vehiculos_mantenimiento,
+                'mantenimientos_por_tipo': list(mantenimientos_por_tipo),
+                'ultimos_mantenimientos': ultimos_mantenimientos,
+            })
         
-        mantenimientos_por_tipo = Mantenimiento.objects.filter(
-            id_mantenimiento__in=[m.id_mantenimiento.id_mantenimiento for m in mantenimientos_mecanico]
-        ).values('tipo_mantenimiento').annotate(total=Count('id_mantenimiento'))
-        
-        ultimos_mantenimientos = mantenimientos_mecanico.order_by('-id_mantenimiento__id_mantenimiento')[:5]
-        
-        # Estadísticas de PERITAJES
+        # Estadísticas de PERITAJES (optimizadas)
         peritajes_mecanico = MecanicoPeritaje.objects.filter(
             id_mecanico=mecanico
-        ).select_related('id_peritaje')
+        ).select_related('id_peritaje').prefetch_related(
+            'id_peritaje__vehiculoperitaje_set__id_vehiculo'
+        )
         
-        vehiculos_peritaje = VehiculoPeritaje.objects.filter(
-            id_peritaje__in=[p.id_peritaje for p in peritajes_mecanico]
-        ).values('id_vehiculo').distinct().count()
-        
-        peritajes_por_tipo = Peritaje.objects.filter(
-            id_peritaje__in=[p.id_peritaje.id_peritaje for p in peritajes_mecanico]
-        ).extra(select={'tipo': "'Peritaje'"}).values('tipo').annotate(total=Count('id_peritaje'))
-        
-        ultimos_peritajes = peritajes_mecanico.order_by('-id_peritaje__id_peritaje')[:5]
-        
-        context.update({
-            # Datos de mantenimiento
-            'total_mantenimientos': mantenimientos_mecanico.count(),
-            'vehiculos_mantenimiento': vehiculos_mantenimiento,
-            'mantenimientos_por_tipo': list(mantenimientos_por_tipo),
-            'ultimos_mantenimientos': ultimos_mantenimientos,
+        if peritajes_mecanico.exists():
+            # Vehículos únicos con peritajes
+            vehiculos_peritaje = VehiculoPeritaje.objects.filter(
+                id_peritaje__in=[p.id_peritaje for p in peritajes_mecanico]
+            ).values('id_vehiculo').distinct().count()
             
-            # Datos de peritaje
-            'total_peritajes': peritajes_mecanico.count(),
-            'vehiculos_peritaje': vehiculos_peritaje,
-            'peritajes_por_tipo': list(peritajes_por_tipo),
-            'ultimos_peritajes': ultimos_peritajes,
-        })
+            # Peritajes por tipo (aunque en el modelo no hay tipo, mantenemos la estructura)
+            peritajes_por_tipo = Peritaje.objects.filter(
+                id_peritaje__in=[p.id_peritaje.id_peritaje for p in peritajes_mecanico]
+            ).extra(select={'tipo': "'Peritaje'"}).values('tipo').annotate(total=Count('id_peritaje'))
+            
+            # Últimos 5 peritajes ordenados por ID descendente
+            ultimos_peritajes = peritajes_mecanico.order_by('-id_peritaje__id_peritaje')[:5]
+            
+            context.update({
+                'total_peritajes': peritajes_mecanico.count(),
+                'vehiculos_peritaje': vehiculos_peritaje,
+                'peritajes_por_tipo': list(peritajes_por_tipo),
+                'ultimos_peritajes': ultimos_peritajes,
+            })
     
     return render(request, 'indexMecanicoMc.html', context)
 
