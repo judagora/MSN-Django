@@ -19,7 +19,7 @@
     <!--  Barra de Navegación  -->
     <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'index' %}">
+            <a class="link" href="{% url 'inicio:index' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
@@ -35,7 +35,7 @@
                 <small>{{ user.correo_electronico }}</small>
             </a>
             <br>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'inicio:logout' %}">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -96,11 +96,7 @@
 
     <div class="col-8">
         <div class="row mt-3 text-center">
-            <h1 class="espacio2 col colortext" style="display: flex; justify-content: center; margin-bottom: 5%; margin-top: 5%;">Peritajes</h1>
-            <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
-                <i class="lni lni-cog" style="font-size: 32px; margin-left: 35%; color: black;"></i>Modificar Peritaje
-                <i class="lni lni-circle-minus" style="font-size: 32px; margin-left: 5%; color: black;"></i>Eliminar Peritaje
-            </div>
+            <h1 class="espacio2 col colortext" style="display: flex; justify-content: center; text-align: center; margin-bottom: 5%; margin-top: 5%;">Peritajes</h1>
             <!-- Tabla de datos -->
             <div class="tabla table-responsive" style=" margin-left: 5%; margin-bottom: 10%;">
                 <table id="Peritajes" class="display" style="width:100%">

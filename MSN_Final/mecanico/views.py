@@ -6,7 +6,9 @@ from django.core.exceptions import ValidationError
 from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Peritaje, VehiculoPeritaje, VehiculoRepuestosModificados, RepuestosModificados, Mecanico, MecanicoMantenimiento, MecanicoPeritaje, MecanicoRepuestosModificados 
 from django.db.models import Count, Q
 from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def inicio(request):
     # Obtener el mecánico actual
     mecanico = None
@@ -82,7 +84,7 @@ def inicio(request):
     
     return render(request, 'indexMecanicoMc.html', context)
 
-
+@login_required
 def insertarMantenimientoMc(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -155,7 +157,7 @@ def insertarMantenimientoMc(request):
     # Renderizar el formulario
     return render(request, 'insertarMantenimientoMc.html')
 
-
+@login_required
 def verificar_placa(request):
     try:
         placa = request.GET.get('placa')
@@ -167,7 +169,7 @@ def verificar_placa(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-
+@login_required
 def consultarMantenimientoMc(request):
     if request.method == 'POST':
         placa = request.POST.get('placa')
@@ -176,7 +178,7 @@ def consultarMantenimientoMc(request):
     
     return render(request, 'consultarMantenimientoMc.html')
 
-
+@login_required
 def consultarMantenimientoMc2(request, placa):
     # Buscar el vehículo por placa
     vehiculo = get_object_or_404(Vehiculo, placa=placa)
@@ -197,7 +199,7 @@ def consultarMantenimientoMc2(request, placa):
         'mantenimientos': mantenimientos,  # Pasar todos los mantenimientos
     })
 
-
+@login_required
 def modificarMantenimientoMc(request):
     # Obtener todos los registros de VehiculoMantenimiento con sus relaciones
     vehiculo_mantenimientos = VehiculoMantenimiento.objects.select_related('id_vehiculo', 'id_mantenimiento').all()
@@ -207,7 +209,7 @@ def modificarMantenimientoMc(request):
         'vehiculo_mantenimientos': vehiculo_mantenimientos,
     })
 
-
+@login_required
 def modificarMantenimientoMc2(request, placa, id_mantenimiento):
     # Obtener el mantenimiento específico por placa e ID del mantenimiento
     vehiculo_mantenimiento = get_object_or_404(
@@ -257,7 +259,7 @@ def modificarMantenimientoMc2(request, placa, id_mantenimiento):
         'placa': placa,
     })
 
-
+@login_required
 def insertarPeritajeMc(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -328,7 +330,7 @@ def insertarPeritajeMc(request):
     # Renderizar el formulario
     return render(request, 'insertarPeritajeMc.html')
 
-
+@login_required
 def modificarPeritajeMc(request):
     # Obtener todos los registros de VehiculoPeritaje con sus relaciones
     vehiculo_peritajes = VehiculoPeritaje.objects.select_related('id_vehiculo', 'id_peritaje').all()
@@ -338,7 +340,7 @@ def modificarPeritajeMc(request):
         'vehiculo_peritajes': vehiculo_peritajes,
     })
 
-
+@login_required
 def modificarPeritajeMc2(request, placa, id_peritaje):
     # Obtener el peritaje específico por placa e ID del peritaje
     vehiculo_peritaje = get_object_or_404(
@@ -386,7 +388,7 @@ def modificarPeritajeMc2(request, placa, id_peritaje):
         'placa': placa,
     })
 
-
+@login_required
 def consultarPeritajeMc(request):
     if request.method == 'POST':
         placa = request.POST.get('placa')
@@ -395,7 +397,7 @@ def consultarPeritajeMc(request):
     
     return render(request, 'consultarPeritajeMc.html')
 
-
+@login_required
 def consultarPeritajeMc2(request, placa):
     # Buscar el vehículo por placa
     vehiculo = get_object_or_404(Vehiculo, placa=placa)
@@ -416,7 +418,7 @@ def consultarPeritajeMc2(request, placa):
         'peritajes': peritajes,  # Pasar todos los peritajes
     })
 
-
+@login_required
 def insertarRepuestoMc(request):
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -487,7 +489,7 @@ def insertarRepuestoMc(request):
     # Renderizar el formulario
     return render(request, 'insertarRepuestoMc.html')
 
-
+@login_required
 def modificarRepuestoMc(request):
     # Obtener todos los registros de VehiculoRepuestosModificados con sus relaciones
     vehiculo_repuestos = VehiculoRepuestosModificados.objects.select_related('id_vehiculo', 'id_repuestos_modificados').all()
@@ -497,7 +499,7 @@ def modificarRepuestoMc(request):
         'vehiculo_repuestos': vehiculo_repuestos,
     })
 
-
+@login_required
 def modificarRepuestoMc2(request, placa, id_repuesto):
     # Obtener el repuesto específico por placa e ID del repuesto
     vehiculo_repuesto = get_object_or_404(
@@ -545,6 +547,7 @@ def modificarRepuestoMc2(request, placa, id_repuesto):
         'placa': placa,
     })
 
+@login_required
 def consultarRepuestoMc(request):
     if request.method == 'POST':
         placa = request.POST.get('placa')
@@ -553,6 +556,7 @@ def consultarRepuestoMc(request):
     
     return render(request, 'consultarRepuestoMc.html')
 
+@login_required
 def consultarRepuestoMc2(request, placa):
     # Buscar el vehículo por placa
     vehiculo = get_object_or_404(Vehiculo, placa=placa)

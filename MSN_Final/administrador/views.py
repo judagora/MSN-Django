@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import RegistroMecanicoForm
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
@@ -9,7 +10,7 @@ from django.contrib.auth import update_session_auth_hash
 
 
 
-
+@login_required
 # Create your views here.
 def inicio (request):
     return render(request, 'indexAdministrador.html')
@@ -48,7 +49,7 @@ def insertarTaller(request):
     })
 
 
-
+@login_required
 def modificarMecanico(request, id_usuario):
     usuario = get_object_or_404(Usuario, id_usuario=id_usuario)
     mecanico = get_object_or_404(Mecanico, id_usuario=usuario)
@@ -74,7 +75,7 @@ def modificarMecanico(request, id_usuario):
     return render(request, 'modificarMecanico.html', {'form': form, 'mecanico': mecanico})
 
 
-
+@login_required
 def insertarMecanico(request):
     if request.method == 'POST':
         print("Datos enviados:", request.POST)  # Depuración: Verifica los datos enviados
@@ -143,7 +144,7 @@ def insertarMecanico(request):
 
 
 
-
+@login_required
 def cambiar_contraseña(request):
     if request.method == 'POST':
         correo_electronico = request.POST.get('correo_electronico')
@@ -196,7 +197,7 @@ def cambiar_contraseña(request):
 
 
 
-
+@login_required
 def eliminar_mecanico(request, id_usuario):
     if request.method == 'POST':
         usuario = get_object_or_404(Usuario, id_usuario=id_usuario)
@@ -205,11 +206,12 @@ def eliminar_mecanico(request, id_usuario):
     return redirect('administrador:mecanicos')
 
 
-
+@login_required
 def mantenimientos (request):
       mantenimientos = Mantenimiento.objects.all()
       return render(request, 'mantenimientos.html', {'mantenimientos': mantenimientos})
 
+@login_required
 def historialesVehiculo(request):
     # Obtener todos los vehículos con la información del cliente y el usuario
     vehiculos = Vehiculo.objects.select_related('id_cliente__id_usuario').all()
@@ -218,10 +220,12 @@ def historialesVehiculo(request):
     # Pasar los datos a la plantilla
     return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
 
+@login_required
 def talleresMecanico (request):
     talleres = TallerMecanico.objects.all()
     return render(request, 'talleresMecanico.html', {'talleres': talleres})
 
+@login_required
 def mecanicos (request):
     # Obtener todos los mecánicos con sus usuarios asociados
     mecanicos = Mecanico.objects.select_related('id_usuario').all()
@@ -231,12 +235,14 @@ def mecanicos (request):
 
 
 
+@login_required
 def peritajes (request):
     peritajes = Peritaje.objects.all()
     return render(request, 'peritajes.html', {'peritajes': peritajes})
 
 
 
+@login_required
 def modificarPeritaje(request, id_peritaje):
     peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
 
@@ -252,6 +258,7 @@ def modificarPeritaje(request, id_peritaje):
 
 
 
+@login_required
 def modificarTaller(request, id_taller_mecanico):
     taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
 
@@ -277,6 +284,7 @@ def modificarTaller(request, id_taller_mecanico):
 
 
 
+@login_required
 def eliminarTaller(request, id_taller):
     taller = get_object_or_404(TallerMecanico, id_taller=id_taller)
     taller.delete()
@@ -285,6 +293,7 @@ def eliminarTaller(request, id_taller):
 
 
 
+@login_required
 def eliminarPeritaje(request, id_peritaje):
     peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
     peritaje.delete()
@@ -292,6 +301,7 @@ def eliminarPeritaje(request, id_peritaje):
     return redirect('administrador:peritajes')
 
 
+@login_required
 def modificarMantenimiento (request, id_mantenimiento):
     mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
 
@@ -307,6 +317,7 @@ def modificarMantenimiento (request, id_mantenimiento):
 
     return render(request, 'modificarMantenimiento.html', {'mantenimiento': mantenimiento})
 
+@login_required
 def eliminar_mantenimiento(request, id_mantenimiento):
     mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
     mantenimiento.delete()

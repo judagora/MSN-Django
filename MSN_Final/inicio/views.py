@@ -4,9 +4,99 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from .forms import RegistroForm, LoginForm
 from .models import Usuario, Cliente
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
+from django.core.mail import send_mail
+import random
 from django.contrib import messages
+
+
+# Variable global temporal para almacenar códigos (en producción usa cache o base de datos)
+temp_codes = {}
+
+def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        if Usuario.objects.filter(correo_electronico=email).exists():
+            user = Usuario.objects.get(correo_electronico=email)
+            
+            # Generar código de 5 dígitos
+            code = str(random.randint(10000, 99999))
+            temp_codes[email] = {
+                'code': code,
+                'user_id': user.id_usuario
+            }
+            
+            # Enviar correo con el código
+            subject = "Código de verificación - Motors Safety Net"
+            message = f"""
+            Hola {user.nombres},
+            
+            Tu código de verificación para restablecer la contraseña es: {code}
+            
+            Este código es válido por 10 minutos.
+            
+            Si no solicitaste este cambio, por favor ignora este correo.
+            
+            Atentamente,
+            El equipo de Motors Safety Net
+            """
+            
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=False,
+            )
+            
+            return render(request, 'verify_code.html', {'email': email})
+        else:
+            messages.error(request, "No existe un usuario con este correo electrónico.")
+    
+    return render(request, 'password_reset_form.html')
+
+def verify_code(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        user_code = request.POST.get('code')
+        
+        if email in temp_codes and temp_codes[email]['code'] == user_code:
+            request.session['reset_email'] = email
+            return render(request, 'new_password_form.html', {'email': email})
+        else:
+            messages.error(request, "Código incorrecto o expirado.")
+            return render(request, 'verify_code.html', {'email': email})
+    
+    return redirect('password_reset')
+
+def set_new_password(request):
+    if request.method == "POST":
+        email = request.session.get('reset_email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if password != confirm_password:
+            messages.error(request, "Las contraseñas no coinciden.")
+            return render(request, 'new_password_form.html', {'email': email})
+        
+        if email in temp_codes:
+            user_id = temp_codes[email]['user_id']
+            user = Usuario.objects.get(id_usuario=user_id)
+            
+            # Actualizar contraseña
+            user.password = make_password(password)
+            user.save()
+            
+            # Limpiar código temporal
+            del temp_codes[email]
+            del request.session['reset_email']
+            
+            messages.success(request, "Contraseña actualizada correctamente. Por favor inicia sesión.")
+            return render(request, 'login.html')
+    
+    return redirect('inicio:password_reset')
 
 
 def index(request):

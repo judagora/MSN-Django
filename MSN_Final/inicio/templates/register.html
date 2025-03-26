@@ -152,7 +152,7 @@
               iconColor:'#369685',
             }).then((result) => {
               if (result.isConfirmed) {
-                window.location.href = "{% url 'login_view' %}";  // Redirige al login
+                window.location.href = "{% url 'inicio:login_view' %}";  // Redirige al login
               }
             });
           });

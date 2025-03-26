@@ -8,7 +8,6 @@ from django.contrib import messages
 from datetime import datetime
 from django.utils.timezone import now
 from django.core.mail import send_mail
-from .tasks import enviar_notificacion
 from django.http import JsonResponse
 from django.core.mail import send_mail
 # Create your views here.
