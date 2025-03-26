@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Código - Motors Safety Net</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .info {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            letter-spacing: 5px;
+            text-align: center;
+        }
+        .btn {
+            background-color: #128C7E;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #0e766a;
+        }
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .back-link {
+            display: block;
+            margin-top: 15px;
+            color: #128C7E;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Verificar Código</h2>
+        <div class="info">
+            Hemos enviado un código de 5 dígitos a <strong>{{ email }}</strong>.
+            Por favor ingrésalo a continuación.
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" action="{% url 'inicio:verify_code' %}">
+            {% csrf_token %}
+            <input type="hidden" name="email" value="{{ email }}">
+            <div class="form-group">
+                <label for="code">Código de Verificación:</label>
+                <input type="text" id="code" name="code" maxlength="5" required>
+            </div>
+            <button type="submit" class="btn">Verificar Código</button>
+        </form>
+        
+        <a href="{% url 'inicio:password_reset' %}" class="back-link">Volver a enviar código</a>
+    </div>
+</body>
+</html>

@@ -99,7 +99,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
 EMAIL_HOST_PASSWORD = 'whgr jcff ulox zxjy'  # Tu contraseña de Gmail o una contraseña de aplicación
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Remitente predeterminado
+DEFAULT_FROM_EMAIL = 'Motors Safety Net <noreply@motorssafetynet.com>'  # Remitente predeterminado
 
 
 # Password validation
