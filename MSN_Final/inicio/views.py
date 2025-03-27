@@ -16,6 +16,10 @@ from django.contrib import messages
 temp_codes = {}
 
 def password_reset_request(request):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     if request.method == "POST":
         email = request.POST.get('email')
         if Usuario.objects.filter(correo_electronico=email).exists():
@@ -58,6 +62,10 @@ def password_reset_request(request):
     return render(request, 'password_reset_form.html')
 
 def verify_code(request):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     if request.method == "POST":
         email = request.POST.get('email')
         user_code = request.POST.get('code')
@@ -72,6 +80,10 @@ def verify_code(request):
     return redirect('password_reset')
 
 def set_new_password(request):
+
+    storage = messages.get_messages(request)
+    list(storage)
+    
     if request.method == "POST":
         email = request.session.get('reset_email')
         password = request.POST.get('password')

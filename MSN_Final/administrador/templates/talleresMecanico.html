@@ -121,7 +121,7 @@
                                     <th>Dirección</th>
                                     <th>Teléfono</th>
                                     <th>Horario</th>
-                                    <th>Mecánico</th>
+                                    <th>Administrador</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -131,8 +131,8 @@
                                     <td>{{ taller.nombre }}</td>
                                     <td>{{ taller.direccion }}</td>
                                     <td>{{ taller.telefono }}</td>
-                                    <td>{{ taller.horario_de_atencion }}</td>
-                                    <td>{{ taller.id_mecanico.id_usuario.nombres }} {{ taller.id_mecanico.id_usuario.apellidos }}</td>
+                                    <td>{{ taller.horario_de_atencion|time:"H:i A" }}</td>
+                                    <td>{{ taller.id_administrador.id_usuario.nombres }} {{ taller.id_administrador.id_usuario.apellidos }}</td>
                                     <td>
                                         <!-- Botón para modificar -->
                                         <div class="tooltip-container tooltip-edit">
@@ -141,7 +141,7 @@
                                             </a>
                                             <span class="tooltip-text">Editar taller</span>
                                         </div>
-            
+                
                                         <!-- Botón para abrir el modal de eliminación -->
                                         <div class="tooltip-container tooltip-delete">
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ taller.id_taller_mecanico }}" class="btn-action btn-delete">

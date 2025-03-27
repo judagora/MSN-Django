@@ -22,179 +22,143 @@ def insertarTaller(request):
         telefono = request.POST.get('telefono')
         horario = request.POST.get('horario')
         id_administrador = request.POST.get('idAdministrador')
-        id_mecanico = request.POST.get('idMecanico')
 
         try:
             administrador = Administrador.objects.get(id_administrador=id_administrador)
-            mecanico = Mecanico.objects.get(id_mecanico=id_mecanico)
 
             TallerMecanico.objects.create(
                 nombre=nombre,
                 direccion=direccion,
                 telefono=telefono,
                 horario_de_atencion=horario,
-                id_administrador=administrador,
-                id_mecanico=mecanico
+                id_administrador=administrador
             )
+            messages.success(request, 'Taller registrado exitosamente')
             return redirect('administrador:talleresMecanico')
         except Exception as e:
             messages.error(request, f'Error al registrar el taller: {str(e)}')
 
-    # Obtener listas de administradores y mecánicos para el formulario
     administradores = Administrador.objects.all()
-    mecanicos = Mecanico.objects.all()
     return render(request, 'insertarTaller.html', {
-        'administradores': administradores,
-        'mecanicos': mecanicos
+        'administradores': administradores
     })
 
 
 @login_required
 def modificarMecanico(request, id_usuario):
-    usuario = get_object_or_404(Usuario, id_usuario=id_usuario)
-    mecanico = get_object_or_404(Mecanico, id_usuario=usuario)
-
+    mecanico = get_object_or_404(Mecanico, id_usuario=id_usuario)
+    
     if request.method == 'POST':
-        form = RegistroMecanicoForm(request.POST, instance=usuario)
+        form = RegistroMecanicoForm(request.POST, instance=mecanico.id_usuario)
+        
         if form.is_valid():
-            usuario = form.save()
-            mecanico.horario_de_trabajo = form.cleaned_data['horario_de_trabajo']
-            mecanico.experiencia_laboral = form.cleaned_data['experiencia_laboral']
-            mecanico.save()
-            messages.success(request, "El mecánico se ha modificado correctamente.")
-            return redirect('administrador:mecanicos')
+            try:
+                # Actualizar usuario
+                usuario = form.save()
+                
+                # Actualizar datos específicos del mecánico
+                mecanico.horario_de_trabajo = request.POST.get('horario_de_trabajo')
+                mecanico.experiencia_laboral = request.POST.get('experiencia_laboral')
+                
+                # Actualizar taller si se cambió
+                id_taller = request.POST.get('id_taller_mecanico')
+                if id_taller:
+                    mecanico.id_taller_mecanico = TallerMecanico.objects.get(id_taller_mecanico=id_taller)
+                else:
+                    mecanico.id_taller_mecanico = None
+                
+                mecanico.save()
+                messages.success(request, 'Mecánico actualizado exitosamente')
+                return redirect('administrador:mecanicos')
+            except Exception as e:
+                messages.error(request, f'Error al actualizar el mecánico: {str(e)}')
         else:
-            # Imprimir errores en la consola para depuración
-            print("Errores del formulario:", form.errors)
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
-        form = RegistroMecanicoForm(instance=usuario, initial={
-            'horario_de_trabajo': mecanico.horario_de_trabajo,
-            'experiencia_laboral': mecanico.experiencia_laboral,
-        })
+        form = RegistroMecanicoForm(instance=mecanico.id_usuario)
 
-    return render(request, 'modificarMecanico.html', {'form': form, 'mecanico': mecanico})
+    talleres = TallerMecanico.objects.all()
+    return render(request, 'modificarMecanico.html', {
+        'form': form,
+        'mecanico': mecanico,
+        'talleres': talleres
+    })
 
 
 @login_required
 def insertarMecanico(request):
     if request.method == 'POST':
-        print("Datos enviados:", request.POST)  # Depuración: Verifica los datos enviados
+        print("Datos enviados:", request.POST)
         form = RegistroMecanicoForm(request.POST)
+        
         if form.is_valid():
-            print("El formulario es válido")  # Depuración en consola
+            print("El formulario es válido")
             try:
+                # Crear usuario
                 usuario = form.save(commit=False)
                 usuario.rol_usuario = "Mecanico"
                 usuario.save()
                 print(f"Usuario creado con ID: {usuario.id_usuario}")
 
-                # Verificar si el usuario se guardó correctamente
-                if usuario.id_usuario:
-                    mecanico = Mecanico.objects.create(
-                        id_usuario=usuario,
-                        horario_de_trabajo=form.cleaned_data['horario_de_trabajo'],
-                        experiencia_laboral=form.cleaned_data['experiencia_laboral']
-                    )
-                    print(f"Mecánico creado con ID: {mecanico.id_mecanico}")
+                # Obtener el taller seleccionado
+                id_taller = request.POST.get('id_taller_mecanico')
+                taller = TallerMecanico.objects.get(id_taller_mecanico=id_taller) if id_taller else None
 
-                    # Enviar correo electrónico al mecánico
-                    subject = 'Bienvenido a Motors Safety Net'
-                    message = f'''
-                        Hola {usuario.nombres},
+                # Crear mecánico
+                mecanico = Mecanico.objects.create(
+                    id_usuario=usuario,
+                    horario_de_trabajo=form.cleaned_data['horario_de_trabajo'],
+                    experiencia_laboral=form.cleaned_data['experiencia_laboral'],
+                    id_taller_mecanico=taller
+                )
+                print(f"Mecánico creado con ID: {mecanico.id_mecanico}")
 
-                        Te has registrado como mecánico en Motors Safety Net. Aquí están tus credenciales:
+                # Enviar correo electrónico
+                subject = 'Bienvenido a Motors Safety Net'
+                message = f'''
+                    Hola {usuario.nombres},
 
-                        Correo Electrónico: {usuario.correo_electronico}
-                        Contraseña: {form.cleaned_data['password1']}
+                    Te has registrado como mecánico en Motors Safety Net. Aquí están tus credenciales:
 
-                        Por favor ingresa al siguiente link para modificar tu contraseña:
-                        {request.build_absolute_uri(reverse('administrador:cambiar_contraseña'))}
+                    Correo Electrónico: {usuario.correo_electronico}
+                    Contraseña: {form.cleaned_data['password1']}
 
-                        Gracias,
-                        Equipo de Motors Safety Net
-                    '''
-                    from_email = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
-                    recipient_list = [usuario.correo_electronico]  # Correo del mecánico
 
-                    # Enviar el correo
-                    try:
-                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-                        print("Correo enviado correctamente")
-                        messages.success(request, "El mecánico se ha registrado correctamente y se ha enviado un correo.")
-                    except Exception as e:
-                        print(f"Error al enviar el correo: {str(e)}")
-                        messages.error(request, f"Error al enviar el correo: {str(e)}")
+                    Gracias,
+                    Equipo de Motors Safety Net
+                '''
+                from_email = 'motorssafetynet@gmail.com'
+                recipient_list = [usuario.correo_electronico]
 
-                    # Redirigir a la lista de mecánicos
-                    return redirect('administrador:mecanicos')  # Redirige al apartado de mecánicos
-                else:
-                    messages.error(request, "No se pudo obtener el ID del usuario.")
+                try:
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    print("Correo enviado correctamente")
+                    messages.success(request, "Mecánico registrado y correo enviado exitosamente")
+                except Exception as e:
+                    print(f"Error al enviar el correo: {str(e)}")
+                    messages.warning(request, f"Mecánico registrado pero error al enviar correo: {str(e)}")
+
+                return redirect('administrador:mecanicos')
+
             except Exception as e:
                 messages.error(request, f"Error al registrar el mecánico: {str(e)}")
-                print(f"Error al registrar el mecánico: {str(e)}")  # Depuración en consola
+                print(f"Error al registrar el mecánico: {str(e)}")
         else:
-            print("Errores del formulario:", form.errors)  # Imprime los errores del formulario en la consola
+            print("Errores del formulario:", form.errors)
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
     else:
         form = RegistroMecanicoForm()
 
-    return render(request, 'insertarMecanico.html', {'form': form})
-
-
-
-@login_required
-def cambiar_contraseña(request):
-    if request.method == 'POST':
-        correo_electronico = request.POST.get('correo_electronico')
-        nueva_contraseña = request.POST.get('nueva_contraseña')
-        confirmar_contraseña = request.POST.get('confirmar_contraseña')
-
-        # Validar que las contraseñas coincidan
-        if nueva_contraseña != confirmar_contraseña:
-            messages.error(request, "Las contraseñas no coinciden.")
-            return redirect('administrador:cambiar_contraseña')
-
-        # Buscar el usuario por correo electrónico
-        try:
-            usuario = Usuario.objects.get(correo_electronico=correo_electronico)
-        except Usuario.DoesNotExist:
-            messages.error(request, "No se encontró un usuario con ese correo electrónico.")
-            return redirect('administrador:cambiar_contraseña')
-
-        # Cambiar la contraseña
-        usuario.set_password(nueva_contraseña)
-        usuario.save()
-
-        # Enviar correo electrónico con la nueva contraseña
-        subject = 'Contraseña actualizada en Motors Safety Net'
-        message = f'''
-            Hola {usuario.nombres},
-
-            Tu contraseña en Motors Safety Net ha sido actualizada. Aquí está tu nueva contraseña:
-
-            Nueva contraseña: {nueva_contraseña}
-
-            Por seguridad, te recomendamos cambiar esta contraseña después de iniciar sesión.
-
-            Gracias,
-            Equipo de Motors Safety Net
-        '''
-        from_email = 'motorssafetynet@gmail.com'  # Tu dirección de Gmail
-        recipient_list = [correo_electronico]  # Correo del usuario
-
-        try:
-            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-            messages.success(request, "Tu contraseña ha sido actualizada y se ha enviado un correo con la nueva contraseña.")
-        except Exception as e:
-            messages.error(request, f"Error al enviar el correo: {str(e)}")
-
-        return redirect('administrador:cambiar_contraseña')  # Redirige al inicio después de cambiar la contraseña
-
-    return render(request, 'cambiar_contraseña.html')
-
-
+    # Obtener todos los talleres para el select
+    talleres = TallerMecanico.objects.all()
+    return render(request, 'insertarMecanico.html', {
+        'form': form,
+        'talleres': talleres
+    })
 
 
 @login_required
@@ -261,34 +225,46 @@ def modificarPeritaje(request, id_peritaje):
 @login_required
 def modificarTaller(request, id_taller_mecanico):
     taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
+    administradores = Administrador.objects.all()  # Obtener todos los administradores
 
     if request.method == 'POST':
-        taller.nombre = request.POST.get('nombre')
-        taller.direccion = request.POST.get('direccion')
-        taller.telefono = request.POST.get('telefono')
-        taller.horario_de_atencion = request.POST.get('horario')
-        taller.id_administrador = Administrador.objects.get(id_administrador=request.POST.get('idAdministrador'))
-        taller.id_mecanico = Mecanico.objects.get(id_mecanico=request.POST.get('idMecanico'))
-        taller.save()
+        nombre = request.POST.get('nombre')
+        direccion = request.POST.get('direccion')
+        telefono = request.POST.get('telefono')
+        horario = request.POST.get('horario')
 
-        return redirect('administrador:talleresMecanico')
+        try:
+            taller.nombre = nombre
+            taller.direccion = direccion
+            taller.telefono = telefono
+            taller.horario_de_atencion = horario
+            taller.save()
+            messages.success(request, 'Taller actualizado exitosamente')
+            return redirect('administrador:talleresMecanico')
+        except Exception as e:
+            messages.error(request, f'Error al actualizar el taller: {str(e)}')
 
-
-    administradores = Administrador.objects.all()
-    mecanicos = Mecanico.objects.all()
     return render(request, 'modificarTaller.html', {
         'taller': taller,
-        'administradores': administradores,
-        'mecanicos': mecanicos
+        'administradores': administradores  # Pasar los administradores al template
     })
 
 
 
 @login_required
-def eliminarTaller(request, id_taller):
-    taller = get_object_or_404(TallerMecanico, id_taller=id_taller)
-    taller.delete()
-    messages.success(request, 'Taller eliminado exitosamente.')
+def eliminarTaller(request, id_taller_mecanico):
+    taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
+    
+    try:
+        # Verificar si el taller tiene mecánicos asociados
+        if taller.mecanico_set.exists():
+            messages.error(request, 'No se puede eliminar el taller porque tiene mecánicos asociados')
+        else:
+            taller.delete()
+            messages.success(request, 'Taller eliminado exitosamente')
+    except Exception as e:
+        messages.error(request, f'Error al eliminar el taller: {str(e)}')
+    
     return redirect('administrador:talleresMecanico')
 
 

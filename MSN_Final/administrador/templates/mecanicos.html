@@ -115,6 +115,7 @@
                                 <th>Nombre de Usuario</th>
                                 <th>Horario de Trabajo</th>
                                 <th>Experiencia Laboral</th>
+                                <th>Taller Asociado</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -126,8 +127,15 @@
                                 <td>{{ mecanico.id_usuario.telefono }}</td>
                                 <td>{{ mecanico.id_usuario.correo_electronico }}</td>
                                 <td>{{ mecanico.id_usuario.nombre_usuario }}</td>
-                                <td>{{ mecanico.horario_de_trabajo|time:"H:i" }}</td>
+                                <td>{{ mecanico.horario_de_trabajo|time:"H:i A" }}</td>
                                 <td>{{ mecanico.experiencia_laboral }}</td>
+                                <td>
+                                    {% if mecanico.id_taller_mecanico %}
+                                        {{ mecanico.id_taller_mecanico.nombre }}
+                                    {% else %}
+                                        Sin taller asignado
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <!-- Botón para modificar -->
                                     <div class="tooltip-container tooltip-edit">

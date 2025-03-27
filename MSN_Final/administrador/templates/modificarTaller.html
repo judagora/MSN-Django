@@ -37,7 +37,8 @@
                 <small>{{ user.correo_electronico }}</small>
             </a>
             <br>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'inicio:logout' %}">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+                href="{% url 'inicio:logout' %}">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -117,7 +118,6 @@
                                     value="{{ taller.nombre }}" required minlength="5" maxlength="30"
                                     pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+">
                                 <label id="errorNombre" class="text-danger" style="display: none;"></label>
-                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Dirección -->
@@ -126,7 +126,6 @@
                                 <input type="text" class="form-control" name="direccion" id="direccion"
                                     value="{{ taller.direccion }}" required minlength="5" maxlength="50">
                                 <label id="errorDireccion" class="text-danger" style="display: none;"></label>
-                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Teléfono -->
@@ -135,50 +134,34 @@
                                 <input type="number" class="form-control" name="telefono" id="telefono"
                                     value="{{ taller.telefono }}" required maxlength="10">
                                 <label id="errorTelefono" class="text-danger" style="display: none;"></label>
-                                <!-- Mensaje de error -->
                             </div>
 
-                            <!-- Campo: Horario de Atención -->
                             <div class="col-md-4 position-relative">
-                                <label for="horario" class="form-label">Horario de Atención</label>
-                                <input type="time" class="form-control" name="horario" id="horario"
-                                    value="{{ taller.horario_de_atencion|time:'H:i' }}" required>
+                                <label for="horario" class="form-label">Horario de Atención <span
+                                        class="text-danger">*</span></label>
+                                <input type="time" class="form-control" name="horario" id="horario" min="07:00"
+                                    max="20:00" step="1800"
+                                    value="{{ taller.horario_de_atencion|time:'H:i'|default:'08:00' }}" required>
+                                <small class="text-muted">Formato: HH:MM (ej: 09:30, 16:00)</small>
                                 <label id="errorHorario" class="text-danger" style="display: none;"></label>
-                                <!-- Mensaje de error -->
                             </div>
 
                             <!-- Campo: Administrador -->
+                            <!-- En la sección del campo Administrador -->
                             <div class="col-md-4 position-relative">
                                 <label for="idAdministrador" class="form-label">Administrador</label>
                                 <select class="form-select" name="idAdministrador" id="idAdministrador" required>
                                     <option value="" disabled>Seleccione un Administrador</option>
                                     {% for admin in administradores %}
-                                        <option value="{{ admin.id_administrador }}" {% if admin.id_administrador == taller.id_administrador.id_administrador %}selected{% endif %}>
-                                            {{ admin.id_usuario.nombres }} {{ admin.id_usuario.apellidos }}
-                                        </option>
+                                    <option value="{{ admin.id_administrador }}" {% if
+                                        admin.id_administrador==taller.id_administrador.id_administrador %}selected{%
+                                        endif %}>
+                                        {{ admin.id_usuario.nombres }} {{ admin.id_usuario.apellidos }}
+                                    </option>
                                     {% endfor %}
                                 </select>
                                 <label id="errorAdministrador" class="text-danger" style="display: none;"></label>
-                                <!-- Mensaje de error -->
                             </div>
-
-                            <!-- Campo: Mecánico -->
-                            <div class="col-md-4 position-relative">
-                                <label for="idMecanico" class="form-label">Mecánico</label>
-                                <select class="form-select" name="idMecanico" id="idMecanico" required>
-                                    <option value="" disabled>Seleccione un Mecánico</option>
-                                    {% for mecanico in mecanicos %}
-                                        <option value="{{ mecanico.id_mecanico }}" {% if mecanico.id_mecanico == taller.id_mecanico.id_mecanico %}selected{% endif %}>
-                                        {{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <label id="errorMecanico" class="text-danger" style="display: none;"></label>
-                                <!-- Mensaje de error -->
-                            </div>
-
-
-
 
                             <!-- Botones -->
                             <div class="row mt-3">
@@ -198,89 +181,108 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Scripts -->
-    {% load static %}
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script>
-        function toggleSubMenu() {
-            const submenu = document.querySelector('.submenu');
-            submenu.classList.toggle('show');
-        }
+            <script>
+                function validarFormulario() {
+                    // Obtener los valores de los campos
+                    let nombre = document.getElementById("nombre").value;
+                    let direccion = document.getElementById("direccion").value;
+                    let telefono = document.getElementById("telefono").value;
+                    let horario = document.getElementById("horario").value;
+                    let idAdministrador = document.getElementById("idAdministrador").value;
 
-        function validarFormulario() {
-            // Obtener los valores de los campos
-            let nombre = document.getElementById("nombre").value;
-            let direccion = document.getElementById("direccion").value;
-            let telefono = document.getElementById("telefono").value;
-            let horario = document.getElementById("horario").value;
-            let idAdministrador = document.getElementById("idAdministrador").value;
-            let idMecanico = document.getElementById("idMecanico").value;
+                    // Obtener las etiquetas de error
+                    let errorNombre = document.getElementById("errorNombre");
+                    let errorDireccion = document.getElementById("errorDireccion");
+                    let errorTelefono = document.getElementById("errorTelefono");
+                    let errorHorario = document.getElementById("errorHorario");
+                    let errorAdministrador = document.getElementById("errorAdministrador");
 
-            // Obtener las etiquetas de error
-            let errorNombre = document.getElementById("errorNombre");
-            let errorDireccion = document.getElementById("errorDireccion");
-            let errorTelefono = document.getElementById("errorTelefono");
-            let errorHorario = document.getElementById("errorHorario");
-            let errorAdministrador = document.getElementById("errorAdministrador");
-            let errorMecanico = document.getElementById("errorMecanico");
+                    // Limpiar mensajes de error anteriores
+                    errorNombre.style.display = "none";
+                    errorDireccion.style.display = "none";
+                    errorTelefono.style.display = "none";
+                    errorHorario.style.display = "none";
+                    errorAdministrador.style.display = "none";
 
-            // Limpiar mensajes de error anteriores
-            errorNombre.style.display = "none";
-            errorDireccion.style.display = "none";
-            errorTelefono.style.display = "none";
-            errorHorario.style.display = "none";
-            errorAdministrador.style.display = "none";
-            errorMecanico.style.display = "none";
+                    // Validar nombre del taller
+                    if (nombre.length < 5 || nombre.length > 30 || !/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(nombre)) {
+                        errorNombre.innerText = "El nombre debe tener entre 5 y 30 caracteres y solo puede contener letras.";
+                        errorNombre.style.display = "block";
+                        return false;
+                    }
 
-            // Validar nombre del taller
-            if (nombre.length < 5 || nombre.length > 30 || !/^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/.test(nombre)) {
-                errorNombre.innerText = "El nombre debe tener entre 5 y 30 caracteres y solo puede contener letras.";
-                errorNombre.style.display = "block";
-                return false;
-            }
+                    // Validar dirección
+                    if (direccion.length < 5 || direccion.length > 50) {
+                        errorDireccion.innerText = "La dirección debe tener entre 5 y 50 caracteres.";
+                        errorDireccion.style.display = "block";
+                        return false;
+                    }
 
-            // Validar dirección
-            if (direccion.length < 5 || direccion.length > 50) {
-                errorDireccion.innerText = "La dirección debe tener entre 5 y 50 caracteres.";
-                errorDireccion.style.display = "block";
-                return false;
-            }
+                    if (!validarHorario('horario', 'errorHorario')) {
+                        return false;
+                    }
 
-            // Validar teléfono
-            if (!/^[0-9]{7,10}$/.test(telefono)) {
-                errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
-                errorTelefono.style.display = "block";
-                return false;
-            }
+                    // Validar teléfono
+                    if (!/^[0-9]{7,10}$/.test(telefono)) {
+                        errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
+                        errorTelefono.style.display = "block";
+                        return false;
+                    }
 
-            // Validar horario
-            let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
-            if (!horarioRegex.test(horario)) {
-                errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
-                errorHorario.style.display = "block";
-                return false;
-            }
+                    // Validar administrador
+                    if (idAdministrador === "") {
+                        errorAdministrador.innerText = "Debe seleccionar un administrador.";
+                        errorAdministrador.style.display = "block";
+                        return false;
+                    }
 
-            // Validar administrador
-            if (idAdministrador === "") {
-                errorAdministrador.innerText = "Debe seleccionar un administrador.";
-                errorAdministrador.style.display = "block";
-                return false;
-            }
+                    return true; // Si todo está correcto, enviar el formulario
 
-            // Validar mecánico
-            if (idMecanico === "") {
-                errorMecanico.innerText = "Debe seleccionar un mecánico.";
-                errorMecanico.style.display = "block";
-                return false;
-            }
+                    // Validar taller (obligatorio)
+                    let taller = document.getElementById("taller").value;
+                    let errorTaller = document.getElementById("errorTaller");
 
-            return true; // Si todo está correcto, enviar el formulario
-        }
-    </script>
+                    errorTaller.style.display = "none";
+
+                    if (taller === "") {
+                        errorTaller.innerText = "Debe seleccionar un taller para el mecánico.";
+                        errorTaller.style.display = "block";
+                        return false;
+                    }
+
+
+                    // Función reusable para validar horarios
+                    function validarHorario(horarioId, errorId) {
+                        const horarioInput = document.getElementById(horarioId);
+                        const horario = horarioInput.value;
+                        const errorHorario = document.getElementById(errorId);
+
+                        errorHorario.style.display = "none";
+                        horarioInput.classList.remove('is-invalid');
+
+                        if (!horario) {
+                            errorHorario.innerText = "Este campo es obligatorio";
+                            errorHorario.style.display = "block";
+                            horarioInput.classList.add('is-invalid');
+                            return false;
+                        }
+
+                        const [horas, minutos] = horario.split(':').map(Number);
+                        const horaValida = horas >= 7 && (horas < 20 || (horas === 20 && minutos === 0));
+                        const minutosValidos = minutos === 0 || minutos === 30;
+
+                        if (!horaValida || !minutosValidos) {
+                            errorHorario.innerText = "Horario inválido. Debe ser entre 07:00 y 20:00 en intervalos de 30 minutos (ej: 08:30, 14:00)";
+                            errorHorario.style.display = "block";
+                            horarioInput.classList.add('is-invalid');
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+            </script>
 </body>
 
 </html>
