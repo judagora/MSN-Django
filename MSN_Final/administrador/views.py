@@ -16,6 +16,11 @@ def inicio (request):
     return render(request, 'indexAdministrador.html')
 
 def insertarTaller(request):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
+
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         direccion = request.POST.get('direccion')
@@ -46,6 +51,10 @@ def insertarTaller(request):
 
 @login_required
 def modificarMecanico(request, id_usuario):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     mecanico = get_object_or_404(Mecanico, id_usuario=id_usuario)
     
     if request.method == 'POST':
@@ -89,6 +98,10 @@ def modificarMecanico(request, id_usuario):
 
 @login_required
 def insertarMecanico(request):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     if request.method == 'POST':
         print("Datos enviados:", request.POST)
         form = RegistroMecanicoForm(request.POST)
@@ -163,6 +176,10 @@ def insertarMecanico(request):
 
 @login_required
 def eliminar_mecanico(request, id_usuario):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     if request.method == 'POST':
         usuario = get_object_or_404(Usuario, id_usuario=id_usuario)
         usuario.delete()
@@ -179,9 +196,6 @@ def mantenimientos (request):
 def historialesVehiculo(request):
     # Obtener todos los vehículos con la información del cliente y el usuario
     vehiculos = Vehiculo.objects.select_related('id_cliente__id_usuario').all()
-    return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
-    
-    # Pasar los datos a la plantilla
     return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
 
 @login_required
@@ -224,6 +238,10 @@ def modificarPeritaje(request, id_peritaje):
 
 @login_required
 def modificarTaller(request, id_taller_mecanico):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
     administradores = Administrador.objects.all()  # Obtener todos los administradores
 
@@ -254,6 +272,9 @@ def modificarTaller(request, id_taller_mecanico):
 @login_required
 def eliminarTaller(request, id_taller_mecanico):
     taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
+
+    storage = messages.get_messages(request)
+    list(storage)
     
     try:
         # Verificar si el taller tiene mecánicos asociados
@@ -279,6 +300,10 @@ def eliminarPeritaje(request, id_peritaje):
 
 @login_required
 def modificarMantenimiento (request, id_mantenimiento):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
 
     if request.method == 'POST':
@@ -295,6 +320,10 @@ def modificarMantenimiento (request, id_mantenimiento):
 
 @login_required
 def eliminar_mantenimiento(request, id_mantenimiento):
+
+    storage = messages.get_messages(request)
+    list(storage)
+
     mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
     mantenimiento.delete()
     messages.success(request, 'Mantenimiento eliminado exitosamente.')
