@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inicio.models import Cliente
-from inicio.models import Vehiculo, Soat, Notificaciones
+from inicio.models import Vehiculo, Soat, Notificaciones, Mecanico, TallerMecanico
 from django.contrib.auth import logout
 from .forms import VehiculoForm, ClienteForm, SoatForm, NotificacionForm
 from django.contrib import messages
@@ -227,5 +227,19 @@ def eliminar_notificacion(request, id_notificacion):
 
 @login_required
 def mantenimiento(request):
-    return render(request, 'mantenimiento.html')
+    usuario = request.user
+    cliente = Cliente.objects.filter(id_usuario = usuario).first()
+    vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
+    tallerMecanico = TallerMecanico.objects.all()
+    return render(request, 'mantenimiento.html', {'vehiculos': vehiculos, 'tallerMecanico': tallerMecanico})
+
+
+def obtener_mecanicos(request):
+    taller_id = request.GET.get('taller_id')
+
+    if taller_id:
+        mecanicos = Mecanico.objects.filter(id_usuario__id_tallermecanico=taller_id).values('id_mecanico', 'id_usuario__nombres')
+        return JsonResponse(list(mecanicos), safe=False)
+    return JsonResponse([], safe=False)
+
 

@@ -1,7 +1,7 @@
 {%load static%}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,33 +47,111 @@
         </nav>
     </header>
 
-
     <main class="container-fluid">
 
         <div class="row">
             <div class="col-9 ">
 
-                <div class="formulario">
+                <div class="formulario formulario-m">
+                    <h4>Programa tus Mantenimientos</h4>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="tipo_Mantenimiento">Tipo de mantenimiento:</label>
+                            <select list="tipo-m" id="" name="tipo_Mantenimiento" required>
+                                <option value="" disabled selected>Selecciona un mantenimiento</option>
+                                <option value="Preventivo">Preventivo</option>
+                                <option value="Correctivo">Correctivo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_taller_mecanico">Taller Mecanico Preferido:</label>
+                            <select list="tipo-m" id="taller_mecanico" name="id_taller_mecanico" required>
+                                <option value="" disabled selected>Selecciona un Taller Mecanico<option>
+                                {% for taller in tallerMecanico%}
+                                    <option value="{{taller.id_taller_mecanico}}">{{taller.nombre }} - {{ taller.direccion}}</option>
+                                {% endfor %}
+                            </select>
 
-                    <div class="iconos">
-                        <a class="links" href="#">
-                            <img class="calendario" src="{% static 'clientesource/img/calendario1.svg' %}" alt="">
-                            <span>Programar mantenimiento</span>
-                        </a>
-                        <a class="links" href="#">
-                            <img class="calendario" src="{% static 'clientesource/img/calendario2.svg' %}" alt="">
-                            <span>Programar mantenimiento</span>
-                        </a>
-                        
-                    </div>
 
-                    <div class="agenda">
-                        
-                    </div>
-                    
+                        </div>
+                        <div class="form-group">
+                            <label for="id_mecanico">Mecanico Preferido:</label>
+                            <select list="tipo-m" id="mecanico" name="id_mecanico" required>
+                                <option value="" disabled selected>Selecciona un Mecanico</option>      
+                            </select>
+
+
+                        </div>
+                        <div class="form-group">
+                            <label for="id_vehiculo">vehículo al que se le realizara el mantenimiento:</label>
+                            <select list="tipo-m" id="" name="id_vehiculo" required>
+                                <option value="" disabled selected>Selecciona un vehículo</option>
+                                
+                                {% for vehiculo in vehiculos %}
+                                    <option value="{{ vehiculo.id_vehiculo }}">
+                                        {{ vehiculo.marca }} - {{ vehiculo.placa|upper }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_mantenimiento">Fecha del mantenimiento</label>
+                            <input type="date" name="fecha_mantenimiento" id="recordatorio">
+                        </div>
+                        <div class="form-group">
+                            <label for="hora_mantenimiento">Hora del mantenimiento</label>
+                            <input type="time" id="hora" name="hora_mantenimiento" min="08:00" max="20:00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="notas">Notas para el Mecanico</label>
+                            <input type="text" id="notas" placeholder="" name="notas">
+                        </div>
+                        <input type="submit" value="Registrar Mantenimiento" name="btnRegistrarNotificacion" class="enviar">
+                    </form>
                 </div>
 
-                
+                <div class=" notificacion">
+                    <h4>Mantenimientos Registrados</h4>
+                    <div class="table-responsive">
+                        <table id="notificationTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo de mantenimiento</th>
+                                    <th>Mecanico</th>
+                                    <th>Vehículo</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Notas</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="notificationTableBody">
+                                    <tr>
+                                        <td>Preventivo</td>
+                                        <td>Pedro Perez</td>
+                                        <td>Chevrolet</td>
+                                        <td>12-01-2025</td>
+                                        <td>8:40 am</td>
+                                        <td></td>
+                                        <td>
+                                            <a href="" onclick="confirmarEliminacion(event, this)" class="eliminar-b">
+                                                <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar notificación">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="" class="editar-b">
+                                                <img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar notificacion">
+                                            </a>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
 
             </div>
@@ -89,10 +167,10 @@
                             <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
+                            <a class="opcion" href="#">Mantenimientos</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
+                            <a class="opcion" href="#">Modificaciones</a>
                         </li>
                         <li>
                             <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
@@ -101,16 +179,38 @@
                             <a class="opcion" href="{% url 'cliente:cuenta'%}">Cuenta</a>
                         </li>
                     </ul>
-
-
                 </div>
             </div>
         </div>
 
     </main>
+    
+    <script>
+        document.getElementById("taller_mecanico").addEventListener("change", function() {
+            let taller_id = this.value;
+            let mecanicoSelect = document.getElementById("mecanico");
+    
+            // Limpiar las opciones actuales
+            mecanicoSelect.innerHTML = '<option value="" disabled selected>Selecciona un Mecánico</option>';
+    
+            if (taller_id) {
+                fetch(`/obtener-mecanicos/?taller_id=${taller_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(mecanico => {
+                            let option = document.createElement("option");
+                            option.value = mecanico.id_mecanico;
+                            option.textContent = mecanico.id_usuario__nombres;
+                            mecanicoSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error al obtener mecánicos:", error));
+            }
+        });
+    </script>
 
     
-
+   
 
     
 </body>

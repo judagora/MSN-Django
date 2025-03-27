@@ -1,5 +1,5 @@
 from django import forms
-from inicio.models import Vehiculo, Usuario, Soat, Cliente, Notificaciones
+from inicio.models import Vehiculo, Usuario, Soat, Cliente, Notificaciones, MantenimientoProgramado
 from datetime import datetime, time
 from django.core.exceptions import ValidationError
 
@@ -185,3 +185,40 @@ class NotificacionForm(forms.ModelForm):
         if hora and (hora < hora_minima or hora > hora_maxima):
             raise ValidationError("La hora debe estar entre las 6:00 AM y las 7:00 PM.")
         return hora
+    
+
+class MantenimientoForm(forms.ModelForm):
+    class Meta:
+        model = MantenimientoProgramado
+        fields = ['tipo_Mantenimiento', 'id_mecanico', 'id_vehiculo', 'id_taller_mecanico', 'fecha_mantenimiento', 'hora_mantenimiento', 'notas']
+
+        error_messages = {
+            'tipo_Mantenimiento': {
+                'required': "El tipo de mantenimiento es obligatorio.",
+            },
+            'id_mecanico': {
+                'required': "Debes seleccionar un mecánico.",
+                'invalid_choice': "El mecánico seleccionado no es válido."
+            },
+            'id_vehiculo': {
+                'required': "Debes seleccionar un vehículo.",
+                'invalid_choice': "El vehículo seleccionado no es válido."
+            },
+            'id_taller_mecanico': {
+                'required': "Debes seleccionar un taller mecánico.",
+                'invalid_choice': "El taller mecánico seleccionado no es válido."
+            },
+            'fecha_mantenimiento': {
+                'required': "La fecha del mantenimiento es obligatoria.",
+                'invalid': "Ingresa una fecha válida."
+            },
+            'hora_mantenimiento': {
+                'required': "La hora del mantenimiento es obligatoria.",
+                'invalid': "Ingresa una hora válida (HH:MM)."
+            },
+            'notas': {
+                'max_length': "Las notas no pueden tener más de 100 caracteres.",
+            }
+        }
+
+        
