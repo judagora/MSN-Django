@@ -152,12 +152,31 @@ class Soat(models.Model):
     def __str__(self):
         return f"SOAT {self.numero_poliza} - {self.aseguradora}"
 
+class Administrador(models.Model):
+    id_administrador = models.AutoField(primary_key=True)
+    ubicacion = models.CharField(max_length=45)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Administrador {self.id_administrador} - {self.id_usuario.nombres}"
+
+class TallerMecanico(models.Model):
+    id_taller_mecanico = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=30)
+    direccion = models.CharField(max_length=60)
+    telefono = models.CharField(max_length=20)
+    horario_de_atencion = models.TimeField()
+    id_administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Taller Mecánico {self.nombre}"
 
 class Mecanico(models.Model):
     id_mecanico = models.AutoField(primary_key=True)
     horario_de_trabajo = models.TimeField()
     experiencia_laboral = models.CharField(max_length=255)
     id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_taller_mecanico = models.ForeignKey(TallerMecanico, on_delete=models.CASCADE,  null=True, blank=True)  # Relación corregida
 
     def __str__(self):
         return f"Mecánico {self.id_mecanico} - {self.id_usuario.nombres}"
@@ -210,28 +229,6 @@ class VehiculoRepuestosModificados(models.Model):
 
     def __str__(self):
         return f"Vehículo {self.id_vehiculo} - Repuesto Modificado {self.id_repuestos_modificados}"
-
-
-class Administrador(models.Model):
-    id_administrador = models.AutoField(primary_key=True)
-    ubicacion = models.CharField(max_length=45)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Administrador {self.id_administrador} - {self.id_usuario.nombres}"
-
-
-class TallerMecanico(models.Model):
-    id_taller_mecanico = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=30)
-    direccion = models.CharField(max_length=60)
-    telefono = models.CharField(max_length=20)
-    horario_de_atencion = models.TimeField()
-    id_administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
-    id_mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Taller Mecánico {self.nombre}"
 
 
 class MantenimientoRepuestosModificados(models.Model):

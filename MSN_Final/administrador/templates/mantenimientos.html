@@ -125,12 +125,21 @@
                                 <td>{{ mantenimiento.costo }}</td>
                                 <td>{{ mantenimiento.notas_adicionales }}</td>
                                 <td>
-                                    <a href="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}">
-                                        <i class="lni lni-cog" style="font-size: 32px; color: black;"></i>
-                                    </a>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ mantenimiento.id_mantenimiento }}">
-                                        <i class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i>
-                                    </a>
+                                    <!-- Botón para modificar -->
+                                    <div class="tooltip-container tooltip-edit">
+                                        <a href="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}" class="btn-action btn-edit">
+                                            <i class="lni lni-cog"></i>
+                                        </a>
+                                        <span class="tooltip-text">Editar mantenimiento</span>
+                                    </div>
+        
+                                    <!-- Botón para abrir el modal de eliminación -->
+                                    <div class="tooltip-container tooltip-delete">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ mantenimiento.id_mantenimiento }}" class="btn-action btn-delete">
+                                            <i class="lni lni-circle-minus"></i>
+                                        </a>
+                                        <span class="tooltip-text">Eliminar mantenimiento</span>
+                                    </div>
                                 </td>
                             </tr>
 
