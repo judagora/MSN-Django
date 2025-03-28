@@ -5,12 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mantenimientos</title>
+    <title>Editar Mantenimiento</title>
     <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/styleLogin.css' %}">
     <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
-    <link rel="stylesheet" href="{% static 'clientesource/css/Mantenimientos.css' %}">
+    <link rel="stylesheet" href="{% static 'clientesource/css/signin.css' %}">
     <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
 </head>
 <body>
@@ -18,7 +17,7 @@
     <header>
 
         <div class="logo">
-            <a class="link" href="{% url 'cliente:inicio'%}">
+            <a class="link" href="">
                 <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
                 <h1>Motors Safety Net</h1>
             </a>
@@ -31,13 +30,13 @@
                     <a class="count" href="{% url 'cliente:cuenta'%}">
                         <img src="{% static 'clientesource/img/cuentaLog.svg' %}" title="Cuenta" alt="Cuenta">
                         <h3 text="">
-                            {{user.nombre_usuario|capfirst}}
+                            {{user.nombre_usuario}}
                         </h3>
                     </a>
                 </li>
 
                 <li>
-                    <a class="count" href="{% url 'inicio:logout'%}">
+                    <a class="count" href="">
                         <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
                     </a>
                 </li>
@@ -47,13 +46,8 @@
         </nav>
     </header>
 
-    <main class="container-fluid">
-
-        <div class="row">
-            <div class="col-9 ">
-
-                <div class="formulario formulario-m">
-                    <h4>Programa tus Mantenimientos</h4>
+    <div class="container">
+        <h1>Actualiza tu Mantenimiento</h1>
                     <form action="" method="POST">
                         {% csrf_token %}
                         <div class="form-group">
@@ -148,89 +142,32 @@
                             </div>
                             {% endif %}
                         </div>
-                        <input type="submit" value="Registrar Mantenimiento" name="btnRegistrarNotificacion" class="enviar">
+                        <input type="submit" value="Actualizar Mantenimiento" name="btnRegistrarNotificacion" class="enviar">
+                        <a class="btn-volver" id="btn-volver" href="{% url 'cliente:mantenimiento'%}">Volver</a>
                     </form>
-                </div>
-
-                <div class=" notificacion">
-                    <h4>Mantenimientos Registrados</h4>
-                    <div class="table-responsive">
-                        <table id="notificationTable" class="table">
-                            <thead>
-                                <tr>
-                                    <th>Tipo de mantenimiento</th>
-                                    <th>Taller</th>
-                                    <th>Mecanico</th>
-                                    <th>Vehículo</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Notas</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="notificationTableBody">
-
-                                {% for mantenimiento in manteniminetosCliente %}
-                                    <tr>
-                                        <td>{{ mantenimiento.tipo_Mantenimiento }}</td>
-                                        <td>{{ mantenimiento.id_taller_mecanico.nombre| capfirst }}</td>
-                                        <td>{{ mantenimiento.id_mecanico.id_usuario.nombres| capfirst }}</td>
-                                        <td>{{ mantenimiento.id_vehiculo.marca| capfirst }} - {{ mantenimiento.id_vehiculo.placa| upper }}</td>
-                                        <td>{{ mantenimiento.fecha_mantenimiento }}</td>
-                                        <td>{{ mantenimiento.hora_mantenimiento|time:"h:i A" }}</td>
-                                        <td>{{ mantenimiento.notas| default:"Sin notas" }}</td>
-                                        <td>
-                                            <a href="{% url 'cliente:eliminar_mantenimiento' mantenimiento.id_mantenimiento %}" onclick="confirmarEliminacion(event, this)" class="eliminar-b">
-                                                <img src="{% static 'clientesource/img/delete.svg' %}" alt="Eliminar notificación">
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'cliente:editar_mantenimiento' mantenimiento.id_mantenimiento %}" class="editar-b">
-                                                <img src="{% static 'clientesource/img/edit.svg' %}" alt="Editar notificacion">
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor%}
-                                    
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-
-            </div>
-
-            <div class="col-3  columna">
-                <div class="menu">
-
-                    <ul>
-                        <li>
-                            <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
-                        </li>
-                        <li>
-                            <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
-                        </li>
-                        <li>
-                            <a class="opcion" href="{% url 'cliente:mantenimiento'%}">Mantenimientos</a>
-                        </li>
-                        <li>
-                            <a class="opcion" href="#">Modificaciones</a>
-                        </li>
-                        <li>
-                            <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
-                        </li>
-                        <li>
-                            <a class="opcion" href="{% url 'cliente:cuenta'%}">Cuenta</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-    </main>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    {% if mantenimiento_valido %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "¡Actualización exitosa!",
+                text: "El Mantenimiento ha sido actualizado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#369685",
+                iconColor: "#369685"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'cliente:mantenimiento'  %}";
+                }
+            });
+        });
+    </script>
+    {% endif %}
     
     <script>
         document.getElementById("taller_mecanico").addEventListener("change", function() {
@@ -256,115 +193,53 @@
         });
     </script>
 
-    
-    <script>
-        function confirmarEliminacion(event, element) {
-            event.preventDefault();
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "No podrás revertir esta acción.",
-                icon: "warning",
-                showCancelButton: true,
-                iconColor: "#369685",
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#369685",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = element.href; // Redirige si el usuario confirma
-                }
-            });
-        }
-    </script>
-
-    {% if messages %}
-        {% for message in messages%}
-            <script>
-                Swal.fire({
-                    title: "¡Eliminado!",
-                    text: "Mantenimiento eliminado correctamente.",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    iconColor: "#369685",
-                    confirmButtonColor: "#369685",
-                });
-            </script>
-        {% endfor %}
-    {% endif %}
-
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let fechaInput = document.getElementById("recordatorio");
-            let today = new Date().toISOString().split("T")[0]; // Obtiene la fecha actual en formato YYYY-MM-DD
-            fechaInput.setAttribute("min", today);
-        });
-    </script>
-
-    <script>
-        document.getElementById("hora").addEventListener("change", function () {
-            let horaInput = this.value; // Captura la hora ingresada
-            let minHora = "07:00";
-            let maxHora = "19:00";
-
-            if (minutos !== 0 && minutos !== 30) {
-            alert("Solo se permiten horas exactas o medias horas (por ejemplo, 7:00, 7:30, 8:00, 8:30).");
-            this.value = ""; // Borra el valor incorrecto
-            return;
-            }
-
-            if (horaInput < minHora || horaInput > maxHora) {
-                alert("La hora debe estar entre las 7:00 AM y las 8:00 PM.");
-                this.value = ""; // Borra el valor incorrecto
-            }
-        });
-    </script>
-
-   
-
-   {% if mantenimiento_valido %}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            Swal.fire({
-                title: "Registro exitoso!",
-                text: "El Mantenimiento se registro correctamente.",
-                icon: "success",
-                confirmButtonText: "Aceptar",
-                confirmButtonColor: "#369685",
-                iconColor: "#369685"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'cliente:mantenimiento' %}";
-                }
-            });
-        });
-    </script>
-    {% endif %}
-
-   <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        let mecanicoSelect = document.getElementById("mecanico");
-        let mecanicoPreseleccionado = "{{ form.id_mecanico.value|default:'' }}";
-
-        // Espera a que se carguen los mecánicos dinámicamente
-        setTimeout(() => {
-            if (mecanicoPreseleccionado) {
-                let opciones = mecanicoSelect.options;
-                for (let i = 0; i < opciones.length; i++) {
-                    if (opciones[i].value === mecanicoPreseleccionado) {
-                        opciones[i].selected = true;
-                        break;
-                    }
-                }
-            }
-        }, 500); // Se ajusta según el tiempo de carga
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let fechaInput = document.getElementById("recordatorio");
+        let today = new Date().toISOString().split("T")[0]; // Obtiene la fecha actual en formato YYYY-MM-DD
+        fechaInput.setAttribute("min", today);
     });
+</script>
 
-   </script>
+<script>
+    document.getElementById("hora").addEventListener("change", function () {
+        let horaInput = this.value; // Captura la hora ingresada
+        let minHora = "07:00";
+        let maxHora = "19:00";
 
+        if (minutos !== 0 && minutos !== 30) {
+        alert("Solo se permiten horas exactas o medias horas (por ejemplo, 7:00, 7:30, 8:00, 8:30).");
+        this.value = ""; // Borra el valor incorrecto
+        return;
+        }
+
+        if (horaInput < minHora || horaInput > maxHora) {
+            alert("La hora debe estar entre las 7:00 AM y las 8:00 PM.");
+            this.value = ""; // Borra el valor incorrecto
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    let mecanicoSelect = document.getElementById("mecanico");
+    let mecanicoPreseleccionado = "{{ form.id_mecanico.value|default:'' }}";
+
+    // Espera a que se carguen los mecánicos dinámicamente
+    setTimeout(() => {
+        if (mecanicoPreseleccionado) {
+            let opciones = mecanicoSelect.options;
+            for (let i = 0; i < opciones.length; i++) {
+                if (opciones[i].value === mecanicoPreseleccionado) {
+                    opciones[i].selected = true;
+                    break;
+                }
+            }
+        }
+    }, 500); // Se ajusta según el tiempo de carga
+});
+
+</script>
     
 </body>
 </html>

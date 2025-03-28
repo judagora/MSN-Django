@@ -80,7 +80,7 @@
             </div>
             <div class="form-group">
                 <label for="fecha_emision">Valor del SOAT</label>
-                <input type="number" name="valor_soat" value="{{ form.valor_soat.value|floatformat:'0' }}" id="" placeholder="Ej: 117,900" required>
+                <input type="number" name="valor_soat" value="{{ form.valor_soat.value|floatformat:'0' }}" id="" placeholder="Ej: 117,900" step="1" pattern="^\d+$" title="Solo números enteros" required>
                 {% if form.valor_soat.errors %}
                 <div class="alert-danger">
                     <span>{{ form.valor_soat.errors.0 }}</span>
@@ -120,6 +120,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+        <script>
+            document.getElementById("valor_soat").addEventListener("input", function() {
+                this.value = this.value.replace(/[^0-9]/g, ""); // Permite solo números enteros
+            });
+        </script>
 
     {% if act_soat %}
     <script>
