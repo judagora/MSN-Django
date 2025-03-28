@@ -1,6 +1,6 @@
 from django import forms
 from inicio.models import Vehiculo, Usuario, Soat, Cliente, Notificaciones, MantenimientoProgramado
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from django.core.exceptions import ValidationError
 
 class VehiculoForm(forms.ModelForm):
@@ -220,5 +220,31 @@ class MantenimientoForm(forms.ModelForm):
                 'max_length': "Las notas no pueden tener más de 100 caracteres.",
             }
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha = cleaned_data.get('fecha_mantenimiento')
+        hora = cleaned_data.get('hora_mantenimiento')
+        mecanico = cleaned_data.get('id_mecanico')
 
+        if not (fecha and hora and mecanico):
+            return cleaned_data  # Si falta algún campo, no validar más.
+
+        # Verificar si el mecánico ya tiene 4 mantenimientos en ese día**
+        mantenimientos_mismo_dia = MantenimientoProgramado.objects.filter(
+            id_mecanico=mecanico,
+            fecha_mantenimiento=fecha
+        )
+
+        if mantenimientos_mismo_dia.count() >= 4:
+            self.add_error('fecha_mantenimiento', "Este mecánico ya tiene varios mantenimientos programados para este día, Por favor, selecciona otro día.")
+
+        # Verificar si la hora ya está ocupada (solo se permite cada 3 horas)**
+        tres_horas = timedelta(hours=3)
+
+        for mantenimiento in mantenimientos_mismo_dia:
+            diferencia_horas = abs(mantenimiento.hora_mantenimiento.hour - hora.hour)
+            if diferencia_horas < 3:  # Si la diferencia es menor a 3 horas
+                self.add_error('hora_mantenimiento', "Ya hay un mantenimiento programado en esa franja horaria. Seleccione otra hora (3 horas de diferencia).")
+
+        return cleaned_data
         
