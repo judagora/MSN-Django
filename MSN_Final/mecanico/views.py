@@ -180,31 +180,52 @@ def consultarMantenimientoMc(request):
 
 @login_required
 def consultarMantenimientoMc2(request, placa):
-    # Buscar el vehículo por placa
+    # Obtener el usuario autenticado y su asociación como mecánico
+    usuario_actual = request.user
+    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+    
+    # Buscar el vehículo por placa (manteniendo tu lógica original)
     vehiculo = get_object_or_404(Vehiculo, placa=placa)
-
-    # Obtener todos los mantenimientos asociados al vehículo a través de la tabla intermedia
-    mantenimientos = VehiculoMantenimiento.objects.filter(id_vehiculo=vehiculo).select_related('id_mantenimiento')
-
+    
+    # Obtener los IDs de los mantenimientos que este mecánico ha realizado
+    mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
+        id_mecanico=mecanico
+    ).values_list('id_mantenimiento', flat=True)
+    
+    # Filtrar los mantenimientos del vehículo que coincidan con los del mecánico
+    mantenimientos = VehiculoMantenimiento.objects.filter(
+        id_vehiculo=vehiculo,
+        id_mantenimiento__in=mantenimientos_mecanico
+    ).select_related('id_mantenimiento')
+    
     if not mantenimientos:
-        # Si no hay mantenimientos asociados, mostrar un mensaje
         return render(request, 'consultarMantenimientoMc2.html', {
             'placa': placa,
-            'mensaje': 'No se encontraron mantenimientos para este vehículo.'
+            'mensaje': 'No se encontraron mantenimientos para este vehículo realizados por usted.'
         })
-
-    # Pasar todos los mantenimientos a la plantilla
+    
     return render(request, 'consultarMantenimientoMc2.html', {
         'placa': placa,
-        'mantenimientos': mantenimientos,  # Pasar todos los mantenimientos
+        'mantenimientos': mantenimientos,  # Mantiene la misma estructura que espera tu template
     })
 
 @login_required
 def modificarMantenimientoMc(request):
-    # Obtener todos los registros de VehiculoMantenimiento con sus relaciones
-    vehiculo_mantenimientos = VehiculoMantenimiento.objects.select_related('id_vehiculo', 'id_mantenimiento').all()
-
-    # Renderizar la plantilla con los datos
+    # Obtener el mecánico asociado al usuario autenticado (NUEVO)
+    usuario_actual = request.user
+    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+    
+    # Obtener SOLO los mantenimientos de este mecánico (MODIFICADO)
+    mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
+        id_mecanico=mecanico
+    ).values_list('id_mantenimiento', flat=True)
+    
+    # Manteniendo TU lógica original pero con el filtro añadido
+    vehiculo_mantenimientos = VehiculoMantenimiento.objects.filter(
+        id_mantenimiento__in=mantenimientos_mecanico
+    ).select_related('id_vehiculo', 'id_mantenimiento')
+    
+    # Renderizar la plantilla con los datos (igual que antes)
     return render(request, 'modificarMantenimientoMc.html', {
         'vehiculo_mantenimientos': vehiculo_mantenimientos,
     })
@@ -332,9 +353,20 @@ def insertarPeritajeMc(request):
 
 @login_required
 def modificarPeritajeMc(request):
-    # Obtener todos los registros de VehiculoPeritaje con sus relaciones
-    vehiculo_peritajes = VehiculoPeritaje.objects.select_related('id_vehiculo', 'id_peritaje').all()
-
+    # Obtener el mecánico asociado al usuario autenticado
+    usuario_actual = request.user
+    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+    
+    # Obtener SOLO los peritajes de este mecánico
+    peritajes_mecanico = MecanicoPeritaje.objects.filter(
+        id_mecanico=mecanico
+    ).values_list('id_peritaje', flat=True)
+    
+    # Filtrar los peritajes del vehículo que coincidan con los del mecánico
+    vehiculo_peritajes = VehiculoPeritaje.objects.filter(
+        id_peritaje__in=peritajes_mecanico
+    ).select_related('id_vehiculo', 'id_peritaje')
+    
     # Renderizar la plantilla con los datos
     return render(request, 'modificarPeritajeMc.html', {
         'vehiculo_peritajes': vehiculo_peritajes,
@@ -399,24 +431,42 @@ def consultarPeritajeMc(request):
 
 @login_required
 def consultarPeritajeMc2(request, placa):
-    # Buscar el vehículo por placa
-    vehiculo = get_object_or_404(Vehiculo, placa=placa)
-
-    # Obtener todos los peritajes asociados al vehículo a través de la tabla intermedia
-    peritajes = VehiculoPeritaje.objects.filter(id_vehiculo=vehiculo).select_related('id_peritaje')
-
-    if not peritajes:
-        # Si no hay peritajes asociados, mostrar un mensaje
+    try:
+        # Obtener el usuario autenticado y su asociación como mecánico
+        usuario_actual = request.user
+        mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+        
+        # Buscar el vehículo por placa (manteniendo tu lógica original)
+        vehiculo = get_object_or_404(Vehiculo, placa=placa)
+        
+        # Obtener los IDs de los peritajes que este mecánico ha realizado
+        peritajes_mecanico = MecanicoPeritaje.objects.filter(
+            id_mecanico=mecanico
+        ).values_list('id_peritaje', flat=True)
+        
+        # Filtrar los peritajes del vehículo que coincidan con los del mecánico
+        peritajes = VehiculoPeritaje.objects.filter(
+            id_vehiculo=vehiculo,
+            id_peritaje__in=peritajes_mecanico
+        ).select_related('id_peritaje')
+        
+        if not peritajes:
+            return render(request, 'consultarPeritajeMc2.html', {
+                'placa': placa,
+                'mensaje': 'No se encontraron peritajes para este vehículo realizados por usted.'
+            })
+        
         return render(request, 'consultarPeritajeMc2.html', {
             'placa': placa,
-            'mensaje': 'No se encontraron peritajes para este vehículo.'
+            'peritajes': peritajes,  # Mantiene la misma estructura que tu template
         })
-
-    # Pasar todos los peritajes a la plantilla
-    return render(request, 'consultarPeritajeMc2.html', {
-        'placa': placa,
-        'peritajes': peritajes,  # Pasar todos los peritajes
-    })
+        
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'No estás registrado como mecánico')
+        return redirect('pagina_de_error')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error: {str(e)}')
+        return redirect('pagina_de_error')
 
 @login_required
 def insertarRepuestoMc(request):
@@ -491,10 +541,21 @@ def insertarRepuestoMc(request):
 
 @login_required
 def modificarRepuestoMc(request):
-    # Obtener todos los registros de VehiculoRepuestosModificados con sus relaciones
-    vehiculo_repuestos = VehiculoRepuestosModificados.objects.select_related('id_vehiculo', 'id_repuestos_modificados').all()
-
-    # Renderizar la plantilla con los datos
+    # Obtener el usuario autenticado y su asociación como mecánico
+    usuario_actual = request.user
+    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+    
+    # Obtener SOLO los repuestos modificados por este mecánico
+    repuestos_mecanico = MecanicoRepuestosModificados.objects.filter(
+        id_mecanico=mecanico
+    ).values_list('id_repuestos_modificados', flat=True)
+    
+    # Filtrar los repuestos de vehículos que coincidan con los del mecánico
+    vehiculo_repuestos = VehiculoRepuestosModificados.objects.filter(
+        id_repuestos_modificados__in=repuestos_mecanico
+    ).select_related('id_vehiculo', 'id_repuestos_modificados')
+    
+    # Renderizar la plantilla con los datos (misma estructura)
     return render(request, 'modificarRepuestoMc.html', {
         'vehiculo_repuestos': vehiculo_repuestos,
     })
@@ -558,22 +619,40 @@ def consultarRepuestoMc(request):
 
 @login_required
 def consultarRepuestoMc2(request, placa):
-    # Buscar el vehículo por placa
-    vehiculo = get_object_or_404(Vehiculo, placa=placa)
-
-    # Obtener todos los repuestos modificados asociados al vehículo a través de la tabla intermedia
-    repuestos_modificados = VehiculoRepuestosModificados.objects.filter(id_vehiculo=vehiculo).select_related('id_repuestos_modificados')
-
-    if not repuestos_modificados:
-        # Si no hay repuestos modificados asociados, mostrar un mensaje
+    try:
+        # Obtener el usuario autenticado y su asociación como mecánico
+        usuario_actual = request.user
+        mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+        
+        # Buscar el vehículo por placa (manteniendo tu lógica original)
+        vehiculo = get_object_or_404(Vehiculo, placa=placa)
+        
+        # Obtener los IDs de los repuestos que este mecánico ha modificado
+        repuestos_mecanico = MecanicoRepuestosModificados.objects.filter(
+            id_mecanico=mecanico
+        ).values_list('id_repuestos_modificados', flat=True)
+        
+        # Filtrar los repuestos del vehículo que coincidan con los del mecánico
+        repuestos_modificados = VehiculoRepuestosModificados.objects.filter(
+            id_vehiculo=vehiculo,
+            id_repuestos_modificados__in=repuestos_mecanico
+        ).select_related('id_repuestos_modificados')
+        
+        if not repuestos_modificados:
+            return render(request, 'consultarRepuestoMc2.html', {
+                'placa': placa,
+                'mensaje': 'No se encontraron repuestos modificados para este vehículo realizados por usted.'
+            })
+        
         return render(request, 'consultarRepuestoMc2.html', {
             'placa': placa,
-            'mensaje': 'No se encontraron repuestos modificados para este vehículo.'
+            'repuestos_modificados': repuestos_modificados,  # Misma estructura que tu template
         })
-
-    # Pasar todos los repuestos modificados a la plantilla
-    return render(request, 'consultarRepuestoMc2.html', {
-        'placa': placa,
-        'repuestos_modificados': repuestos_modificados,  # Pasar todos los repuestos modificados
-    })
+        
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'No estás registrado como mecánico')
+        return redirect('pagina_de_error')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error: {str(e)}')
+        return redirect('pagina_de_error')
 

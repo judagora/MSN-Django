@@ -38,7 +38,8 @@
         <small>{{ user.correo_electronico }}</small>
       </a>
       <br>
-      <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'inicio:logout' %}">
+      <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+        href="{% url 'inicio:logout' %}">
         <i class="lni lni-exit"></i>
         <span>Cerrar Sesión</span>
       </a>
@@ -223,10 +224,12 @@
                 {% endif %}
               </div>
 
-              <!-- Campo: Horario de Trabajo -->
               <div class="col-md-4 position-relative">
-                <label for="horario" class="form-label">Horario de Trabajo</label>
-                <input type="time" name="horario_de_trabajo" class="form-control" id="horario" step="60" required>
+                <label for="horario" class="form-label">Horario de Trabajo <small class="text-muted">(7:00 AM - 8:00
+                    PM)</small></label>
+                <input type="time" name="horario_de_trabajo" class="form-control" id="horario" min="07:00" max="20:00"
+                  step="1800" value="{{ form.horario_de_trabajo.value|default:'08:00' }}" required>
+                <div class="form-text">Seleccione en intervalos de 30 minutos (ej: 07:00, 07:30)</div>
                 {% if form.horario_de_trabajo.errors %}
                 <label id="errorHorario" class="text-danger">
                   {% for error in form.horario_de_trabajo.errors %}
@@ -251,6 +254,26 @@
                 </label>
                 {% else %}
                 <label id="errorExperiencia" class="text-danger" style="display: none;"></label>
+                {% endif %}
+              </div>
+
+              <!-- Reemplaza el select existente por este -->
+              <div class="col-md-4 position-relative">
+                <label for="taller" class="form-label">Taller Asociado</label>
+                <select name="id_taller_mecanico" class="form-select" id="taller" required>
+                  <option value="">Seleccione un taller...</option>
+                  {% for taller in talleres %}
+                  <option value="{{ taller.id_taller_mecanico }}">{{ taller.nombre }}</option>
+                  {% endfor %}
+                </select>
+                {% if form.id_taller_mecanico.errors %}
+                <label id="errorTaller" class="text-danger">
+                  {% for error in form.id_taller_mecanico.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </label>
+                {% else %}
+                <label id="errorTaller" class="text-danger" style="display: none;"></label>
                 {% endif %}
               </div>
 
@@ -365,13 +388,9 @@
         return false;
       }
 
-      // Validar horario
-      let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
-      if (!horarioRegex.test(horario)) {
-        errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
-        errorHorario.style.display = "block";
+      if (!validarHorario('horario', 'errorHorario')) {
         return false;
-      }
+    }
 
       // Validar experiencia
       if (experiencia.trim() === "") {
@@ -384,9 +403,50 @@
         return false;
       }
 
+      // Validar taller (obligatorio)
+      let taller = document.getElementById("taller").value;
+      let errorTaller = document.getElementById("errorTaller");
 
+      errorTaller.style.display = "none";
 
-      return true; // Si todo está correcto, enviar el formulario
+      if (taller === "") {
+        errorTaller.innerText = "Debe seleccionar un taller para el mecánico.";
+        errorTaller.style.display = "block";
+        return false;
+      }
+
+      return true;
+
+      // Función reusable para validar horarios
+      function validarHorario(horarioId, errorId) {
+        const horarioInput = document.getElementById(horarioId);
+        const horario = horarioInput.value;
+        const errorHorario = document.getElementById(errorId);
+
+        errorHorario.style.display = "none";
+        horarioInput.classList.remove('is-invalid');
+
+        if (!horario) {
+          errorHorario.innerText = "Este campo es obligatorio";
+          errorHorario.style.display = "block";
+          horarioInput.classList.add('is-invalid');
+          return false;
+        }
+
+        const [horas, minutos] = horario.split(':').map(Number);
+        const horaValida = horas >= 7 && (horas < 20 || (horas === 20 && minutos === 0));
+        const minutosValidos = minutos === 0 || minutos === 30;
+
+        if (!horaValida || !minutosValidos) {
+          errorHorario.innerText = "Horario inválido. Debe ser entre 07:00 y 20:00 en intervalos de 30 minutos (ej: 08:30, 14:00)";
+          errorHorario.style.display = "block";
+          horarioInput.classList.add('is-invalid');
+          return false;
+        }
+
+        return true;
+      }
+
     }
   </script>
 </body>

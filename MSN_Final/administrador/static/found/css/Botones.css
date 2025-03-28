@@ -1,0 +1,111 @@
+/* static/found/css/botones.css */
+
+/* Estilo base para botones de acción */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: none;
+    position: relative;
+    margin: 0 5px;
+}
+
+/* Botón agregar */
+.btn-add {
+    background: linear-gradient(135deg, #128C7E, #128C7E);
+}
+
+/* Botón editar */
+.btn-edit {
+    background: linear-gradient(135deg, #000, #000);
+}
+
+/* Botón eliminar */
+.btn-delete {
+    background: linear-gradient(135deg, #ff0000, #ff0000);
+}
+
+/* Efectos hover */
+.btn-action:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    color: white;
+}
+
+.btn-action i {
+    transition: transform 0.3s ease;
+}
+
+.btn-add:hover i {
+    transform: rotate(90deg);
+}
+
+.btn-edit:hover i {
+    transform: rotate(45deg);
+}
+
+/* Tooltips */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: #128C7E;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #128C7E transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Tooltips específicos */
+.tooltip-edit .tooltip-text {
+    background-color: #000;
+}
+
+.tooltip-edit .tooltip-text::after {
+    border-color: #000 transparent transparent transparent;
+}
+
+.tooltip-delete .tooltip-text {
+    background-color: #ff0000;
+}
+
+.tooltip-delete .tooltip-text::after {
+    border-color: #ff0000 transparent transparent transparent;
+}

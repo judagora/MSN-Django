@@ -37,7 +37,8 @@
             <a class="correo text-white text-decoration-none d-flex align-items-center">
                 <!-- <small>{{ request.user.correo }}</small>-->
             </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'inicio:logout' %}">
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+                href="{% url 'inicio:logout' %}">
                 <i class="lni lni-exit"></i>
                 <span>Cerrar Sesión</span>
             </a>
@@ -109,6 +110,7 @@
                     </div>
 
                     <!-- Formulario de inserción de taller -->
+                    <!-- Formulario de inserción de taller -->
                     <div class="izquierda">
                         <form class="row g-3 needs-validation" action="{% url 'administrador:insertarTaller' %}"
                             method="post" onsubmit="return validarFormulario()" novalidate>
@@ -137,8 +139,11 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="horario" class="form-label">Horario de atención</label>
-                                <input type="time" class="form-control" id="horario" name="horario" required>
+                                <label for="horario" class="form-label">Horario de atención <span
+                                        class="text-danger">*</span></label>
+                                <input type="time" class="form-control" id="horario" name="horario" min="07:00"
+                                    max="20:00" step="1800" required>
+                                <small class="text-muted">Horario válido: 7:00 AM - 8:00 PM</small>
                                 <label id="errorHorario" class="text-danger" style="display: none;"></label>
                             </div>
 
@@ -151,17 +156,6 @@
                                     {% endfor %}
                                 </select>
                                 <label id="errorAdministrador" class="text-danger" style="display: none;"></label>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="idMecanico" class="form-label">Mecánico</label>
-                                <select class="form-select" id="idMecanico" name="idMecanico" required>
-                                    <option value="" disabled selected>Seleccione un Mecánico</option>
-                                    {% for mecanico in mecanicos %}
-                                    <option value="{{ mecanico.id_mecanico }}">{{ mecanico.id_usuario.nombres }} {{ mecanico.id_usuario.apellidos }}</option>
-                                    {% endfor %}
-                                </select>
-                                <label id="errorMecanico" class="text-danger" style="display: none;"></label>
                             </div>
 
                             <!-- Botones -->
@@ -181,90 +175,111 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Scripts -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script>
-        function toggleSubMenu() {
-            const submenu = document.querySelector('.submenu');
-            submenu.classList.toggle('show');
-        }
+            <script>
+                function validarFormulario() {
+                    // Obtener los valores de los campos
+                    let nombre = document.getElementById("nombre").value;
+                    let direccion = document.getElementById("direccion").value;
+                    let telefono = document.getElementById("telefono").value;
+                    let horario = document.getElementById("horario").value;
+                    let idAdministrador = document.getElementById("idAdministrador").value;
 
-        function validarFormulario() {
-            // Obtener los valores de los campos
-            let nombre = document.getElementById("nombre").value;
-            let direccion = document.getElementById("direccion").value;
-            let telefono = document.getElementById("telefono").value;
-            let horario = document.getElementById("horario").value;
-            let idAdministrador = document.getElementById("idAdministrador").value;
-            let idMecanico = document.getElementById("idMecanico").value;
+                    // Obtener las etiquetas de error
+                    let errorNombre = document.getElementById("errorNombre");
+                    let errorDireccion = document.getElementById("errorDireccion");
+                    let errorTelefono = document.getElementById("errorTelefono");
+                    let errorHorario = document.getElementById("errorHorario");
+                    let errorAdministrador = document.getElementById("errorAdministrador");
 
-            // Obtener las etiquetas de error
-            let errorNombre = document.getElementById("errorNombre");
-            let errorDireccion = document.getElementById("errorDireccion");
-            let errorTelefono = document.getElementById("errorTelefono");
-            let errorHorario = document.getElementById("errorHorario");
-            let errorAdministrador = document.getElementById("errorAdministrador");
-            let errorMecanico = document.getElementById("errorMecanico");
+                    // Limpiar mensajes de error anteriores
+                    errorNombre.style.display = "none";
+                    errorDireccion.style.display = "none";
+                    errorTelefono.style.display = "none";
+                    errorHorario.style.display = "none";
+                    errorAdministrador.style.display = "none";
 
-            // Limpiar mensajes de error anteriores
-            errorNombre.style.display = "none";
-            errorDireccion.style.display = "none";
-            errorTelefono.style.display = "none";
-            errorHorario.style.display = "none";
-            errorAdministrador.style.display = "none";
-            errorMecanico.style.display = "none";
+                    // Validar nombre (solo letras y espacios, entre 5 y 30 caracteres)
+                    let nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{5,30}$/;
+                    if (!nombreRegex.test(nombre)) {
+                        errorNombre.innerText = "El nombre debe contener solo letras y tener entre 5 y 30 caracteres.";
+                        errorNombre.style.display = "block";
+                        return false;
+                    }
 
-            // Validar nombre (solo letras y espacios, entre 5 y 30 caracteres)
-            let nombreRegex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]{5,30}$/;
-            if (!nombreRegex.test(nombre)) {
-                errorNombre.innerText = "El nombre debe contener solo letras y tener entre 5 y 30 caracteres.";
-                errorNombre.style.display = "block";
-                return false;
-            }
+                    // Validar dirección (entre 5 y 50 caracteres)
+                    if (direccion.length < 5 || direccion.length > 50) {
+                        errorDireccion.innerText = "La dirección debe tener entre 5 y 50 caracteres.";
+                        errorDireccion.style.display = "block";
+                        return false;
+                    }
 
-            // Validar dirección (entre 5 y 50 caracteres)
-            if (direccion.length < 5 || direccion.length > 50) {
-                errorDireccion.innerText = "La dirección debe tener entre 5 y 50 caracteres.";
-                errorDireccion.style.display = "block";
-                return false;
-            }
+                    // Validar teléfono (solo números, entre 7 y 10 dígitos)
+                    let telefonoRegex = /^[0-9]{7,10}$/;
+                    if (!telefonoRegex.test(telefono)) {
+                        errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
+                        errorTelefono.style.display = "block";
+                        return false;
+                    }
 
-            // Validar teléfono (solo números, entre 7 y 10 dígitos)
-            let telefonoRegex = /^[0-9]{7,10}$/;
-            if (!telefonoRegex.test(telefono)) {
-                errorTelefono.innerText = "El teléfono debe contener entre 7 y 10 dígitos.";
-                errorTelefono.style.display = "block";
-                return false;
-            }
+                    // Validar administrador (debe seleccionarse una opción)
+                    if (idAdministrador === "") {
+                        errorAdministrador.innerText = "Debe seleccionar un administrador.";
+                        errorAdministrador.style.display = "block";
+                        return false;
+                    }
 
-            // Validar horario
-            let horarioRegex = /^([01]\d|2[0-3]):(00|30)$/;
-            if (!horarioRegex.test(horario)) {
-                errorHorario.innerText = "El horario debe estar en formato HH:00 o HH:30 (ejemplo: 08:00 o 08:30).";
-                errorHorario.style.display = "block";
-                return false;
-            }
+                    return true; // Si todo está correcto, enviar el formulario
 
-            // Validar administrador (debe seleccionarse una opción)
-            if (idAdministrador === "") {
-                errorAdministrador.innerText = "Debe seleccionar un administrador.";
-                errorAdministrador.style.display = "block";
-                return false;
-            }
 
-            // Validar mecánico (debe seleccionarse una opción)
-            if (idMecanico === "") {
-                errorMecanico.innerText = "Debe seleccionar un mecánico.";
-                errorMecanico.style.display = "block";
-                return false;
-            }
+                    if (!validarHorario('horario', 'errorHorario')) {
+                        return false;
+                    }
 
-            return true; // Si todo está correcto, enviar el formulario
-        }
-    </script>
+                    // Validar taller (obligatorio)
+                    let taller = document.getElementById("taller").value;
+                    let errorTaller = document.getElementById("errorTaller");
+
+                    errorTaller.style.display = "none";
+
+                    if (taller === "") {
+                        errorTaller.innerText = "Debe seleccionar un taller para el mecánico.";
+                        errorTaller.style.display = "block";
+                        return false;
+                    }
+
+                    // Función reusable para validar horarios
+                    function validarHorario(horarioId, errorId) {
+                        const horarioInput = document.getElementById(horarioId);
+                        const horario = horarioInput.value;
+                        const errorHorario = document.getElementById(errorId);
+
+                        errorHorario.style.display = "none";
+                        horarioInput.classList.remove('is-invalid');
+
+                        if (!horario) {
+                            errorHorario.innerText = "Este campo es obligatorio";
+                            errorHorario.style.display = "block";
+                            horarioInput.classList.add('is-invalid');
+                            return false;
+                        }
+
+                        const [horas, minutos] = horario.split(':').map(Number);
+                        const horaValida = horas >= 7 && (horas < 20 || (horas === 20 && minutos === 0));
+                        const minutosValidos = minutos === 0 || minutos === 30;
+
+                        if (!horaValida || !minutosValidos) {
+                            errorHorario.innerText = "Horario inválido. Debe ser entre 07:00 y 20:00 en intervalos de 30 minutos (ej: 08:30, 14:00)";
+                            errorHorario.style.display = "block";
+                            horarioInput.classList.add('is-invalid');
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                }
+            </script>
 </body>
 
 </html>

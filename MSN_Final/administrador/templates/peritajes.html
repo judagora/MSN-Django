@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'found/css/TallerM.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/botones.css' %}">
     <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
@@ -117,12 +118,21 @@
                             <td>{{ peritaje.costo }}</td>
                             <td>{{ peritaje.notas_adicionales }}</td>
                             <td>
-                                <a href="{% url 'administrador:modificarPeritaje' peritaje.id_peritaje %}">
-                                    <i class="lni lni-cog" style="font-size: 32px; color: black;"></i>
-                                </a>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ peritaje.id_peritaje }}">
-                                    <i class="lni lni-circle-minus" style="font-size: 32px; color: black;"></i>
-                                </a>
+                                <!-- Botón para modificar -->
+                                <div class="tooltip-container tooltip-edit">
+                                    <a href="{% url 'administrador:modificarPeritaje' peritaje.id_peritaje %}" class="btn-action btn-edit">
+                                        <i class="lni lni-cog"></i>
+                                    </a>
+                                    <span class="tooltip-text">Editar Peritaje</span>
+                                </div>
+    
+                                <!-- Botón para abrir el modal de eliminación -->
+                                <div class="tooltip-container tooltip-delete">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ peritaje.id_peritaje }}" class="btn-action btn-delete">
+                                        <i class="lni lni-circle-minus"></i>
+                                    </a>
+                                    <span class="tooltip-text">Eliminar Peritaje</span>
+                                </div>
                             </td>
                         </tr>
 
