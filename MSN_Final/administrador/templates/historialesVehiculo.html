@@ -21,28 +21,30 @@
       <!--  Barra de Navegación  -->
       <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'inicio:index' %}">
-                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-            </a>
-            <h1>Motors Safety Net</h1>
+          <a class="link" href="{% url 'inicio:index' %}">
+            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+          </a>
+          <h1>Motors Safety Net</h1>
         </div>
-  
+    
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
-                <i class="lni lni-user"></i>
-                <span>{{ user.nombre_usuario }}</span>
-            </a>
-  
-            <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <small>{{ user.correo_electronico }}</small>
-            </a>
-            <br>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'inicio:logout' %}">
-                <i class="lni lni-exit"></i>
-                <span>Cerrar Sesión</span>
-            </a>
+          <a class="usuario text-white text-decoration-none d-flex align-items-center"
+            href="{% url 'administrador:inicio' %}">
+            <i class="lni lni-user"></i>
+            <span>{{ user.nombre_usuario }}</span>
+          </a>
+    
+          <a class="correo text-white text-decoration-none d-flex align-items-center">
+            <small>{{ user.correo_electronico }}</small>
+          </a>
+          <br>
+          <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+          href="{% url 'administrador:inicio' %}">
+          <i class="lni lni-exit"></i>
+            <span>Cerrar Sesión</span>
+          </a>
         </div>
-    </header>
+      </header>
 
     <!-- Contenido de la página -->
     <div class="col">
