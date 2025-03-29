@@ -22,6 +22,7 @@ urlpatterns = [
     path('obtener-mecanicos/', views.obtener_mecanicos, name='obtener_mecanicos'),
     path('editar_mantenimiento/<int:id_mantenimiento>', views.editar_mantenimiento, name='editar_mantenimiento'),
     path('eliminar_mantenimiento/<int:id_mantenimiento>', views.eliminar_mantenimiento, name='eliminar_mantenimiento'),
+    path('procedimientos/', views.procedimientos, name='procedimientos'),
     
 ]
 

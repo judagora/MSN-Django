@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inicio.models import Cliente
-from inicio.models import Vehiculo, Soat, Notificaciones, Mecanico, TallerMecanico, MantenimientoProgramado
+from inicio.models import Vehiculo, Soat, Notificaciones, Mecanico, TallerMecanico, MantenimientoProgramado, VehiculoMantenimiento, VehiculoPeritaje, VehiculoRepuestosModificados
 from django.contrib.auth import logout
 from .forms import VehiculoForm, ClienteForm, SoatForm, NotificacionForm, MantenimientoForm
 from django.contrib import messages
@@ -129,10 +129,9 @@ def soat(request):
         form = SoatForm(request.POST, cliente=cliente)
         if form.is_valid():
             form.save()
-            messages.success(request, "SOAT registrado correctamente.")
             registro_soat = True
         else:
-            messages.error(request, "Corrige los errores en el formulario.")
+            print(form.errors)
     else:
         form = SoatForm(cliente=cliente)
     return render(request, 'soat.html', {'form': form, 'vehiculos': vehiculos, 'registro_soat': registro_soat, 'soats': soats})
@@ -366,3 +365,43 @@ def obtener_mecanicos(request):
     return JsonResponse(list(mecanicos), safe=False)
 
 
+@login_required
+def procedimientos(request):
+    usuario = request.user
+    cliente = Cliente.objects.filter(id_usuario = usuario).first()
+    vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
+    mantenimientos = VehiculoMantenimiento.objects.filter(id_vehiculo__in=vehiculos).select_related('id_mantenimiento')
+    peritajes = VehiculoPeritaje.objects.filter(id_vehiculo__in=vehiculos).select_related('id_peritaje')
+    repuestos = VehiculoRepuestosModificados.objects.filter(id_vehiculo__in=vehiculos).select_related('id_repuestos_modificados')
+
+    procedimientos = []
+
+    for mantenimiento in mantenimientos:
+        procedimientos.append({
+            'tipo': f"Mantenimiento {mantenimiento.id_mantenimiento.tipo_mantenimiento}",
+            'vehiculo': f"{mantenimiento.id_vehiculo.marca} {mantenimiento.id_vehiculo.modelo} ({mantenimiento.id_vehiculo.placa})",
+            'mecanico': mantenimiento.id_mantenimiento.mecanicomantenimiento_set.first().id_mecanico.id_usuario.nombres,
+            'notas': mantenimiento.id_mantenimiento.notas_adicionales or "Sin notas"
+        })
+
+    for peritaje in peritajes:
+        procedimientos.append({
+            'tipo': "Peritaje",
+            'vehiculo': f"{peritaje.id_vehiculo.marca} {peritaje.id_vehiculo.modelo} ({peritaje.id_vehiculo.placa})",
+            'mecanico': peritaje.id_peritaje.mecanicoperitaje_set.first().id_mecanico.id_usuario.nombres,
+            'notas': peritaje.id_peritaje.notas_adicionales or "Sin notas"
+        })
+
+    for repuesto in repuestos:
+        procedimientos.append({
+            'tipo': "Cambio de Repuestos",
+            'vehiculo': f"{repuesto.id_vehiculo.marca} {repuesto.id_vehiculo.modelo} ({repuesto.id_vehiculo.placa})",
+            'mecanico': repuesto.id_repuestos_modificados.mecanicorepuestosmodificados_set.first().id_mecanico.id_usuario.nombres,
+            'notas': "Reemplazo de pieza: " + repuesto.id_repuestos_modificados.descripcion
+        })
+    
+    context = {
+        'procedimientos': procedimientos,
+    }
+
+    return render(request, 'modificaciones.html', context)

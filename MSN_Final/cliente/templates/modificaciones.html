@@ -1,20 +1,19 @@
 {%load static%}
 
+<!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio Cliente</title>
+    <title>Modificaciones</title>
     <link rel="stylesheet" href="{% static 'clientesource/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'clientesource/css/bootstrap.min.css' %}">
     <link rel="shortcut icon" href="{% static 'clientesource/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'clientesource/css/dashboard.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{% static 'clientesource/css/notificaciones.css' %}">
+
 </head>
-
 <body>
-
 
     <header>
 
@@ -48,48 +47,46 @@
         </nav>
     </header>
 
-
     <main class="container-fluid">
 
         <div class="row">
-            <div class="col-9">
-                <a href="{% url 'cliente:registrovehiculo'%}" class="card">
-                    <div class="imagen-vehiculo icono-mas">
+            <div class="col-9 ">
 
-                        <img src="{% static 'clientesource/img/add.svg' %}" alt="Añadir vehículo">
-                    </div>
-                    <div class="descrip">
-                        <h4>Agregar Vehículo</h4>
-                    </div>
-                </a>
+                <div class=" notificacion">
+                    <h4>Historial de procesos realizados a los Vehículos</h4>
+                    <table id="Table" class="table">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Procedimiento</th>
+                                <th>Vehículo</th>
+                                <th>Mecánico</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notificationTableBody">
+                            {% for procedimiento in procedimientos %}
+                            <tr>
+                                <td>{{ procedimiento.tipo }}</td>
+                                <td>{{ procedimiento.vehiculo }}</td>
+                                <td>{{ procedimiento.mecanico }}</td>
+                                <td>{{ procedimiento.notas }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-
-
-
-
-                {% for vehiculo in vehiculos %}
-                <a href="{% url 'cliente:vehiculo' vehiculo.id_vehiculo %}"
-                    class="card">
-                    <div class="imagen-vehiculo icono-mas">
-                        {% if vehiculo.tipo == "Automovil" or vehiculo.tipo == "Camioneta" %}
-                        <img src="{% static 'clientesource/img/carro.svg' %}" alt="Vehículo">
-                        {% else%}
-                        <img src="{% static 'clientesource/img/moto.svg' %}" alt="Vehículo">
-                        {% endif %}
-                    </div>
-                    <div class="descrip">
-                        <h4 text="">{{vehiculo.marca|capfirst}}</h4>
-                    </div>
-                </a>
-                {% endfor %}
-
+                </div>
 
 
             </div>
+
             <div class="col-3  columna">
                 <div class="menu">
 
                     <ul>
+                        <li>
+                            <a class="opcion" href="{% url 'cliente:inicio'%}">Inicio</a>
+                        </li>
                         <li>
                             <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
@@ -113,11 +110,6 @@
         </div>
 
     </main>
-
-
-    
-
     
 </body>
-
 </html>
