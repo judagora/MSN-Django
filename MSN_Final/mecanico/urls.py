@@ -29,6 +29,9 @@ urlpatterns = [
     
     path('verificar-placa/', views.verificar_placa, name='verificar_placa'),
     
+    
+    path('consultarCitaMc/', views.consultarCitaMc, name='consultarCitaMc'),
+    
  
 ]
 

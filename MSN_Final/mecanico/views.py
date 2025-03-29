@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
-from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Peritaje, VehiculoPeritaje, VehiculoRepuestosModificados, RepuestosModificados, Mecanico, MecanicoMantenimiento, MecanicoPeritaje, MecanicoRepuestosModificados 
+from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Peritaje, VehiculoPeritaje, VehiculoRepuestosModificados, RepuestosModificados, Mecanico, MecanicoMantenimiento, MecanicoPeritaje, MecanicoRepuestosModificados, MantenimientoProgramado 
 from django.db.models import Count, Q
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -83,6 +83,34 @@ def inicio(request):
             })
     
     return render(request, 'indexMecanicoMc.html', context)
+
+
+
+
+def consultarCitaMc(request):
+    # Obtener el usuario actual
+    usuario = request.user
+    
+    # Obtener el mecánico asociado a este usuario
+    mecanico = Mecanico.objects.filter(id_usuario=usuario).first()
+    
+    if not mecanico:
+        # Si no es un mecánico, puedes manejarlo como prefieras
+        mantenimientos = []
+    else:
+        # Filtrar los mantenimientos programados para este mecánico
+        mantenimientos = MantenimientoProgramado.objects.filter(
+            id_mecanico=mecanico
+        ).select_related(
+            'id_vehiculo',
+            'id_taller_mecanico'
+        ).order_by('fecha_mantenimiento', 'hora_mantenimiento')
+    
+    return render(request, 'consultarCitaMc.html', {
+        'mantenimientos': mantenimientos,
+        'mecanico': mecanico
+    })
+
 
 
 

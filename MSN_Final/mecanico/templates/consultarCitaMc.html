@@ -9,18 +9,18 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lineicons/css/lineicons.css">
     <link rel="stylesheet" href="https://cdn.lineicons.com/4.0/lineicons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.dataTables.css">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style_1.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style_2.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/styleheader.css' %}">
-    <link rel="stylesheet" href="{% static 'staticmecanico/css/ModificarMantenimiento.css' %}">
+    <link rel="shortcut icon" href="{% static 'staticmecanico/img/logo-msn.svg' %}" class="pestaña">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/InsertarMantenimiento.css' %}">
     <link rel="stylesheet" href="{% static 'staticmecanico/css/style.css' %}">
-    <link rel="shortcut icon" href="{% static 'staticmecanico/img/logo-msn.svg' %}" class="pestaña">
 
-    <title>Modificar Mantenimiento 2</title>
+    <title>Consultar Citas Programadas</title>
 </head>
 
 <body>
@@ -34,7 +34,8 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'mecanico:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
@@ -48,7 +49,6 @@
         </div>
     </header>
 
-    <!-- Contenido Principal -->
     <div class="container-fluid">
         <div class="row">
             <div class="menuu col-lg-3 col-md-4 bg-black">
@@ -142,114 +142,92 @@
                 </div>
             </div>
 
-            <!-- Formulario -->
-            <div class="col-12 col-md-6 col-lg-4 mx-auto mt-4">
-                <div class="card-body">
-                    <h1 class="text-center mb-4">Modificar Mantenimiento</h1>
-                    <form class="grupo row g-3 needs-validation" method="post" novalidate>
-                        {% csrf_token %}
-                    
-                        <!-- Placa (solo lectura) -->
-                        <div class="col-md-12">
-                            <label for="placa" class="form-label">Placa</label>
-                            <input type="text" name="placa" class="form-control" id="placa" required readonly value="{{ placa }}">
-                        </div>
-                    
-                        <!-- Tipo de Mantenimiento -->
-                        <div class="col-md-12">
-                            <label for="tipo_mantenimiento" class="form-label">Tipo de Mantenimiento</label>
-                            <select class="form-select" name="tipo_mantenimiento" id="tipo_mantenimiento" required>
-                                <option disabled value="">Elegir...</option>
-                                <option value="Preventivo" {% if mantenimiento.tipo_mantenimiento == 'Preventivo' %}selected{% endif %}>Preventivo</option>
-                                <option value="Correctivo" {% if mantenimiento.tipo_mantenimiento == 'Correctivo' %}selected{% endif %}>Correctivo</option>
-                            </select>
-                        </div>
-                    
-                        <!-- Descripción -->
-                        <div class="col-md-12">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" name="descripcion" id="descripcion" minlength="10" maxlength="300" required>{{ mantenimiento.descripcion }}</textarea>
-                        </div>
-                    
-                        <!-- Costo -->
-                        <div class="col-md-12">
-                            <label for="costo" class="form-label">Costo</label>
-                            <input type="number" name="costo" class="form-control" id="costo" min="50000" max="50000000" required value="{{ mantenimiento.costo }}">
-                        </div>
-                    
-                        <!-- Notas Adicionales -->
-                        <div class="col-md-12">
-                            <label for="notas_adicionales" class="form-label">Notas Adicionales</label>
-                            <input type="text" name="notas_adicionales" class="form-control" id="notas_adicionales" maxlength="100" value="{{ mantenimiento.notas_adicionales }}">
-                        </div>
-                    
-                        <!-- Botones -->
-                        <div class="row mt-3">
-                            <div class="col-6 d-flex justify-content-end">
-                                <button class="btn w-100 rounded-3 py-2 fw-bold" type="submit" style="background-color: #128C7E; border-color: #128C7E; color: white;">
-                                    Guardar
-                                </button>
-                            </div>
-                            <div class="col-6 d-flex justify-content-start">
-                                <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="btn btn-secondary w-100 rounded-3 py-2 fw-bold">Cancelar</a>
-                            </div>
-                        </div>
-                    </form>
+            <div class="col-8">
+                <!-- Notificaciones -->
+                <div class="container mt-3">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
+                <div class="tabla table-responsive row mt-3">
+                    <span class="modificar">Consultar Citas Programadas</span>
+                    <table id="ConsultarCita" class="table table-bordered display nowrap" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Tipo de mantenimiento</th>
+                                <th>Vehículo</th>
+                                <th>Marca</th>
+                                <th>Placa</th>
+                                <th>Taller</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mantenimiento in mantenimientos %}
+                                <tr>
+                                    <td>{{ mantenimiento.tipo_Mantenimiento }}</td>
+                                    <td>{{ mantenimiento.id_vehiculo.tipo }} {{ mantenimiento.id_vehiculo.modelo }}</td>
+                                    <td>{{ mantenimiento.id_vehiculo.marca|capfirst }}</td>
+                                    <td>{{ mantenimiento.id_vehiculo.placa|upper }}</td>
+                                    <td>{{ mantenimiento.id_taller_mecanico.nombre|capfirst }}</td>
+                                    <td>{{ mantenimiento.fecha_mantenimiento }}</td>
+                                    <td>{{ mantenimiento.hora_mantenimiento|time:"h:i A" }}</td>
+                                    <td>{{ mantenimiento.notas|default:"Sin notas" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
             </div>
         </div>
     </div>
-    </div>
 
-
-    <!-- Link Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const forms = document.querySelectorAll('.needs-validation');
-    
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', function (event) {
-
-                    window.addEventListener('pageshow', function (event) {
-                        // Verificar si la página se carga desde la caché
-                        if (event.persisted) {
-                            forms.forEach(form => {
-                                form.reset(); // Limpiar los campos del formulario
-                                form.classList.remove('was-validated'); // Remover clases de validación
-                            });
-                
-                            // Limpiar mensajes de error específicos (opcional)
-                            const invalidInputs = document.querySelectorAll('.is-invalid');
-                            invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-                
-                            const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
-                            invalidFeedbacks.forEach(feedback => feedback.remove());
-                        }
-                    });
-
-
-                    const costoInput = form.querySelector('#costo');
-                    if (costoInput) {
-                        const costo = parseFloat(costoInput.value);
-                        if (isNaN(costo) || costo < 50000 || costo > 50000000) {
-                            costoInput.setCustomValidity('El costo debe ser un número entre 50,000 y 50,000,000.');
-                            event.preventDefault();
-                            event.stopPropagation();
-                        } else {
-                            costoInput.setCustomValidity('');
-                        }
-                    }
-    
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-    
-                    form.classList.add('was-validated');
-                }, false);
+        $(document).ready(function () {
+            $('#ConsultarCita').DataTable({
+                responsive: true
             });
         });
+
+        window.addEventListener('pageshow', function (event) {
+            // Verificar si la página se carga desde la caché
+            if (event.persisted) {
+                forms.forEach(form => {
+                    form.reset(); // Limpiar los campos del formulario
+                    form.classList.remove('was-validated'); // Remover clases de validación
+                });
+
+                // Limpiar mensajes de error específicos (opcional)
+                const invalidInputs = document.querySelectorAll('.is-invalid');
+                invalidInputs.forEach(input => input.classList.remove('is-invalid'));
+
+                const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
+                invalidFeedbacks.forEach(feedback => feedback.remove());
+            }
+        });
+
+        // Cierre automático después de 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            });
+        }, 5000);
     </script>
 </body>
 
