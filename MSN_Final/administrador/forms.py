@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from inicio.models import Usuario
 from django.contrib.auth.forms import PasswordChangeForm
+from inicio.models import TallerMecanico
+from django.core.exceptions import ValidationError
 
 
 class ModificarMecanicoForm(forms.ModelForm):
@@ -22,9 +24,45 @@ class ModificarMecanicoForm(forms.ModelForm):
         model = Usuario
         fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'rol_usuario']
 
+class TallerMecanicoForm(forms.ModelForm):
+    class Meta:
+        model = TallerMecanico
+        fields = ['nombre', 'direccion', 'telefono', 'horario_de_atencion', 'id_administrador']
+        widgets = {
+            'horario_de_atencion': forms.TextInput(attrs={
+                'type': 'time',
+                'min': '07:00',
+                'max': '20:00',
+                'step': '1800'
+            }),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs.update({'class': 'form-control'})
+        self.fields['direccion'].widget.attrs.update({'class': 'form-control'})
+        self.fields['telefono'].widget.attrs.update({'class': 'form-control'})
+        self.fields['horario_de_atencion'].widget.attrs.update({'class': 'form-control'})
+        self.fields['id_administrador'].widget.attrs.update({'class': 'form-select'})
+    
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if TallerMecanico.objects.filter(nombre__iexact=nombre).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('Este nombre de taller ya está registrado')
+        return nombre
+    
+    def clean_direccion(self):
+        direccion = self.cleaned_data.get('direccion')
+        if TallerMecanico.objects.filter(direccion__iexact=direccion).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('Esta dirección ya está registrada para otro taller')
+        return direccion
+    
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if TallerMecanico.objects.filter(telefono=telefono).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('Este teléfono ya está registrado para otro taller')
+        return telefono
 
-from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
 
 class CambiarContraseñaForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):

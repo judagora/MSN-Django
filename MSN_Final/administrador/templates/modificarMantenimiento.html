@@ -21,30 +21,30 @@
     <!--  Barra de Navegación  -->
     <header class="barrasup">
         <div class="logo">
-          <a class="link" href="{% url 'inicio:index' %}">
-            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-          </a>
-          <h1>Motors Safety Net</h1>
+            <a class="link" href="{% url 'inicio:index' %}">
+                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+            </a>
+            <h1>Motors Safety Net</h1>
         </div>
-    
+
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-          <a class="usuario text-white text-decoration-none d-flex align-items-center"
-            href="{% url 'administrador:inicio' %}">
-            <i class="lni lni-user"></i>
-            <span>{{ user.nombre_usuario }}</span>
-          </a>
-    
-          <a class="correo text-white text-decoration-none d-flex align-items-center">
-            <small>{{ user.correo_electronico }}</small>
-          </a>
-          <br>
-          <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
-          href="{% url 'inicio:logout' %}">
-          <i class="lni lni-exit"></i>
-            <span>Cerrar Sesión</span>
-          </a>
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'administrador:inicio' %}">
+                <i class="lni lni-user"></i>
+                <span>{{ user.nombre_usuario }}</span>
+            </a>
+
+            <a class="correo text-white text-decoration-none d-flex align-items-center">
+                <small>{{ user.correo_electronico }}</small>
+            </a>
+            <br>
+            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+                href="{% url 'inicio:logout' %}">
+                <i class="lni lni-exit"></i>
+                <span>Cerrar Sesión</span>
+            </a>
         </div>
-      </header>
+    </header>
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -116,13 +116,18 @@
                             <div class="col-md-3 position-relative">
                                 <label for="tipoMantenimiento" class="form-label">Tipo de Mantenimiento</label>
                                 <select class="form-select" name="tipoMantenimiento" id="tipoMantenimiento" required>
-                                    <option value="Preventivo" {% if mantenimiento.tipo_mantenimiento=='Preventivo'
-                                        %}selected{% endif %}>Preventivo</option>
-                                    <option value="Correctivo" {% if mantenimiento.tipo_mantenimiento=='Correctivo'
-                                        %}selected{% endif %}>Correctivo</option>
+                                    <option value="Preventivo" 
+                                        {% if mantenimiento and mantenimiento.tipo_mantenimiento == 'Preventivo' %}selected{% endif %}>
+                                        Preventivo
+                                    </option>
+                                    <option value="Correctivo" 
+                                        {% if mantenimiento and mantenimiento.tipo_mantenimiento == 'Correctivo' %}selected{% endif %}>
+                                        Correctivo
+                                    </option>
                                 </select>
                                 <label id="errorTipoMantenimiento" class="text-danger" style="display: none;"></label>
                             </div>
+                            
 
                             <!-- Campo: Descripción -->
                             <div class="col-md-4 position-relative">
@@ -169,15 +174,30 @@
                             </div>
                         </form>
                         <div class="notification-container">
-                            {% if messages %}
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            {% if success_message %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert"
+                                id="success-alert">
+                                {{ success_message }}
+                                <button type="button" class="close" onclick="dismissAlert('success-alert')">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            {% endfor %}
+                            {% endif %}
+
+                            {% if error_message %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
+                                {{ error_message }}
+                                {% if error_details %}
+                                <ul>
+                                    {% for detail in error_details %}
+                                    <li>{{ detail }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                <button type="button" class="close" onclick="dismissAlert('error-alert')">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -191,26 +211,32 @@
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Cierre manual de notificaciones
-            document.querySelectorAll('.close').forEach(button => {
-                button.addEventListener('click', function () {
-                    this.parentElement.style.animation = 'fadeOut 0.5s forwards';
-                    setTimeout(() => {
-                        this.parentElement.remove();
-                    }, 500);
-                });
-            });
+        function dismissAlert(alertId) {
+            const alert = document.getElementById(alertId);
+            if (alert) {
+                alert.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => alert.remove(), 500);
+            }
+        }
 
-            // Cierre automático después de 5 segundos
-            setTimeout(() => {
-                document.querySelectorAll('.alert').forEach(alert => {
-                    alert.style.animation = 'fadeOut 0.5s forwards';
-                    setTimeout(() => {
-                        alert.remove();
-                    }, 500);
-                });
-            }, 5000);
+        // Cierre automático después de 5 segundos
+        document.addEventListener('DOMContentLoaded', function () {
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+
+            if (successAlert) {
+                setTimeout(() => {
+                    successAlert.style.animation = 'fadeOut 0.5s forwards';
+                    setTimeout(() => successAlert.remove(), 500);
+                }, 5000);
+            }
+
+            if (errorAlert) {
+                setTimeout(() => {
+                    errorAlert.style.animation = 'fadeOut 0.5s forwards';
+                    setTimeout(() => errorAlert.remove(), 500);
+                }, 5000);
+            }
         });
 
         function toggleSubMenu() {
