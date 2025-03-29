@@ -34,7 +34,8 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'mecanico:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
@@ -64,13 +65,16 @@
                             </a>
                             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar
+                                        Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="sidebar-link">Modificar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}"
+                                        class="sidebar-link">Modificar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}" class="sidebar-link">Consultar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}"
+                                        class="sidebar-link">Consultar Mantenimiento</a>
                                 </li>
                             </ul>
                         </li>
@@ -84,13 +88,16 @@
                             </a>
                             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar Peritaje</a>
+                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar
+                                        Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar Peritaje</a>
+                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar
+                                        Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar Peritaje</a>
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar
+                                        Peritaje</a>
                                 </li>
                             </ul>
                         </li>
@@ -104,21 +111,35 @@
                             </a>
                             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar Repuesto</a>
+                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar
+                                        Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar Repuesto</a>
+                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar
+                                        Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar Repuesto</a>
+                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar
+                                        Repuesto</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </div>
             </div>
-            
+
             <div class="col-8">
+                <!-- Notificaciones -->
+                <div class="container mt-3">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
                 <div class="tabla table-responsive row mt-3">
                     <span class="modificar">Modificar Mantenimiento</span>
                     <table id="ModMantenimiento" class="table table-bordered display nowrap" width="100%">
@@ -142,15 +163,19 @@
                                 <td>{{ vehiculo_mantenimiento.id_mantenimiento.notas_adicionales }}</td>
                                 <td>
                                     <!-- Enlace al formulario de modificación con la placa y el ID del mantenimiento -->
-                                    <a href="{% url 'mecanico:modificarMantenimientoMc2' vehiculo_mantenimiento.id_vehiculo.placa vehiculo_mantenimiento.id_mantenimiento.id_mantenimiento %}">
-                                        <i class="engranaje lni lni-cogs ms-4" style="font-size: 50px; color:black;"></i>
+                                    <a
+                                        href="{% url 'mecanico:modificarMantenimientoMc2' vehiculo_mantenimiento.id_vehiculo.placa vehiculo_mantenimiento.id_mantenimiento.id_mantenimiento %}">
+                                        <i class="engranaje lni lni-cogs ms-4"
+                                            style="font-size: 50px; color:black;"></i>
                                     </a>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+
                 </div>
+
             </div>
         </div>
     </div>
@@ -173,15 +198,25 @@
                     form.reset(); // Limpiar los campos del formulario
                     form.classList.remove('was-validated'); // Remover clases de validación
                 });
-    
+
                 // Limpiar mensajes de error específicos (opcional)
                 const invalidInputs = document.querySelectorAll('.is-invalid');
                 invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-    
+
                 const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
                 invalidFeedbacks.forEach(feedback => feedback.remove());
             }
         });
+
+        // Cierre automático después de 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            });
+        }, 5000);
     </script>
 </body>
 
