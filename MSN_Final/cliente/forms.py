@@ -142,8 +142,15 @@ class SoatForm(forms.ModelForm):
     
     def clean_valor_soat(self):
         valor_soat = self.cleaned_data.get('valor_soat')
+
+        # Verificar si el valor es un número entero
+        if not isinstance(valor_soat, int):
+            raise ValidationError("Ingrese solo números enteros, sin puntos ni comas.")
+
+        # Validar el rango permitido
         if valor_soat < 100000 or valor_soat > 1400000:
             raise ValidationError("El valor del SOAT debe estar entre $100,000 y $1,400,000.")
+
         return valor_soat
     
     def clean_fecha_emision(self):
