@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -36,7 +35,8 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'mecanico:inicio' %}">
+            <a class="usuario text-white text-decoration-none d-flex align-items-center"
+                href="{% url 'mecanico:inicio' %}">
                 <i class="lni lni-user"></i>
                 <span>{{ user.nombre_usuario }}</span>
             </a>
@@ -68,13 +68,16 @@
                             </a>
                             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:insertarMantenimientoMc' %}" class="sidebar-link">Insertar
+                                        Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}" class="sidebar-link">Modificar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:modificarMantenimientoMc' %}"
+                                        class="sidebar-link">Modificar Mantenimiento</a>
                                 </li>
                                 <li class="sidebar-item mt-2 d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}" class="sidebar-link">Consultar Mantenimiento</a>
+                                    <a href="{% url 'mecanico:consultarMantenimientoMc' %}"
+                                        class="sidebar-link">Consultar Mantenimiento</a>
                                 </li>
                             </ul>
                         </li>
@@ -88,13 +91,16 @@
                             </a>
                             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar Peritaje</a>
+                                    <a href="{% url 'mecanico:insertarPeritajeMc' %}" class="sidebar-link">Insertar
+                                        Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar Peritaje</a>
+                                    <a href="{% url 'mecanico:modificarPeritajeMc' %}" class="sidebar-link">Modificar
+                                        Peritaje</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar Peritaje</a>
+                                    <a href="{% url 'mecanico:consultarPeritajeMc' %}" class="sidebar-link">Consultar
+                                        Peritaje</a>
                                 </li>
                             </ul>
                         </li>
@@ -108,13 +114,16 @@
                             </a>
                             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar Repuesto</a>
+                                    <a href="{% url 'mecanico:insertarRepuestoMc' %}" class="sidebar-link">Insertar
+                                        Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar Repuesto</a>
+                                    <a href="{% url 'mecanico:modificarRepuestoMc' %}" class="sidebar-link">Modificar
+                                        Repuesto</a>
                                 </li>
                                 <li class="sidebar-item mt-2  d-flex justify-content-center">
-                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar Repuesto</a>
+                                    <a href="{% url 'mecanico:consultarRepuestoMc' %}" class="sidebar-link">Consultar
+                                        Repuesto</a>
                                 </li>
                             </ul>
                         </li>
@@ -127,9 +136,10 @@
                 <div>
                     <div class="card-body">
                         <h1 class="text-center mb-4">Insertar Repuesto</h1>
-                        <form class="grupo row g-3 needs-validation" action="{% url 'mecanico:insertarRepuestoMc' %}" method="post" novalidate>
+                        <form class="grupo row g-3 needs-validation" action="{% url 'mecanico:insertarRepuestoMc' %}"
+                            method="post" novalidate>
                             {% csrf_token %}
-            
+
                             <!-- Placa -->
                             <div class="col-md-6">
                                 <label for="validationCustom03" class="form-label">Placa</label>
@@ -137,31 +147,33 @@
                                     maxlength="6" minlength="6" required placeholder="Ej: abc123">
                                 <div class="invalid-feedback">Por favor ingrese la placa del vehículo.</div>
                             </div>
-            
+
                             <!-- Descripción -->
                             <div class="col-md-12">
                                 <label for="validationTextarea" class="form-label">Descripción</label>
                                 <textarea class="form-control" name="descripcionRepuesto" id="validationTextarea"
-                                    placeholder="Ingresa aquí la descripción del Repuesto" minlength="10" maxlength="300" required></textarea>
+                                    placeholder="Ingresa aquí la descripción del Repuesto" minlength="10"
+                                    maxlength="300" required></textarea>
                                 <div class="invalid-feedback">Por favor ingrese una descripción.</div>
                             </div>
-            
+
                             <!-- Motivo -->
                             <div class="col-md-6">
                                 <label for="validationCustom03" class="form-label">Motivo del Cambio</label>
-                                <input type="text" name="motivoRepuesto" class="form-control"
-                                    id="validationCustom03" placeholder="Ingresa aquí el motivo"
-                                    minlength="10" maxlength="50" required>
+                                <input type="text" name="motivoRepuesto" class="form-control" id="validationCustom03"
+                                    placeholder="Ingresa aquí el motivo" minlength="10" maxlength="50" required>
                                 <div class="invalid-feedback">Ingrese el motivo del cambio.</div>
                             </div>
-            
+
                             <!-- Costo -->
                             <div class="col-md-6">
                                 <label for="costoRepuesto" class="form-label">Costo</label>
-                                <input type="number" name="costoRepuesto" class="form-control" id="costoRepuesto" min="10000" max="30000000" required>
-                                <div class="invalid-feedback">Por favor ingrese un costo entre 10,000 y 30,000,000.</div>
+                                <input type="number" name="costoRepuesto" class="form-control" id="costoRepuesto"
+                                    min="10000" max="30000000" required>
+                                <div class="invalid-feedback">Por favor ingrese un costo entre 10,000 y 30,000,000.
+                                </div>
                             </div>
-            
+
                             <!-- Botones -->
                             <div class="row mt-3">
                                 <div class="col-6 d-flex justify-content-end">
@@ -170,24 +182,24 @@
                                         Insertar
                                     </button>
                                 </div>
-            
+
                                 <div class="col-6 d-flex justify-content-start">
-                                    <a href="{% url 'mecanico:inicio' %}" class="btn btn-secondary w-100" id="cancelar">Cancelar</a>
+                                    <a href="{% url 'mecanico:inicio' %}" class="btn btn-secondary w-100"
+                                        id="cancelar">Cancelar</a>
                                 </div>
                             </div>
-            
-                            <!-- Mensajes de éxito y error -->
-                            {% if mensajeExito %}
-                            <div class="alert alert-success text-center" role="alert">
-                                {{ mensajeExito }}
-                            </div>
-                            {% endif %}
-            
-                            {% if mensajeError %}
-                            <div class="alert alert-danger text-center" role="alert">
-                                {{ mensajeError }}
-                            </div>
-                            {% endif %}
+
+                            <!-- Mensajes de notificación -->
+                            <div class="notification-container">
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
                         </form>
                     </div>
                 </div>
@@ -203,23 +215,23 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const forms = document.querySelectorAll('.needs-validation');
-    
+
             // Limpiar formulario al hacer clic en "Cancelar"
             const cancelarBtn = document.getElementById('cancelar');
             if (cancelarBtn) {
                 cancelarBtn.addEventListener('click', function (event) {
                     event.preventDefault(); // Evitar la redirección del enlace
-    
+
                     // Limpiar todos los formularios
                     forms.forEach(form => {
                         form.reset(); // Restablecer los campos del formulario
                         form.classList.remove('was-validated'); // Remover clases de validación
                     });
-    
+
                     // Limpiar mensajes de error específicos (opcional)
                     const invalidInputs = document.querySelectorAll('.is-invalid');
                     invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-    
+
                     const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
                     invalidFeedbacks.forEach(feedback => feedback.remove());
                 });
@@ -231,11 +243,11 @@
                         form.reset(); // Limpiar los campos del formulario
                         form.classList.remove('was-validated'); // Remover clases de validación
                     });
-        
+
                     // Limpiar mensajes de error específicos (opcional)
                     const invalidInputs = document.querySelectorAll('.is-invalid');
                     invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-        
+
                     const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
                     invalidFeedbacks.forEach(feedback => feedback.remove());
                 }
@@ -244,23 +256,23 @@
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', async function (event) {
                     event.preventDefault(); // Evitar envío del formulario por defecto
-    
+
                     // Limpiar mensajes de error previos
                     const existingErrors = form.querySelectorAll('.invalid-feedback');
                     existingErrors.forEach(error => error.remove());
-    
+
                     // Validación general del formulario
                     if (!form.checkValidity()) {
                         event.stopPropagation();
                         form.classList.add('was-validated');
                         return;
                     }
-    
+
                     // Validación específica para el campo de costo
                     const costoInput = form.querySelector('#costoRepuesto');
                     if (costoInput) {
                         const costo = parseFloat(costoInput.value);
-    
+
                         if (isNaN(costo) || costo < 10000 || costo > 30000000) {
                             costoInput.setCustomValidity('El costo debe ser un número entre 10,000 y 30,000,000.');
                             event.stopPropagation();
@@ -270,27 +282,27 @@
                             costoInput.setCustomValidity('');
                         }
                     }
-    
+
                     // Validación de la placa
                     const placaInput = form.querySelector('input[name="placa"]');
                     const placaError = document.createElement('div');
                     placaError.className = 'invalid-feedback';
                     placaInput.parentNode.appendChild(placaError);
-    
+
                     const placa = placaInput.value;
-    
+
                     try {
                         console.log('Verificando placa:', placa); // Depuración
                         const response = await fetch(`/mecanico/verificar-placa/?placa=${placa}`);
                         console.log('Respuesta del servidor:', response); // Depuración
-    
+
                         if (!response.ok) {
                             throw new Error('Error al verificar la placa.');
                         }
-    
+
                         const data = await response.json();
                         console.log('Datos recibidos:', data); // Depuración
-    
+
                         if (data.exists) {
                             // Si la placa existe, enviar el formulario
                             form.submit();
@@ -311,6 +323,15 @@
                 }, false);
             });
         });
+        // Cierre automático después de 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            });
+        }, 5000);
     </script>
 </body>
 

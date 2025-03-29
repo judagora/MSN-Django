@@ -2,18 +2,21 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import RegistroMecanicoForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico
-from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
 
 @login_required
 def inicio(request):
-    return render(request, 'indexAdministrador.html')
+    return render(request, 'indexAdministrador.html', {
+        'show_message': False
+    })
 
 @login_required
 def insertarTaller(request):
+    message = None
+    message_type = None
+    show_message = False
+
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         direccion = request.POST.get('direccion')
@@ -30,21 +33,33 @@ def insertarTaller(request):
                 horario_de_atencion=horario,
                 id_administrador=administrador
             )
-            messages.success(request, 'Taller registrado exitosamente')
+            message = 'Taller registrado exitosamente'
+            message_type = 'success'
+            show_message = True
             return redirect('administrador:insertarTaller')
         except Administrador.DoesNotExist:
-            messages.error(request, 'El administrador seleccionado no existe')
+            message = 'El administrador seleccionado no existe'
+            message_type = 'error'
+            show_message = True
         except Exception as e:
-            messages.error(request, f'Error al registrar el taller: {str(e)}')
+            message = f'Error al registrar el taller: {str(e)}'
+            message_type = 'error'
+            show_message = True
 
     administradores = Administrador.objects.all()
     return render(request, 'insertarTaller.html', {
-        'administradores': administradores
+        'administradores': administradores,
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
     })
 
 @login_required
 def modificarMecanico(request, id_usuario):
     mecanico = get_object_or_404(Mecanico, id_usuario=id_usuario)
+    message = None
+    message_type = None
+    show_message = False
     
     if request.method == 'POST':
         form = RegistroMecanicoForm(request.POST, instance=mecanico.id_usuario)
@@ -62,14 +77,18 @@ def modificarMecanico(request, id_usuario):
                     mecanico.id_taller_mecanico = None
                 
                 mecanico.save()
-                messages.success(request, 'Mecánico actualizado exitosamente')
+                message = 'Mecánico actualizado exitosamente'
+                message_type = 'success'
+                show_message = True
                 return redirect('administrador:mecanicos')
             except Exception as e:
-                messages.error(request, f'Error al actualizar el mecánico: {str(e)}')
+                message = f'Error al actualizar el mecánico: {str(e)}'
+                message_type = 'error'
+                show_message = True
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
+            message = "Por favor corrige los errores en el formulario"
+            message_type = 'error'
+            show_message = True
     else:
         form = RegistroMecanicoForm(instance=mecanico.id_usuario)
 
@@ -77,11 +96,18 @@ def modificarMecanico(request, id_usuario):
     return render(request, 'modificarMecanico.html', {
         'form': form,
         'mecanico': mecanico,
-        'talleres': talleres
+        'talleres': talleres,
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
     })
 
 @login_required
 def insertarMecanico(request):
+    message = None
+    message_type = None
+    show_message = False
+
     if request.method == 'POST':
         form = RegistroMecanicoForm(request.POST)
         
@@ -151,66 +177,101 @@ def insertarMecanico(request):
                     fail_silently=False
                 )
                 
-                messages.success(request, "Mecánico registrado y correo enviado exitosamente")
+                message = "Mecánico registrado y correo enviado exitosamente"
+                message_type = "success"
+                show_message = True
                 return redirect('administrador:mecanicos')
 
             except Exception as e:
-                messages.error(request, f"Error al registrar el mecánico: {str(e)}")
+                message = f"Error al registrar el mecánico: {str(e)}"
+                message_type = "error"
+                show_message = True
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
+            message = "Por favor corrige los errores en el formulario"
+            message_type = "error"
+            show_message = True
     else:
         form = RegistroMecanicoForm()
 
     talleres = TallerMecanico.objects.all()
     return render(request, 'insertarMecanico.html', {
         'form': form,
-        'talleres': talleres
+        'talleres': talleres,
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
     })
 
 @login_required
 def eliminar_mecanico(request, id_usuario):
+    message = None
+    message_type = None
+    show_message = False
+
     if request.method == 'POST':
         try:
             usuario = Usuario.objects.get(id_usuario=id_usuario)
             usuario.delete()
-            messages.success(request, 'Mecánico eliminado exitosamente.')
+            message = 'Mecánico eliminado exitosamente.'
+            message_type = 'success'
+            show_message = True
         except Usuario.DoesNotExist:
-            messages.error(request, 'El mecánico no existe')
+            message = 'El mecánico no existe'
+            message_type = 'error'
+            show_message = True
         except Exception as e:
-            messages.error(request, f'Error al eliminar el mecánico: {str(e)}')
+            message = f'Error al eliminar el mecánico: {str(e)}'
+            message_type = 'error'
+            show_message = True
             
-    return redirect('administrador:mecanicos')
+    return render(request, 'mecanicos.html', {
+        'mecanicos': Mecanico.objects.select_related('id_usuario').all(),
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
+    })
 
 @login_required
 def mantenimientos(request):
-    mantenimientos = Mantenimiento.objects.all()
-    return render(request, 'mantenimientos.html', {'mantenimientos': mantenimientos})
+    return render(request, 'mantenimientos.html', {
+        'mantenimientos': Mantenimiento.objects.all(),
+        'show_message': False
+    })
 
 @login_required
 def historialesVehiculo(request):
-    vehiculos = Vehiculo.objects.select_related('id_cliente__id_usuario').all()
-    return render(request, 'historialesVehiculo.html', {'vehiculos': vehiculos})
+    return render(request, 'historialesVehiculo.html', {
+        'vehiculos': Vehiculo.objects.select_related('id_cliente__id_usuario').all(),
+        'show_message': False
+    })
 
 @login_required
 def talleresMecanico(request):
-    talleres = TallerMecanico.objects.all()
-    return render(request, 'talleresMecanico.html', {'talleres': talleres})
+    return render(request, 'talleresMecanico.html', {
+        'talleres': TallerMecanico.objects.all(),
+        'show_message': False
+    })
 
 @login_required
 def mecanicos(request):
-    mecanicos = Mecanico.objects.select_related('id_usuario').all()
-    return render(request, 'mecanicos.html', {'mecanicos': mecanicos})
+    return render(request, 'mecanicos.html', {
+        'mecanicos': Mecanico.objects.select_related('id_usuario').all(),
+        'show_message': False
+    })
 
 @login_required
 def peritajes(request):
-    peritajes = Peritaje.objects.all()
-    return render(request, 'peritajes.html', {'peritajes': peritajes})
+    return render(request, 'peritajes.html', {
+        'peritajes': Peritaje.objects.all(),
+        'show_message': False
+    })
 
 @login_required
 def modificarPeritaje(request, id_peritaje):
     peritaje = get_object_or_404(Peritaje, id_peritaje=id_peritaje)
+    message = None
+    message_type = None
+    show_message = False
 
     if request.method == 'POST':
         try:
@@ -218,18 +279,33 @@ def modificarPeritaje(request, id_peritaje):
             peritaje.costo = request.POST.get('costo')
             peritaje.notas_adicionales = request.POST.get('notas_adicionales')
             peritaje.save()
-            messages.success(request, 'Peritaje actualizado exitosamente')
+            message = 'Peritaje actualizado exitosamente'
+            message_type = 'success'
+            show_message = True
         except Exception as e:
-            messages.error(request, f'Error al actualizar el peritaje: {str(e)}')
+            message = f'Error al actualizar el peritaje: {str(e)}'
+            message_type = 'error'
+            show_message = True
         
-        return redirect('administrador:peritajes')
+        return render(request, 'peritajes.html', {
+            'peritajes': Peritaje.objects.all(),
+            'message': message,
+            'message_type': message_type,
+            'show_message': show_message
+        })
 
-    return render(request, 'modificarPeritaje.html', {'peritaje': peritaje})
+    return render(request, 'modificarPeritaje.html', {
+        'peritaje': peritaje,
+        'show_message': False
+    })
 
 @login_required
 def modificarTaller(request, id_taller_mecanico):
     taller = get_object_or_404(TallerMecanico, id_taller_mecanico=id_taller_mecanico)
     administradores = Administrador.objects.all()
+    message = None
+    message_type = None
+    show_message = False
 
     if request.method == 'POST':
         try:
@@ -238,50 +314,97 @@ def modificarTaller(request, id_taller_mecanico):
             taller.telefono = request.POST.get('telefono')
             taller.horario_de_atencion = request.POST.get('horario')
             taller.save()
-            messages.success(request, 'Taller actualizado exitosamente')
-            return redirect('administrador:talleresMecanico')
+            message = 'Taller actualizado exitosamente'
+            message_type = 'success'
+            show_message = True
+            return render(request, 'talleresMecanico.html', {
+                'talleres': TallerMecanico.objects.all(),
+                'message': message,
+                'message_type': message_type,
+                'show_message': show_message
+            })
         except Exception as e:
-            messages.error(request, f'Error al actualizar el taller: {str(e)}')
+            message = f'Error al actualizar el taller: {str(e)}'
+            message_type = 'error'
+            show_message = True
 
     return render(request, 'modificarTaller.html', {
         'taller': taller,
-        'administradores': administradores
+        'administradores': administradores,
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
     })
 
 @login_required
 def eliminarTaller(request, id_taller_mecanico):
+    message = None
+    message_type = None
+    show_message = False
+    
     try:
         taller = TallerMecanico.objects.get(id_taller_mecanico=id_taller_mecanico)
         
         if taller.mecanico_set.exists():
-            messages.error(request, 'No se puede eliminar el taller porque tiene mecánicos asociados')
+            message = 'No se puede eliminar el taller porque tiene mecánicos asociados'
+            message_type = 'error'
+            show_message = True
         else:
             taller.delete()
-            messages.success(request, 'Taller eliminado exitosamente')
+            message = 'Taller eliminado exitosamente'
+            message_type = 'success'
+            show_message = True
             
     except TallerMecanico.DoesNotExist:
-        messages.error(request, 'El taller no existe')
+        message = 'El taller no existe'
+        message_type = 'error'
+        show_message = True
     except Exception as e:
-        messages.error(request, f'Error al eliminar el taller: {str(e)}')
+        message = f'Error al eliminar el taller: {str(e)}'
+        message_type = 'error'
+        show_message = True
     
-    return redirect('administrador:talleresMecanico')
+    return render(request, 'talleresMecanico.html', {
+        'talleres': TallerMecanico.objects.all(),
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
+    })
 
 @login_required
 def eliminarPeritaje(request, id_peritaje):
+    message = None
+    message_type = None
+    show_message = False
+    
     try:
         peritaje = Peritaje.objects.get(id_peritaje=id_peritaje)
         peritaje.delete()
-        messages.success(request, 'Peritaje eliminado exitosamente.')
+        message = 'Peritaje eliminado exitosamente.'
+        message_type = 'success'
+        show_message = True
     except Peritaje.DoesNotExist:
-        messages.error(request, 'El peritaje no existe')
+        message = 'El peritaje no existe'
+        message_type = 'error'
+        show_message = True
     except Exception as e:
-        messages.error(request, f'Error al eliminar el peritaje: {str(e)}')
+        message = f'Error al eliminar el peritaje: {str(e)}'
+        message_type = 'error'
+        show_message = True
         
-    return redirect('administrador:peritajes')
+    return render(request, 'peritajes.html', {
+        'peritajes': Peritaje.objects.all(),
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
+    })
 
 @login_required
 def modificarMantenimiento(request, id_mantenimiento):
     mantenimiento = get_object_or_404(Mantenimiento, id_mantenimiento=id_mantenimiento)
+    message = None
+    message_type = None
+    show_message = False
 
     if request.method == 'POST':
         try:
@@ -290,23 +413,50 @@ def modificarMantenimiento(request, id_mantenimiento):
             mantenimiento.costo = request.POST.get('costoMantenimiento')
             mantenimiento.notas_adicionales = request.POST.get('notasAdicionalesMantenimiento')
             mantenimiento.save()
-            messages.success(request, 'Mantenimiento modificado exitosamente.')
+            message = 'Mantenimiento modificado exitosamente.'
+            message_type = 'success'
+            show_message = True
         except Exception as e:
-            messages.error(request, f'Error al modificar el mantenimiento: {str(e)}')
+            message = f'Error al modificar el mantenimiento: {str(e)}'
+            message_type = 'error'
+            show_message = True
             
-        return redirect('administrador:mantenimientos')
+        return render(request, 'mantenimientos.html', {
+            'mantenimientos': Mantenimiento.objects.all(),
+            'message': message,
+            'message_type': message_type,
+            'show_message': show_message
+        })
 
-    return render(request, 'modificarMantenimiento.html', {'mantenimiento': mantenimiento})
+    return render(request, 'modificarMantenimiento.html', {
+        'mantenimiento': mantenimiento,
+        'show_message': False
+    })
 
 @login_required
 def eliminar_mantenimiento(request, id_mantenimiento):
+    message = None
+    message_type = None
+    show_message = False
+    
     try:
         mantenimiento = Mantenimiento.objects.get(id_mantenimiento=id_mantenimiento)
         mantenimiento.delete()
-        messages.success(request, 'Mantenimiento eliminado exitosamente.')
+        message = 'Mantenimiento eliminado exitosamente.'
+        message_type = 'success'
+        show_message = True
     except Mantenimiento.DoesNotExist:
-        messages.error(request, 'El mantenimiento no existe')
+        message = 'El mantenimiento no existe'
+        message_type = 'error'
+        show_message = True
     except Exception as e:
-        messages.error(request, f'Error al eliminar el mantenimiento: {str(e)}')
+        message = f'Error al eliminar el mantenimiento: {str(e)}'
+        message_type = 'error'
+        show_message = True
         
-    return redirect('administrador:mantenimientos')
+    return render(request, 'mantenimientos.html', {
+        'mantenimientos': Mantenimiento.objects.all(),
+        'message': message,
+        'message_type': message_type,
+        'show_message': show_message
+    })

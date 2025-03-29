@@ -16,10 +16,8 @@ from django.contrib import messages
 temp_codes = {}
 
 def password_reset_request(request):
-
-    storage = messages.get_messages(request)
-    list(storage)
-
+    error_correo = None  # Variable específica para este mensaje
+    
     if request.method == "POST":
         email = request.POST.get('email')
         if Usuario.objects.filter(correo_electronico=email).exists():
@@ -77,9 +75,13 @@ def password_reset_request(request):
             
             return render(request, 'verify_code.html', {'email': email})
         else:
-            messages.error(request, "No existe un usuario con este correo electrónico.")
+            error_correo = "No existe un usuario con este correo electrónico."
     
-    return render(request, 'password_reset_form.html')
+    return render(request, 'password_reset_form.html', {
+        'error_correo': error_correo,
+        'message_type': 'error' if error_correo else None
+    })
+
 
 def verify_code(request):
 
