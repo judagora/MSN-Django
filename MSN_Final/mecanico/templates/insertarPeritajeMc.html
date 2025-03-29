@@ -179,18 +179,18 @@
                                 </div>
                             </div>
 
-                            <!-- Mensajes de éxito y error -->
-                            {% if mensajeExito %}
-                            <div class="alert alert-success text-center" role="alert">
-                                {{ mensajeExito }}
+                            <!-- Mensajes de notificación -->
+                            <div class="notification-container">
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
                             </div>
-                            {% endif %}
-
-                            {% if mensajeError %}
-                            <div class="alert alert-danger text-center" role="alert">
-                                {{ mensajeError }}
-                            </div>
-                            {% endif %}
 
                         </form>
                     </div>
@@ -312,6 +312,15 @@
                 }, false);
             });
         });
+                // Cierre automático después de 5 segundos
+                setTimeout(() => {
+                    document.querySelectorAll('.alert').forEach(alert => {
+                        alert.style.animation = 'fadeOut 0.5s forwards';
+                        setTimeout(() => {
+                            alert.remove();
+                        }, 500);
+                    });
+                }, 5000);   
     </script>
 </body>
 

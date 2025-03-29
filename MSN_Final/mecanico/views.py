@@ -84,6 +84,9 @@ def inicio(request):
     
     return render(request, 'indexMecanicoMc.html', context)
 
+
+
+
 @login_required
 def insertarMantenimientoMc(request):
     if request.method == 'POST':
@@ -135,27 +138,27 @@ def insertarMantenimientoMc(request):
                 id_mantenimiento=mantenimiento
             )
 
-            # Mensaje de éxito
+            # Mensaje de éxito (modificado para usar el sistema de mensajes de Django)
             messages.success(request, 'Mantenimiento registrado correctamente.')
-            return redirect('mecanico:modificarMantenimientoMc')
+            return redirect('mecanico:insertarMantenimientoMc')  # Redirige a la misma vista para limpiar el formulario
+            
         except Vehiculo.DoesNotExist:
-            # Mensaje de error si el vehículo no existe
             messages.error(request, 'El vehículo con la placa proporcionada no existe.')
         except Mecanico.DoesNotExist:
-            # Mensaje de error si el usuario no es un mecánico
             messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
         except ValidationError as e:
-            # Mensaje de error si el costo no es válido
             messages.error(request, str(e))
         except ValueError:
-            # Mensaje de error si el costo no es un número válido
             messages.error(request, 'El costo debe ser un número válido.')
         except Exception as e:
-            # Mensaje de error genérico
             messages.error(request, f'Ocurrió un error: {str(e)}')
 
-    # Renderizar el formulario
+    # Renderizar el formulario (ahora incluirá los mensajes automáticamente)
     return render(request, 'insertarMantenimientoMc.html')
+
+
+
+
 
 @login_required
 def verificar_placa(request):
@@ -169,6 +172,12 @@ def verificar_placa(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+
+
+
+
+
+
 @login_required
 def consultarMantenimientoMc(request):
     if request.method == 'POST':
@@ -177,6 +186,11 @@ def consultarMantenimientoMc(request):
             return redirect('mecanico:consultarMantenimientoMc2', placa=placa)
     
     return render(request, 'consultarMantenimientoMc.html')
+
+
+
+
+
 
 @login_required
 def consultarMantenimientoMc2(request, placa):
@@ -209,76 +223,110 @@ def consultarMantenimientoMc2(request, placa):
         'mantenimientos': mantenimientos,  # Mantiene la misma estructura que espera tu template
     })
 
+
+
+
+
+
+
 @login_required
 def modificarMantenimientoMc(request):
-    # Obtener el mecánico asociado al usuario autenticado (NUEVO)
-    usuario_actual = request.user
-    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
-    
-    # Obtener SOLO los mantenimientos de este mecánico (MODIFICADO)
-    mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
-        id_mecanico=mecanico
-    ).values_list('id_mantenimiento', flat=True)
-    
-    # Manteniendo TU lógica original pero con el filtro añadido
-    vehiculo_mantenimientos = VehiculoMantenimiento.objects.filter(
-        id_mantenimiento__in=mantenimientos_mecanico
-    ).select_related('id_vehiculo', 'id_mantenimiento')
-    
-    # Renderizar la plantilla con los datos (igual que antes)
-    return render(request, 'modificarMantenimientoMc.html', {
-        'vehiculo_mantenimientos': vehiculo_mantenimientos,
-    })
+    # Obtener el mecánico asociado al usuario autenticado
+    try:
+        usuario_actual = request.user
+        mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+        
+        # Obtener SOLO los mantenimientos de este mecánico
+        mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
+            id_mecanico=mecanico
+        ).values_list('id_mantenimiento', flat=True)
+        
+        # Obtener los mantenimientos asociados a vehículos
+        vehiculo_mantenimientos = VehiculoMantenimiento.objects.filter(
+            id_mantenimiento__in=mantenimientos_mecanico
+        ).select_related('id_vehiculo', 'id_mantenimiento')
+        
+        # Renderizar la plantilla con los datos
+        return render(request, 'modificarMantenimientoMc.html', {
+            'vehiculo_mantenimientos': vehiculo_mantenimientos,
+        })
+        
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
+        return redirect('mecanico:inicio')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error al cargar los mantenimientos: {str(e)}')
+        return redirect('mecanico:inicio')
+
+
+
+
+
 
 @login_required
 def modificarMantenimientoMc2(request, placa, id_mantenimiento):
-    # Obtener el mantenimiento específico por placa e ID del mantenimiento
-    vehiculo_mantenimiento = get_object_or_404(
-        VehiculoMantenimiento,
-        id_vehiculo__placa=placa,
-        id_mantenimiento__id_mantenimiento=id_mantenimiento
-    )
-    mantenimiento = vehiculo_mantenimiento.id_mantenimiento
+    try:
+        # Verificar que el mecánico actual es quien realizó este mantenimiento
+        usuario_actual = request.user
+        mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+        
+        # Obtener el mantenimiento específico verificando que pertenece al mecánico
+        vehiculo_mantenimiento = get_object_or_404(
+            VehiculoMantenimiento,
+            id_vehiculo__placa=placa,
+            id_mantenimiento__id_mantenimiento=id_mantenimiento,
+            id_mantenimiento__mecanicomantenimiento__id_mecanico=mecanico
+        )
+        mantenimiento = vehiculo_mantenimiento.id_mantenimiento
 
-    if request.method == 'POST':
-        try:
-            # Procesar el formulario y guardar los cambios
-            tipo_mantenimiento = request.POST.get('tipo_mantenimiento')
-            descripcion = request.POST.get('descripcion')
-            costo = request.POST.get('costo')
-            notas_adicionales = request.POST.get('notas_adicionales')
+        if request.method == 'POST':
+            try:
+                # Procesar el formulario y guardar los cambios
+                tipo_mantenimiento = request.POST.get('tipo_mantenimiento')
+                descripcion = request.POST.get('descripcion')
+                costo = request.POST.get('costo')
+                notas_adicionales = request.POST.get('notas_adicionales')
 
-            # Validar el costo
-            costo = float(costo)
-            if costo < 50000:
-                raise ValidationError('El costo debe ser igual o mayor a 50,000.')
+                # Validar el costo
+                costo = float(costo)
+                if costo < 50000:
+                    raise ValidationError('El costo debe ser igual o mayor a 50,000.')
 
-            # Actualizar los campos del mantenimiento
-            mantenimiento.tipo_mantenimiento = tipo_mantenimiento
-            mantenimiento.descripcion = descripcion
-            mantenimiento.costo = costo
-            mantenimiento.notas_adicionales = notas_adicionales
+                # Actualizar los campos del mantenimiento
+                mantenimiento.tipo_mantenimiento = tipo_mantenimiento
+                mantenimiento.descripcion = descripcion
+                mantenimiento.costo = costo
+                mantenimiento.notas_adicionales = notas_adicionales
 
-            # Guardar los cambios
-            mantenimiento.full_clean()  # Validar el modelo
-            mantenimiento.save()
+                # Guardar los cambios
+                mantenimiento.full_clean()
+                mantenimiento.save()
 
-            # Mensaje de éxito
-            messages.success(request, 'Mantenimiento modificado correctamente.')
-            return redirect('mecanico:modificarMantenimientoMc')
+                messages.success(request, 'Mantenimiento modificado correctamente.')
+                return redirect('mecanico:modificarMantenimientoMc')
 
-        except ValidationError as e:
-            messages.error(request, str(e))
-        except ValueError:
-            messages.error(request, 'El costo debe ser un número válido.')
-        except Exception as e:
-            messages.error(request, f'Ocurrió un error: {str(e)}')
+            except ValidationError as e:
+                messages.error(request, str(e))
+            except ValueError:
+                messages.error(request, 'El costo debe ser un número válido.')
+            except Exception as e:
+                messages.error(request, f'Ocurrió un error al modificar: {str(e)}')
 
-    # Renderizar el formulario con los datos del mantenimiento
-    return render(request, 'modificarMantenimientoMc2.html', {
-        'mantenimiento': mantenimiento,
-        'placa': placa,
-    })
+        # Renderizar el formulario con los datos del mantenimiento
+        return render(request, 'modificarMantenimientoMc2.html', {
+            'mantenimiento': mantenimiento,
+            'placa': placa,
+        })
+
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'No tienes permisos para modificar este mantenimiento.')
+        return redirect('mecanico:modificarMantenimientoMc')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error: {str(e)}')
+        return redirect('mecanico:modificarMantenimientoMc')
+
+
+
 
 @login_required
 def insertarPeritajeMc(request):
@@ -331,7 +379,8 @@ def insertarPeritajeMc(request):
 
             # Mensaje de éxito
             messages.success(request, 'Peritaje registrado correctamente.')
-            return redirect('mecanico:modificarPeritajeMc')
+            return redirect('mecanico:insertarPeritajeMc')
+        
         except Vehiculo.DoesNotExist:
             # Mensaje de error si el vehículo no existe
             messages.error(request, 'El vehículo con la placa proporcionada no existe.')
@@ -351,74 +400,100 @@ def insertarPeritajeMc(request):
     # Renderizar el formulario
     return render(request, 'insertarPeritajeMc.html')
 
+
+
+
 @login_required
 def modificarPeritajeMc(request):
     # Obtener el mecánico asociado al usuario autenticado
-    usuario_actual = request.user
-    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+    try:
+        usuario_actual = request.user
+        mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+        
+        # Obtener SOLO los peritajes de este mecánico
+        peritajes_mecanico = MecanicoPeritaje.objects.filter(
+            id_mecanico=mecanico
+        ).values_list('id_peritaje', flat=True)
+        
+        # Filtrar los peritajes del vehículo que coincidan con los del mecánico
+        vehiculo_peritajes = VehiculoPeritaje.objects.filter(
+            id_peritaje__in=peritajes_mecanico
+        ).select_related('id_vehiculo', 'id_peritaje')
+        
+        # Renderizar la plantilla con los datos
+        return render(request, 'modificarPeritajeMc.html', {
+            'vehiculo_peritajes': vehiculo_peritajes,
+        })
+        
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
+        return redirect('mecanico:inicio')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error al cargar los peritajes: {str(e)}')
+        return redirect('mecanico:inicio')
     
-    # Obtener SOLO los peritajes de este mecánico
-    peritajes_mecanico = MecanicoPeritaje.objects.filter(
-        id_mecanico=mecanico
-    ).values_list('id_peritaje', flat=True)
     
-    # Filtrar los peritajes del vehículo que coincidan con los del mecánico
-    vehiculo_peritajes = VehiculoPeritaje.objects.filter(
-        id_peritaje__in=peritajes_mecanico
-    ).select_related('id_vehiculo', 'id_peritaje')
     
-    # Renderizar la plantilla con los datos
-    return render(request, 'modificarPeritajeMc.html', {
-        'vehiculo_peritajes': vehiculo_peritajes,
-    })
 
 @login_required
 def modificarPeritajeMc2(request, placa, id_peritaje):
-    # Obtener el peritaje específico por placa e ID del peritaje
-    vehiculo_peritaje = get_object_or_404(
-        VehiculoPeritaje,
-        id_vehiculo__placa=placa,
-        id_peritaje__id_peritaje=id_peritaje
-    )
-    peritaje = vehiculo_peritaje.id_peritaje
+    try:
+        # Obtener el peritaje específico por placa e ID del peritaje
+        vehiculo_peritaje = get_object_or_404(
+            VehiculoPeritaje,
+            id_vehiculo__placa=placa,
+            id_peritaje__id_peritaje=id_peritaje
+        )
+        peritaje = vehiculo_peritaje.id_peritaje
 
-    if request.method == 'POST':
-        try:
-            # Procesar el formulario y guardar los cambios
-            descripcion = request.POST.get('descripcion')
-            costo = request.POST.get('costo')
-            notas_adicionales = request.POST.get('notas_adicionales')
+        if request.method == 'POST':
+            try:
+                # Procesar el formulario y guardar los cambios
+                descripcion = request.POST.get('descripcion')
+                costo = request.POST.get('costo')
+                notas_adicionales = request.POST.get('notas_adicionales')
 
-            # Validar el costo
-            costo = float(costo)
-            if costo < 50000:
-                raise ValidationError('El costo debe ser igual o mayor a 50,000.')
+                # Validar el costo
+                costo = float(costo)
+                if costo < 50000:
+                    raise ValidationError('El costo debe ser igual o mayor a 50,000.')
 
-            # Actualizar los campos del peritaje
-            peritaje.descripcion = descripcion
-            peritaje.costo = costo
-            peritaje.notas_adicionales = notas_adicionales
+                # Actualizar los campos del peritaje
+                peritaje.descripcion = descripcion
+                peritaje.costo = costo
+                peritaje.notas_adicionales = notas_adicionales
 
-            # Guardar los cambios
-            peritaje.full_clean()  # Validar el modelo
-            peritaje.save()
+                # Guardar los cambios
+                peritaje.full_clean()  # Validar el modelo
+                peritaje.save()
 
-            # Mensaje de éxito
-            messages.success(request, 'Peritaje modificado correctamente.')
-            return redirect('mecanico:modificarPeritajeMc')
+                # Mensaje de éxito
+                messages.success(request, 'Peritaje modificado correctamente.')
+                return redirect('mecanico:modificarPeritajeMc')
 
-        except ValidationError as e:
-            messages.error(request, str(e))
-        except ValueError:
-            messages.error(request, 'El costo debe ser un número válido.')
-        except Exception as e:
-            messages.error(request, f'Ocurrió un error: {str(e)}')
+            except ValidationError as e:
+                messages.error(request, str(e))
+            except ValueError:
+                messages.error(request, 'El costo debe ser un número válido.')
+            except Exception as e:
+                messages.error(request, f'Ocurrió un error: {str(e)}')
 
-    # Renderizar el formulario con los datos del peritaje
-    return render(request, 'modificarPeritajeMc2.html', {
-        'peritaje': peritaje,
-        'placa': placa,
-    })
+        # Renderizar el formulario con los datos del peritaje
+        return render(request, 'modificarPeritajeMc2.html', {
+            'peritaje': peritaje,
+            'placa': placa,
+        })
+        
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'No tienes permisos para modificar este peritaje.')
+        return redirect('mecanico:modificarPeritajeMc')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error: {str(e)}')
+        return redirect('mecanico:modificarPeritajeMc')
+
+
+
+
 
 @login_required
 def consultarPeritajeMc(request):
@@ -428,6 +503,9 @@ def consultarPeritajeMc(request):
             return redirect('mecanico:consultarPeritajeMc2', placa=placa)
     
     return render(request, 'consultarPeritajeMc.html')
+
+
+
 
 @login_required
 def consultarPeritajeMc2(request, placa):
@@ -467,6 +545,11 @@ def consultarPeritajeMc2(request, placa):
     except Exception as e:
         messages.error(request, f'Ocurrió un error: {str(e)}')
         return redirect('pagina_de_error')
+
+
+
+
+
 
 @login_required
 def insertarRepuestoMc(request):
@@ -519,7 +602,8 @@ def insertarRepuestoMc(request):
 
             # Mensaje de éxito
             messages.success(request, 'Repuesto modificado registrado correctamente.')
-            return redirect('mecanico:modificarRepuestoMc')
+            return redirect('mecanico:insertarRepuestoMc')
+        
         except Vehiculo.DoesNotExist:
             # Mensaje de error si el vehículo no existe
             messages.error(request, 'El vehículo con la placa proporcionada no existe.')
@@ -539,74 +623,103 @@ def insertarRepuestoMc(request):
     # Renderizar el formulario
     return render(request, 'insertarRepuestoMc.html')
 
+
+
+
+
 @login_required
 def modificarRepuestoMc(request):
     # Obtener el usuario autenticado y su asociación como mecánico
-    usuario_actual = request.user
-    mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
-    
-    # Obtener SOLO los repuestos modificados por este mecánico
-    repuestos_mecanico = MecanicoRepuestosModificados.objects.filter(
-        id_mecanico=mecanico
-    ).values_list('id_repuestos_modificados', flat=True)
-    
-    # Filtrar los repuestos de vehículos que coincidan con los del mecánico
-    vehiculo_repuestos = VehiculoRepuestosModificados.objects.filter(
-        id_repuestos_modificados__in=repuestos_mecanico
-    ).select_related('id_vehiculo', 'id_repuestos_modificados')
-    
-    # Renderizar la plantilla con los datos (misma estructura)
-    return render(request, 'modificarRepuestoMc.html', {
-        'vehiculo_repuestos': vehiculo_repuestos,
-    })
+    try:
+        usuario_actual = request.user
+        mecanico = Mecanico.objects.get(id_usuario=usuario_actual)
+        
+        # Obtener SOLO los repuestos modificados por este mecánico
+        repuestos_mecanico = MecanicoRepuestosModificados.objects.filter(
+            id_mecanico=mecanico
+        ).values_list('id_repuestos_modificados', flat=True)
+        
+        # Filtrar los repuestos de vehículos que coincidan con los del mecánico
+        vehiculo_repuestos = VehiculoRepuestosModificados.objects.filter(
+            id_repuestos_modificados__in=repuestos_mecanico
+        ).select_related('id_vehiculo', 'id_repuestos_modificados')
+        
+        # Renderizar la plantilla con los datos (misma estructura)
+        return render(request, 'modificarRepuestoMc.html', {
+            'vehiculo_repuestos': vehiculo_repuestos,
+        })
+
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'El usuario autenticado no está asociado a un mecánico.')
+        return redirect('mecanico:inicio')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error al cargar los repuestos: {str(e)}')
+        return redirect('mecanico:inicio')
+
+
+
+
 
 @login_required
 def modificarRepuestoMc2(request, placa, id_repuesto):
-    # Obtener el repuesto específico por placa e ID del repuesto
-    vehiculo_repuesto = get_object_or_404(
-        VehiculoRepuestosModificados,
-        id_vehiculo__placa=placa,
-        id_repuestos_modificados__id_repuestos_modificados=id_repuesto
-    )
-    repuesto = vehiculo_repuesto.id_repuestos_modificados
+    try:
+        # Obtener el repuesto específico por placa e ID del repuesto
+        vehiculo_repuesto = get_object_or_404(
+            VehiculoRepuestosModificados,
+            id_vehiculo__placa=placa,
+            id_repuestos_modificados__id_repuestos_modificados=id_repuesto
+        )
+        repuesto = vehiculo_repuesto.id_repuestos_modificados
 
-    if request.method == 'POST':
-        try:
-            # Procesar el formulario y guardar los cambios
-            descripcion = request.POST.get('descripcion')
-            motivo = request.POST.get('motivo')
-            costo = request.POST.get('costo')
+        if request.method == 'POST':
+            try:
+                # Procesar el formulario y guardar los cambios
+                descripcion = request.POST.get('descripcion')
+                motivo = request.POST.get('motivo')
+                costo = request.POST.get('costo')
 
-            # Validar el costo
-            costo = float(costo)
-            if costo < 0:
-                raise ValidationError('El costo debe ser un número válido.')
+                # Validar el costo
+                costo = float(costo)
+                if costo < 0:
+                    raise ValidationError('El costo debe ser un número válido.')
 
-            # Actualizar los campos del repuesto
-            repuesto.descripcion = descripcion
-            repuesto.motivo = motivo
-            repuesto.costo = costo
+                # Actualizar los campos del repuesto
+                repuesto.descripcion = descripcion
+                repuesto.motivo = motivo
+                repuesto.costo = costo
 
-            # Guardar los cambios
-            repuesto.full_clean()  # Validar el modelo
-            repuesto.save()
+                # Guardar los cambios
+                repuesto.full_clean()  # Validar el modelo
+                repuesto.save()
 
-            # Mensaje de éxito
-            messages.success(request, 'Repuesto modificado correctamente.')
-            return redirect('mecanico:modificarRepuestoMc')
+                # Mensaje de éxito
+                messages.success(request, 'Repuesto modificado correctamente.')
+                return redirect('mecanico:modificarRepuestoMc')
 
-        except ValidationError as e:
-            messages.error(request, str(e))
-        except ValueError:
-            messages.error(request, 'El costo debe ser un número válido.')
-        except Exception as e:
-            messages.error(request, f'Ocurrió un error: {str(e)}')
+            except ValidationError as e:
+                messages.error(request, str(e))
+            except ValueError:
+                messages.error(request, 'El costo debe ser un número válido.')
+            except Exception as e:
+                messages.error(request, f'Ocurrió un error: {str(e)}')
 
-    # Renderizar el formulario con los datos del repuesto
-    return render(request, 'modificarRepuestoMc2.html', {
-        'repuesto': repuesto,
-        'placa': placa,
-    })
+        # Renderizar el formulario con los datos del repuesto
+        return render(request, 'modificarRepuestoMc2.html', {
+            'repuesto': repuesto,
+            'placa': placa,
+        })
+
+    except Mecanico.DoesNotExist:
+        messages.error(request, 'No tienes permisos para modificar este repuesto.')
+        return redirect('mecanico:modificarRepuestoMc')
+    except Exception as e:
+        messages.error(request, f'Ocurrió un error: {str(e)}')
+        return redirect('mecanico:modificarRepuestoMc')
+
+
+
+
+
 
 @login_required
 def consultarRepuestoMc(request):

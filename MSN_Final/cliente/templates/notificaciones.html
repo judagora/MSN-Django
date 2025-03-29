@@ -1,7 +1,7 @@
 {%load static%}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
     <header>
 
         <div class="logo">
-            <a class="link" href="">
+            <a class="link" href="{% url 'cliente:inicio'%}">
                 <img src="{% static 'clientesource/img/logo-msn.svg' %}" alt="imagen logo">
                 <h1>Motors Safety Net</h1>
             </a>
@@ -36,7 +36,7 @@
                 </li>
 
                 <li>
-                    <a class="count" href="">
+                    <a class="count" href="{% url 'inicio:logout'%}">
                         <img src="{% static 'clientesource/img/salir.svg' %}" alt="Salir de la Cuenta" title="Salir">
                     </a>
                 </li>
@@ -149,10 +149,10 @@
                             <a class="opcion" href="{% url 'cliente:notificaciones'%}">Notificaciones</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/mantenimiento}">Mantenimientos</a>
+                            <a class="opcion" href="{% url 'cliente:mantenimiento'%}">Mantenimientos</a>
                         </li>
                         <li>
-                            <a class="opcion" href="@{/moduloCliente/modificaciones}">Modificaciones</a>
+                            <a class="opcion" href="{% url 'cliente:procedimientos'%}">Modificaciones</a>
                         </li>
                         <li>
                             <a class="opcion" href="{% url 'cliente:soat'%}">SOAT</a>
