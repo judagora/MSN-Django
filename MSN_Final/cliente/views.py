@@ -1,13 +1,13 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inicio.models import Cliente
-from inicio.models import Vehiculo, Soat, Notificaciones, Mecanico, TallerMecanico
+from inicio.models import Vehiculo, Soat, Notificaciones, Mecanico, TallerMecanico, MantenimientoProgramado
 from django.contrib.auth import logout
-from .forms import VehiculoForm, ClienteForm, SoatForm, NotificacionForm
+from .forms import VehiculoForm, ClienteForm, SoatForm, NotificacionForm, MantenimientoForm
 from django.contrib import messages
 from datetime import datetime
-from django.utils.timezone import now
-from django.core.mail import send_mail
+from django.utils.timezone import now, localtime, make_aware
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.http import JsonResponse
 from django.core.mail import send_mail
 # Create your views here.
@@ -150,7 +150,7 @@ def editar_soat(request, id_soat):
             form.save()
             act_soat = True
         else:
-            messages.error(request, "Corrige los errores en el formulario.")
+            print(form.errors)
     else:
         form = SoatForm(instance=soat)
     return render(request, 'editarsoat.html', {'form': form, 'soat': soat, 'vehiculos': vehiculos, 'act_soat': act_soat})
@@ -228,18 +228,141 @@ def eliminar_notificacion(request, id_notificacion):
 @login_required
 def mantenimiento(request):
     usuario = request.user
+    cliente = Cliente.objects.filter(id_usuario=usuario).select_related("id_usuario").first()
+    vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
+    manteniminetosCliente = MantenimientoProgramado.objects.filter(id_vehiculo__in=vehiculos).select_related('id_vehiculo', 'id_taller_mecanico', 'id_mecanico')
+    tallerMecanico = TallerMecanico.objects.all()
+    mantenimiento_valido = False
+
+    if request.method == "POST":
+        form = MantenimientoForm(request.POST)
+        if form.is_valid():
+            mantenimiento = form.save(commit=False)
+            mantenimiento.save()
+
+            #  **Obteniendo datos**
+            taller = mantenimiento.id_taller_mecanico
+            mecanico = mantenimiento.id_mecanico
+            vehiculo = mantenimiento.id_vehiculo
+
+            #  **Datos del mecánico**
+            mecanico_usuario = mecanico.id_usuario
+            mecanico_nombre = mecanico_usuario.nombres
+            mecanico_correo = mecanico_usuario.correo_electronico
+
+            #  **Datos del cliente**
+            cliente_nombre = cliente.id_usuario.nombres
+            cliente_correo = cliente.id_usuario.correo_electronico
+            cliente_telefono = cliente.id_usuario.telefono
+
+            fecha_formateada = mantenimiento.fecha_mantenimiento.strftime('%d/%m/%Y')  # Ejemplo: 26/03/2025
+            hora_mantenimiento = datetime.combine(datetime.today(), mantenimiento.hora_mantenimiento)
+            hora_mantenimiento = make_aware(hora_mantenimiento)
+            hora_formateada = hora_mantenimiento.strftime('%I:%M %p')
+
+            # **Correo del Cliente**
+            asunto_cliente = "📅 Confirmación de Mantenimiento Programado"
+            mensaje_cliente = f"""
+                <html>
+                <body>
+                    <h2>¡Mantenimiento Registrado con Éxito! 🔧</h2>
+                    <p><b>Estimado {cliente_nombre},</b></p>
+                    <p>Tu mantenimiento ha sido programado correctamente. Aquí están los detalles:</p>
+                    <ul>
+                        <li><b>Taller:</b> {taller.nombre}</li>
+                        <li><b>Dirección:</b> {taller.direccion}</li>
+                        <li><b>Mecánico:</b> {mecanico_nombre}</li>
+                        <li><b>Vehículo:</b> {vehiculo.marca} - {vehiculo.modelo}</li>
+                        <li><b>Fecha:</b> { fecha_formateada }</li>
+                        <li><b>Hora:</b> { hora_formateada }</li>
+                    </ul>
+                    <p>Gracias por confiar en nosotros. ¡Nos vemos pronto!</p>
+                    <hr>
+                    <p><i>Este es un mensaje automático. Por favor, no respondas a este correo.</i></p>
+                </body>
+                </html>
+            """
+            email_cliente = EmailMultiAlternatives(asunto_cliente, mensaje_cliente, 'motorssafetynet@gmail.com', [cliente_correo])
+            email_cliente.attach_alternative(mensaje_cliente, "text/html")
+            email_cliente.send()
+
+            #**Correo del Mecánico**
+            asunto_mecanico = "🔧 Nuevo Mantenimiento Asignado"
+            mensaje_mecanico = f"""
+                <html>
+                <body>
+                    <h2>¡Tienes un Nuevo Mantenimiento Asignado! 📅</h2>
+                    <p><b>Hola {mecanico_nombre},</b></p>
+                    <p>Se te ha asignado un nuevo mantenimiento:</p>
+                    <ul>
+                        <li><b>Cliente:</b> {cliente_nombre}</li>
+                        <li><b>Teléfono:</b> {cliente_telefono}</li>
+                        <li><b>Vehículo:</b> {vehiculo.marca} - {vehiculo.modelo} (Placa: {vehiculo.placa})</li>
+                        <li><b>Tipo de Mantenimiento:</b> {mantenimiento.tipo_Mantenimiento}</li>
+                        <li><b>Fecha:</b> { fecha_formateada }</li>
+                        <li><b>Hora:</b> { hora_formateada }</li>
+                    </ul>
+                    <p>¡Prepárate para la cita y brinda el mejor servicio!</p>
+                    <hr>
+                    <p><i>Este es un mensaje automático. No respondas a este correo.</i></p>
+                </body>
+                </html>
+            """
+            email_mecanico = EmailMultiAlternatives(asunto_mecanico, mensaje_mecanico, 'motorssafetynet@gmail.com', [mecanico_correo])
+            email_mecanico.attach_alternative(mensaje_mecanico, "text/html")
+            email_mecanico.send()
+
+            mantenimiento_valido = True
+
+        else:
+           print(form.errors)
+
+    else:
+        form = MantenimientoForm()
+
+    return render(request, 'mantenimiento.html', {
+        'vehiculos': vehiculos,
+        'tallerMecanico': tallerMecanico,
+        'mantenimiento_valido': mantenimiento_valido,
+        'manteniminetosCliente': manteniminetosCliente,
+        'form': form
+    })
+
+@login_required
+def editar_mantenimiento(request, id_mantenimiento):
+    usuario = request.user
     cliente = Cliente.objects.filter(id_usuario = usuario).first()
     vehiculos = Vehiculo.objects.filter(id_cliente=cliente)
     tallerMecanico = TallerMecanico.objects.all()
-    return render(request, 'mantenimiento.html', {'vehiculos': vehiculos, 'tallerMecanico': tallerMecanico})
+    mantenimiento = get_object_or_404(MantenimientoProgramado, id_mantenimiento=id_mantenimiento)
+    mantenimiento_valido = False
+    if request.method == "POST":
+        form = MantenimientoForm(request.POST, instance=mantenimiento)
+        if form.is_valid():
+            form.save()
+            mantenimiento_valido = True
+        else:
+            print(form.errors)
+    else:
+        form = MantenimientoForm(instance=mantenimiento)
+    return render(request, 'editMantenimiento.html', {'form': form, 'mantenimiento': mantenimiento, 'mantenimiento_valido': mantenimiento_valido, 'vehiculos': vehiculos, 'tallerMecanico': tallerMecanico})
 
+@login_required
+def eliminar_mantenimiento(request, id_mantenimiento):
+    mantenimiento = get_object_or_404(MantenimientoProgramado, id_mantenimiento=id_mantenimiento)
+    mantenimiento.delete()
+    messages.success(request, "Mantenimiento eliminado correctamente.")
+    return redirect('cliente:mantenimiento')
 
 def obtener_mecanicos(request):
     taller_id = request.GET.get('taller_id')
 
-    if taller_id:
-        mecanicos = Mecanico.objects.filter(id_usuario__id_tallermecanico=taller_id).values('id_mecanico', 'id_usuario__nombres')
-        return JsonResponse(list(mecanicos), safe=False)
-    return JsonResponse([], safe=False)
+    if not taller_id:
+        return JsonResponse({'error': 'No se proporcionó el ID del taller'}, status=400)
+
+    # Filtrar mecánicos por taller mecánico
+    mecanicos = Mecanico.objects.filter(id_taller_mecanico_id=taller_id).select_related('id_usuario').values('id_mecanico', 'id_usuario__nombres')
+
+    return JsonResponse(list(mecanicos), safe=False)
 
 

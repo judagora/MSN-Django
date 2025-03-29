@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/Mensajes.css' %}">
     <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
@@ -21,29 +22,30 @@
     <!-- Barra de Navegación -->
     <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'inicio:index' %}">
-                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-            </a>
-            <h1>Motors Safety Net</h1>
+          <a class="link" href="{% url 'inicio:index' %}">
+            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+          </a>
+          <h1>Motors Safety Net</h1>
         </div>
-
+    
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center"
-                href="{% url 'administrador:inicio' %}">
-                <i class="lni lni-user"></i>
-                <!--<span>{{ request.user.nombres }}</span>-->
-            </a>
-
-            <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <!-- <small>{{ request.user.correo }}</small>-->
-            </a>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
-                href="{% url 'inicio:logout' %}">
-                <i class="lni lni-exit"></i>
-                <span>Cerrar Sesión</span>
-            </a>
+          <a class="usuario text-white text-decoration-none d-flex align-items-center"
+            href="{% url 'administrador:inicio' %}">
+            <i class="lni lni-user"></i>
+            <span>{{ user.nombre_usuario }}</span>
+          </a>
+    
+          <a class="correo text-white text-decoration-none d-flex align-items-center">
+            <small>{{ user.correo_electronico }}</small>
+          </a>
+          <br>
+          <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+          href="{% url 'inicio:logout' %}">
+          <i class="lni lni-exit"></i>
+            <span>Cerrar Sesión</span>
+          </a>
         </div>
-    </header>
+      </header>
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -152,7 +154,8 @@
                                 <select class="form-select" id="idAdministrador" name="idAdministrador" required>
                                     <option value="" disabled selected>Seleccione un Administrador</option>
                                     {% for admin in administradores %}
-                                    <option value="{{ admin.id_administrador }}">{{ admin.id_usuario.nombres }} {{ admin.id_usuario.apellidos }}</option>
+                                    <option value="{{ admin.id_administrador }}">
+                                        {{ admin.id_usuario.nombres }} {{admin.id_usuario.apellidos }}</option>
                                     {% endfor %}
                                 </select>
                                 <label id="errorAdministrador" class="text-danger" style="display: none;"></label>
@@ -172,11 +175,46 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="notification-container">
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
 
             <script>
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Cierre manual de notificaciones
+                    document.querySelectorAll('.close').forEach(button => {
+                        button.addEventListener('click', function () {
+                            this.parentElement.style.animation = 'fadeOut 0.5s forwards';
+                            setTimeout(() => {
+                                this.parentElement.remove();
+                            }, 500);
+                        });
+                    });
+
+                    // Cierre automático después de 5 segundos
+                    setTimeout(() => {
+                        document.querySelectorAll('.alert').forEach(alert => {
+                            alert.style.animation = 'fadeOut 0.5s forwards';
+                            setTimeout(() => {
+                                alert.remove();
+                            }, 500);
+                        });
+                    }, 5000);
+                });
+
                 function validarFormulario() {
                     // Obtener los valores de los campos
                     let nombre = document.getElementById("nombre").value;
@@ -248,6 +286,8 @@
                         return false;
                     }
 
+
+
                     // Función reusable para validar horarios
                     function validarHorario(horarioId, errorId) {
                         const horarioInput = document.getElementById(horarioId);
@@ -277,6 +317,11 @@
 
                         return true;
                     }
+
+
+
+
+
 
                 }
             </script>

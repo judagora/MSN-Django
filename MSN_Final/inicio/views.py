@@ -16,10 +16,8 @@ from django.contrib import messages
 temp_codes = {}
 
 def password_reset_request(request):
-
-    storage = messages.get_messages(request)
-    list(storage)
-
+    error_correo = None  # Variable específica para este mensaje
+    
     if request.method == "POST":
         email = request.POST.get('email')
         if Usuario.objects.filter(correo_electronico=email).exists():
@@ -33,18 +31,38 @@ def password_reset_request(request):
             }
             
             # Enviar correo con el código
-            subject = "Código de verificación - Motors Safety Net"
+            subject = "🔑 Código de Verificación - Motors Safety Net 🔑"
+
             message = f"""
+            ============================================
+            🛡️ VERIFICACIÓN DE SEGURIDAD 🛡️
+            ============================================
+
             Hola {user.nombres},
-            
-            Tu código de verificación para restablecer la contraseña es: {code}
-            
-            Este código es válido por 10 minutos.
-            
-            Si no solicitaste este cambio, por favor ignora este correo.
-            
-            Atentamente,
-            El equipo de Motors Safety Net
+
+            Has solicitado restablecer tu contraseña en Motors Safety Net.
+
+            📌 TU CÓDIGO DE VERIFICACIÓN:
+            ----------------------------------
+            🔢 {code}
+            ----------------------------------
+
+            ⏳ Este código es válido por 10 minutos.
+
+            ⚠️ IMPORTANTE:
+            - No compartas este código con nadie
+            - El equipo de Motors Safety Net nunca te pedirá este código
+            - Si no solicitaste este cambio, ignora este mensaje
+
+            📬 ¿Problemas o preguntas?
+            Contacta a nuestro equipo de soporte:
+            ✉️ motorssafetynet@gmail.com
+
+            ============================================
+            🔧 Motors Safety Net - Tu seguridad es nuestra prioridad
+            ============================================
+
+            ℹ️ Este es un mensaje automático, por favor no responder.
             """
             
             send_mail(
@@ -57,9 +75,13 @@ def password_reset_request(request):
             
             return render(request, 'verify_code.html', {'email': email})
         else:
-            messages.error(request, "No existe un usuario con este correo electrónico.")
+            error_correo = "No existe un usuario con este correo electrónico."
     
-    return render(request, 'password_reset_form.html')
+    return render(request, 'password_reset_form.html', {
+        'error_correo': error_correo,
+        'message_type': 'error' if error_correo else None
+    })
+
 
 def verify_code(request):
 
@@ -106,7 +128,7 @@ def set_new_password(request):
             del request.session['reset_email']
             
             messages.success(request, "Contraseña actualizada correctamente. Por favor inicia sesión.")
-            return render(request, 'login.html')
+            return render(request, 'new_password_form.html')
     
     return redirect('inicio:password_reset')
 

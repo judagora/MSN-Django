@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'found/css/MantenimientoP.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+    <link rel="stylesheet" href="{% static 'found/css/Mensajes.css' %}">
     <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
@@ -18,31 +19,33 @@
 
 <body class="fuente">
 
-      <!--  Barra de Navegación  -->
-      <header class="barrasup">
+    <!--  Barra de Navegación  -->
+    <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'inicio:index' %}">
-                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-            </a>
-            <h1>Motors Safety Net</h1>
+          <a class="link" href="{% url 'inicio:index' %}">
+            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+          </a>
+          <h1>Motors Safety Net</h1>
         </div>
-  
+    
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center" href="{% url 'administrador:inicio' %}">
-                <i class="lni lni-user"></i>
-                <span>{{ user.nombre_usuario }}</span>
-            </a>
-  
-            <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <small>{{ user.correo_electronico }}</small>
-            </a>
-            <br>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button" href="{% url 'inicio:logout' %}">
-                <i class="lni lni-exit"></i>
-                <span>Cerrar Sesión</span>
-            </a>
+          <a class="usuario text-white text-decoration-none d-flex align-items-center"
+            href="{% url 'administrador:inicio' %}">
+            <i class="lni lni-user"></i>
+            <span>{{ user.nombre_usuario }}</span>
+          </a>
+    
+          <a class="correo text-white text-decoration-none d-flex align-items-center">
+            <small>{{ user.correo_electronico }}</small>
+          </a>
+          <br>
+          <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+          href="{% url 'inicio:logout' %}">
+          <i class="lni lni-exit"></i>
+            <span>Cerrar Sesión</span>
+          </a>
         </div>
-    </header>
+      </header>
 
 
     <!-- Contenido de la página -->
@@ -54,53 +57,60 @@
                     <div class="espaciobarranav">
                         <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
                             <li class="nav-item d-flex justify-content-center align-items-center">
-                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="lni lni-chevron-right-circle"></i></a></h3>
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i
+                                            class="lni lni-chevron-right-circle"></i></a></h3>
                             </li>
                         </div>
                         <ul class="submenu">
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:insertarMecanico' %}"
+                                        style="margin-top: 10%;">Registrar Mecánico</a></li>
                             </div>
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
+                                <li><a class="nav-link text-light text-center"
+                                        href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos
+                                        Registrados</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center" aria-current="page"
-                                href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                    href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
                                         class="lni lni-agenda"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                    href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
                                         class="lni lni-delivery"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                    href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
                                         class="lni lni-cogs"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a></h3>
+                                    href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a>
+                            </h3>
                         </li>
                     </div>
                 </ul>
             </div>
 
 
-             <!-- Contenido Principal -->
-             <div class="col-8">
+            <!-- Contenido Principal -->
+            <div class="col-8">
                 <div class="row mt-3">
-                    <h1 class="espacio2 col colortext text-center" style="margin-top: 5%;">Mantenimientos Programados</h1>
+                    <h1 class="espacio2 col colortext text-center" style="margin-top: 5%;">Mantenimientos Programados
+                    </h1>
                     <div style="display: flex; justify-content: flex-start; margin-bottom: 5%;">
                     </div>
                 </div>
@@ -127,15 +137,18 @@
                                 <td>
                                     <!-- Botón para modificar -->
                                     <div class="tooltip-container tooltip-edit">
-                                        <a href="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}" class="btn-action btn-edit">
+                                        <a href="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}"
+                                            class="btn-action btn-edit">
                                             <i class="lni lni-cog"></i>
                                         </a>
                                         <span class="tooltip-text">Editar mantenimiento</span>
                                     </div>
-        
+
                                     <!-- Botón para abrir el modal de eliminación -->
                                     <div class="tooltip-container tooltip-delete">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmarEliminacion{{ mantenimiento.id_mantenimiento }}" class="btn-action btn-delete">
+                                        <a href="#" data-bs-toggle="modal"
+                                            data-bs-target="#confirmarEliminacion{{ mantenimiento.id_mantenimiento }}"
+                                            class="btn-action btn-delete">
                                             <i class="lni lni-circle-minus"></i>
                                         </a>
                                         <span class="tooltip-text">Eliminar mantenimiento</span>
@@ -144,19 +157,25 @@
                             </tr>
 
                             <!-- Modal de Confirmación de Eliminación -->
-                            <div class="modal fade" id="confirmarEliminacion{{ mantenimiento.id_mantenimiento }}" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+                            <div class="modal fade" id="confirmarEliminacion{{ mantenimiento.id_mantenimiento }}"
+                                tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            ¿Estás seguro de que deseas eliminar el mantenimiento <strong>{{ mantenimiento.tipo_mantenimiento }}</strong>?
+                                            ¿Estás seguro de que deseas eliminar el mantenimiento <strong>{{
+                                                mantenimiento.tipo_mantenimiento }}</strong>?
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <form method="post" action="{% url 'administrador:eliminar_mantenimiento' mantenimiento.id_mantenimiento %}">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                            <form method="post"
+                                                action="{% url 'administrador:eliminar_mantenimiento' mantenimiento.id_mantenimiento %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-danger">Eliminar</button>
                                             </form>
@@ -167,16 +186,52 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <div class="notification-container">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    
+
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
-    
+
     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cierre manual de notificaciones
+            document.querySelectorAll('.close').forEach(button => {
+                button.addEventListener('click', function () {
+                    this.parentElement.style.animation = 'fadeOut 0.5s forwards';
+                    setTimeout(() => {
+                        this.parentElement.remove();
+                    }, 500);
+                });
+            });
+
+            // Cierre automático después de 5 segundos
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.animation = 'fadeOut 0.5s forwards';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                });
+            }, 5000);
+        });
+
+
         $(document).ready(function () {
             // Cuando el formulario de eliminación es enviado
             $('form.eliminar-form').submit(function (event) {

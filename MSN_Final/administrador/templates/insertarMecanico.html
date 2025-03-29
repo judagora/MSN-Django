@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{% static 'found/css/InsertarP.css' %}">
   <link rel="stylesheet" href="{% static 'found/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'found/css/Colores.css' %}">
+  <link rel="stylesheet" href="{% static 'found/css/Mensajes.css' %}">
   <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
   <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
@@ -39,8 +40,8 @@
       </a>
       <br>
       <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
-        href="{% url 'inicio:logout' %}">
-        <i class="lni lni-exit"></i>
+      href="{% url 'inicio:logout' %}">
+      <i class="lni lni-exit"></i>
         <span>Cerrar Sesión</span>
       </a>
     </div>
@@ -290,6 +291,18 @@
                 </div>
               </div>
             </form>
+            <div class="notification-container">
+              {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              {% endfor %}
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
@@ -299,6 +312,30 @@
   <!-- Scripts -->
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Cierre manual de notificaciones
+      document.querySelectorAll('.close').forEach(button => {
+        button.addEventListener('click', function () {
+          this.parentElement.style.animation = 'fadeOut 0.5s forwards';
+          setTimeout(() => {
+            this.parentElement.remove();
+          }, 500);
+        });
+      });
+
+      // Cierre automático después de 5 segundos
+      setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(alert => {
+          alert.style.animation = 'fadeOut 0.5s forwards';
+          setTimeout(() => {
+            alert.remove();
+          }, 500);
+        });
+      }, 5000);
+    });
+
+
+
     function toggleSubMenu() {
       const submenu = document.querySelector('.submenu');
       submenu.classList.toggle('show');
@@ -390,7 +427,7 @@
 
       if (!validarHorario('horario', 'errorHorario')) {
         return false;
-    }
+      }
 
       // Validar experiencia
       if (experiencia.trim() === "") {
