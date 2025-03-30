@@ -29,6 +29,12 @@ urlpatterns = [
     
     path('verificar-placa/', views.verificar_placa, name='verificar_placa'),
     
- 
+    
+    path('consultarCitaMc/', views.consultarCitaMc, name='consultarCitaMc'),
+    
+      path('actualizar-estado-mantenimiento/', views.actualizar_estado_mantenimiento, name='actualizar_estado_mantenimiento'),
 ]
+    
+ 
+
 
