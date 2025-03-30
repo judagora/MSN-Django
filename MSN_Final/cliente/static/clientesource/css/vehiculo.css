@@ -89,8 +89,18 @@
         flex-direction: column-reverse;
     }
 
+    .editar, .borrar{
+        width: 45%;
+    }
+
     .menu {
         height: 80vh;
+    }
+
+    .informacion-vehi {
+        width: 100%;
+        margin-left: 0px;
+        height: inherit;
     }
 
     .icono-nom h4 {
@@ -127,10 +137,19 @@
     .informacion-vehi {
         width: 100%;
         margin-left: 0px;
+        height: inherit;
     }
 
     .icono-nom img {
         width: 25%;
         margin-top: 0;
     }
+
+
+    @media only screen and (max-width: 540px) {
+        header {
+            padding-bottom: 20px;
+        }
+    }
+
 }
