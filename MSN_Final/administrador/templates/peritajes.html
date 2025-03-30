@@ -23,7 +23,7 @@
     <!--  Barra de Navegación  -->
     <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'inicio:index' %}">
+            <a class="link" href="{% url 'administrador:inicio' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
@@ -116,101 +116,33 @@
                         <table id="Peritajes" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Id Peritaje</th>
+                                    <th>Vehículo</th>
                                     <th>Descripción</th>
                                     <th>Costo</th>
                                     <th>Notas Adicionales</th>
-                                    <th>Acciones</th>
+                                    <th>Cliente</th>                                    
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for peritaje in peritajes %}
                                 <tr>
-                                    <td>{{ peritaje.id_peritaje }}</td>
+                                    <td>
+                                        {% with vehiculo=peritaje.vehiculoperitaje_set.first.id_vehiculo %}
+                                            {{ vehiculo.placa }} - {{ vehiculo.marca }} - {{ vehiculo.modelo }}
+                                        {% endwith %}
+                                    </td>
                                     <td>{{ peritaje.descripcion }}</td>
                                     <td>{{ peritaje.costo }}</td>
                                     <td>{{ peritaje.notas_adicionales }}</td>
                                     <td>
-                                        <!-- Botón para modificar -->
-                                        <div class="tooltip-container tooltip-edit">
-                                            <a href="{% url 'administrador:modificarPeritaje' peritaje.id_peritaje %}"
-                                                class="btn-action btn-edit">
-                                                <i class="lni lni-cog"></i>
-                                            </a>
-                                            <span class="tooltip-text">Editar Peritaje</span>
-                                        </div>
-
-                                        <!-- Botón para abrir el modal de eliminación -->
-                                        <div class="tooltip-container tooltip-delete">
-                                            <a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#confirmarEliminacion{{ peritaje.id_peritaje }}"
-                                                class="btn-action btn-delete">
-                                                <i class="lni lni-circle-minus"></i>
-                                            </a>
-                                            <span class="tooltip-text">Eliminar Peritaje</span>
-                                        </div>
+                                        {% with vehiculo=peritaje.vehiculoperitaje_set.first.id_vehiculo %}
+                                            {{ vehiculo.id_cliente.id_usuario.nombres }} {{ vehiculo.id_cliente.id_usuario.apellidos }}
+                                        {% endwith %}
                                     </td>
                                 </tr>
-
-                                <!-- Modal de Confirmación de Eliminación -->
-                                <div class="modal fade" id="confirmarEliminacion{{ peritaje.id_peritaje }}"
-                                    tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar
-                                                    Eliminación</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                ¿Estás seguro de que deseas eliminar el peritaje
-                                                <strong>{{peritaje.descripcion }}</strong>?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Cancelar</button>
-                                                <!-- Formulario para eliminar el peritaje -->
-                                                <form
-                                                    action="{% url 'administrador:eliminar_peritaje' peritaje.id_peritaje %}"
-                                                    method="post">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <div class="notification-container">
-                            {% if success_message %}
-                            <div class="alert alert-success alert-dismissible fade show" role="alert"
-                                id="success-alert">
-                                {{ success_message }}
-                                <button type="button" class="close" onclick="dismissAlert('success-alert')">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            {% endif %}
-
-                            {% if error_message %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
-                                {{ error_message }}
-                                {% if error_details %}
-                                <ul>
-                                    {% for detail in error_details %}
-                                    <li>{{ detail }}</li>
-                                    {% endfor %}
-                                </ul>
-                                {% endif %}
-                                <button type="button" class="close" onclick="dismissAlert('error-alert')">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            {% endif %}
-                        </div>
                     </div>
                 </div>
             </div>

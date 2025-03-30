@@ -23,7 +23,7 @@
     <!--  Barra de Navegación  -->
     <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'inicio:index' %}">
+            <a class="link" href="{% url 'administrador:inicio' %}">
                 <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
             </a>
             <h1>Motors Safety Net</h1>
@@ -122,98 +122,36 @@
                         <thead>
                             <tr>
                                 <th>Tipo de Mantenimiento</th>
-                                <th>Descripción</th>
-                                <th>Costo</th>
-                                <th>Notas Adicionales</th>
-                                <th>Acciones</th>
+                                <th>Taller Mecánico</th>
+                                <th>Vehículo</th>
+                                <th>Mecánico</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Notas</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for mantenimiento in mantenimientos %}
+                            {% for mantenimiento in mantenimientos_programados %}
                             <tr>
-                                <td>{{ mantenimiento.tipo_mantenimiento }}</td>
-                                <td>{{ mantenimiento.descripcion }}</td>
-                                <td>{{ mantenimiento.costo }}</td>
-                                <td>{{ mantenimiento.notas_adicionales }}</td>
+                                <td>{{ mantenimiento.tipo_Mantenimiento }}</td>
+                                <td>{{ mantenimiento.id_taller_mecanico.nombre|default:"No asignado" }}</td>
+                                <td>{{ mantenimiento.id_vehiculo.placa }} - {{ mantenimiento.id_vehiculo.marca }}</td>
                                 <td>
-                                    <!-- Botón para modificar -->
-                                    <div class="tooltip-container tooltip-edit">
-                                        <a href="{% url 'administrador:modificarMantenimiento' mantenimiento.id_mantenimiento %}"
-                                            class="btn-action btn-edit">
-                                            <i class="lni lni-cog"></i>
-                                        </a>
-                                        <span class="tooltip-text">Editar mantenimiento</span>
-                                    </div>
-
-
-                                    <!-- Botón para abrir el modal de eliminación -->
-                                    <div class="tooltip-container tooltip-delete">
-                                        <a href="#" data-bs-toggle="modal"
-                                            data-bs-target="#confirmarEliminacion{{ mantenimiento.id_mantenimiento }}"
-                                            class="btn-action btn-delete">
-                                            <i class="lni lni-circle-minus"></i>
-                                        </a>
-                                        <span class="tooltip-text">Eliminar mantenimiento</span>
-                                    </div>
+                                    {% if mantenimiento.id_mecanico %}
+                                    {{ mantenimiento.id_mecanico.id_usuario.nombres }}
+                                    {% else %}
+                                    No asignado
+                                    {% endif %}
                                 </td>
+                                <td>{{ mantenimiento.fecha_mantenimiento|date:"d/m/Y" }}</td>
+                                <td>{{ mantenimiento.hora_mantenimiento|time:"H:i" }}</td>
+                                <td>{{ mantenimiento.notas|default:"-" }}</td>
+                                <td>{{ mantenimiento.estado|title }}</td>
                             </tr>
-
-                            <!-- Modal de Confirmación de Eliminación -->
-                            <div class="modal fade" id="confirmarEliminacion{{ mantenimiento.id_mantenimiento }}"
-                                tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            ¿Estás seguro de que deseas eliminar el mantenimiento
-                                            <strong>{{mantenimiento.tipo_mantenimiento }}</strong>?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Cancelar</button>
-                                            <form method="post"
-                                                action="{% url 'administrador:eliminar_mantenimiento' mantenimiento.id_mantenimiento %}">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             {% endfor %}
                         </tbody>
                     </table>
-                    <div class="notification-container">
-                        {% if success_message %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-                            {{ success_message }}
-                            <button type="button" class="close" onclick="dismissAlert('success-alert')">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        {% endif %}
-
-                        {% if error_message %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
-                            {{ error_message }}
-                            {% if error_details %}
-                            <ul>
-                                {% for detail in error_details %}
-                                <li>{{ detail }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                            <button type="button" class="close" onclick="dismissAlert('error-alert')">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        {% endif %}
-                    </div>
                 </div>
             </div>
         </div>

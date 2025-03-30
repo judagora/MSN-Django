@@ -3,7 +3,7 @@ from .forms import RegistroMecanicoForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.urls import reverse
-from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico
+from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico, MantenimientoProgramado
 from .forms import TallerMecanicoForm
 from django.conf import settings
 
@@ -156,11 +156,19 @@ def eliminar_mecanico(request, id_usuario):
     context['mecanicos'] = Mecanico.objects.select_related('id_usuario').all()
     return render(request, 'mecanicos.html', context)
 
+
 @login_required
 def mantenimientos(request):
+    mantenimientos_programados = MantenimientoProgramado.objects.select_related(
+        'id_mecanico',
+        'id_vehiculo',
+        'id_taller_mecanico'
+    ).all()
+    
     return render(request, 'mantenimientos.html', {
-        'mantenimientos': Mantenimiento.objects.all()
+        'mantenimientos_programados': mantenimientos_programados
     })
+
 
 @login_required
 def historialesVehiculo(request):

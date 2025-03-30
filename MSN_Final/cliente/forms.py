@@ -2,6 +2,7 @@ from django import forms
 from inicio.models import Vehiculo, Usuario, Soat, Cliente, Notificaciones, MantenimientoProgramado
 from datetime import datetime, time, timedelta
 from django.core.exceptions import ValidationError
+import re
 
 class VehiculoForm(forms.ModelForm):
     class Meta:
@@ -94,7 +95,7 @@ class SoatForm(forms.ModelForm):
         error_messages = {
             'numero_poliza': {
                 'required': "El número de póliza es obligatorio.",
-                'max_length': "El número de póliza no puede tener más de 50 caracteres.",
+                'max_length': "El número de póliza no puede tener más de 20 caracteres.",
                 'min_length': "El número de póliza debe tener al menos 10 caracteres.",
                 'unique': "Este número de póliza ya está registrado.",
             },
@@ -143,15 +144,23 @@ class SoatForm(forms.ModelForm):
     def clean_valor_soat(self):
         valor_soat = self.cleaned_data.get('valor_soat')
 
-        # Verificar si el valor es un número entero
-        if not isinstance(valor_soat, int):
-            raise ValidationError("Ingrese solo números enteros, sin puntos ni comas.")
+        if not re.fullmatch(r'\d+', str(valor_soat)):
+            raise ValidationError("Introducir el valor sin puntos ni comas.")
 
         # Validar el rango permitido
         if valor_soat < 100000 or valor_soat > 1400000:
             raise ValidationError("El valor del SOAT debe estar entre $100,000 y $1,400,000.")
 
         return valor_soat
+    
+    def clean_numero_poliza(self):
+        numero_poliza = self.cleaned_data.get('numero_poliza')
+
+        # Verificar que solo contenga números y tenga entre 15 y 20 dígitos
+        if not re.fullmatch(r'\d{15,20}', str(numero_poliza)):
+            raise ValidationError("El número de póliza debe contener entre 15 y 20 dígitos numéricos.")
+
+        return numero_poliza
     
     def clean_fecha_emision(self):
         fecha_emision = self.cleaned_data.get('fecha_emision')
