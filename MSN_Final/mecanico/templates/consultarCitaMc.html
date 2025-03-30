@@ -156,7 +156,7 @@
                 </div>
                 <div class="tabla table-responsive row mt-3">
                     <span class="modificar">Consultar Citas Programadas</span>
-                    <table id="mantenimientosTable" class="table  table-bordered table-hover" width="100%" cellspacing="0">
+                    <table id="mantenimientosTable" class="table table-bordered table-hover" width="100%" cellspacing="0">
                         <thead class="thead-light">
                             <tr>
                                 <th>Tipo de mantenimiento</th>
@@ -179,7 +179,7 @@
                                     <td>{{ mantenimiento.id_vehiculo.marca|capfirst }}</td>
                                     <td>{{ mantenimiento.id_vehiculo.placa|upper }}</td>
                                     <td>{{ mantenimiento.id_taller_mecanico.nombre|capfirst }}</td>
-                                    <td>{{ mantenimiento.fecha_mantenimiento }}</td>
+                                    <td>{{ mantenimiento.fecha_mantenimiento|date:"d/m/Y" }}</td>
                                     <td>{{ mantenimiento.hora_mantenimiento|time:"h:i A" }}</td>
                                     <td>{{ mantenimiento.notas|default:"Sin notas" }}</td>
                                     <td>
@@ -195,13 +195,12 @@
                                                    type="checkbox" 
                                                    data-mantenimiento-id="{{ mantenimiento.id_mantenimiento }}"
                                                    {% if mantenimiento.estado == 'completado' %}checked{% endif %}>
-                                            <label class="form-check-label">Realizado</label>
                                         </div>
                                     </td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="10">No tienes mantenimientos programados</td>
+                                    <td colspan="10" class="text-center">No tienes mantenimientos programados</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -217,59 +216,69 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.js"></script>
+       
     {% block scripts %}
     <script>
-        $(document).ready(function () {
-            $('#mantenimientosTable').DataTable({
-                responsive: true
-            });
+    $(document).ready(function() {
+        // Verificar si la tabla ya está inicializada
+        var table = $('#mantenimientosTable').DataTable({
+            responsive: true,
+            language: {
+                "emptyTable": "No tienes mantenimientos programados",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "lengthMenu": "Mostrar _MENU_ registros",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron resultados",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            },
+            columnDefs: [
+                { 
+                    "defaultContent": "-", 
+                    "targets": "_all" 
+                }
+            ]
         });
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkboxes = document.querySelectorAll('.estado-checkbox');
-        
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const mantenimientoId = this.dataset.mantenimientoId;
-                const nuevoEstado = this.checked ? 'completado' : 'pendiente';
-                
-                // Crear FormData para enviar los datos
-                const formData = new FormData();
-                formData.append('mantenimiento_id', mantenimientoId);
-                formData.append('estado', nuevoEstado);
-                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-                
-                fetch('{% url "mecanico:actualizar_estado_mantenimiento" %}', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la red');
-                    }
-                    return response.json();
-                })
-                .then(data => {
+
+        // Manejar el cambio de estado con jQuery para consistencia
+        $('#mantenimientosTable').on('change', '.estado-checkbox', function() {
+            var checkbox = $(this);
+            var mantenimientoId = checkbox.data('mantenimiento-id');
+            var nuevoEstado = checkbox.is(':checked') ? 'completado' : 'pendiente';
+            var row = checkbox.closest('tr');
+            
+            $.ajax({
+                url: '{% url "mecanico:actualizar_estado_mantenimiento" %}',
+                method: 'POST',
+                data: {
+                    'mantenimiento_id': mantenimientoId,
+                    'estado': nuevoEstado,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(data) {
                     if (data.success) {
-                        const row = this.closest('tr');
                         if (nuevoEstado === 'completado') {
-                            row.classList.add('table-success');
-                            row.querySelector('.badge').className = 'badge bg-success';
-                            row.querySelector('.badge').textContent = 'Completado';
+                            row.addClass('table-success');
+                            row.find('.badge').removeClass('bg-warning text-dark').addClass('bg-success').text('Completado');
                         } else {
-                            row.classList.remove('table-success');
-                            row.querySelector('.badge').className = 'badge bg-warning text-dark';
-                            row.querySelector('.badge').textContent = 'Pendiente';
+                            row.removeClass('table-success');
+                            row.find('.badge').removeClass('bg-success').addClass('bg-warning text-dark').text('Pendiente');
                         }
                     } else {
-                        this.checked = !this.checked; // Revertir el cambio si falla
+                        checkbox.prop('checked', !checkbox.is(':checked'));
                         alert(data.error || 'Error al actualizar el estado');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    this.checked = !this.checked; // Revertir el cambio si falla
-                    alert('Error de conexión. Intente nuevamente.');
-                });
+                },
+                error: function(xhr, status, error) {
+                    checkbox.prop('checked', !checkbox.is(':checked'));
+                    alert('Error de conexión: ' + error);
+                }
             });
         });
     });
