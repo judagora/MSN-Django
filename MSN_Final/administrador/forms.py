@@ -7,22 +7,18 @@ from django.core.exceptions import ValidationError
 
 
 class ModificarMecanicoForm(forms.ModelForm):
-    horario_de_trabajo = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time'}),
-        label="Horario de Trabajo"
-    )
-    experiencia_laboral = forms.CharField(
-        widget=forms.Textarea,
-        label="Experiencia Laboral"
-    )
-    rol_usuario = forms.CharField(
-        initial="Mecánico",
-        widget=forms.HiddenInput()
+    horario_de_trabajo = forms.TimeField(required=True)
+    experiencia_laboral = forms.CharField(required=True)
+    id_taller_mecanico = forms.ModelChoiceField(
+        queryset=TallerMecanico.objects.all(),
+        required=False
     )
 
     class Meta:
         model = Usuario
-        fields = ['nombres', 'apellidos', 'correo_electronico', 'nombre_usuario', 'telefono', 'rol_usuario']
+        fields = ['nombres', 'apellidos', 'telefono', 'correo_electronico', 'nombre_usuario']
+        exclude = ['password']  # Excluye explícitamente el campo de contraseña
+
 
 class TallerMecanicoForm(forms.ModelForm):
     class Meta:

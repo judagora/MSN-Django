@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.urls import reverse
 from inicio.models import Mecanico, Usuario, Vehiculo, Mantenimiento, Peritaje, Administrador, TallerMecanico, MantenimientoProgramado
-from .forms import TallerMecanicoForm
+from .forms import TallerMecanicoForm, ModificarMecanicoForm
 from django.conf import settings
 
 @login_required
@@ -46,21 +46,21 @@ def modificarMecanico(request, id_usuario):
     }
     
     if request.method == 'POST':
-        form = RegistroMecanicoForm(request.POST, instance=mecanico.id_usuario)
+        # Usa el nuevo formulario de modificación
+        form = ModificarMecanicoForm(request.POST, instance=mecanico.id_usuario)
         
         if form.is_valid():
             try:
-                usuario = form.save()
-                mecanico.horario_de_trabajo = request.POST.get('horario_de_trabajo')
-                mecanico.experiencia_laboral = request.POST.get('experiencia_laboral')
+                # Guarda el usuario sin tocar la contraseña
+                usuario = form.save(commit=False)
+                usuario.save()  # Guarda sin modificar la contraseña
                 
-                id_taller = request.POST.get('id_taller_mecanico')
-                if id_taller:
-                    mecanico.id_taller_mecanico = TallerMecanico.objects.get(id_taller_mecanico=id_taller)
-                else:
-                    mecanico.id_taller_mecanico = None
-                
+                # Actualiza los campos específicos del mecánico
+                mecanico.horario_de_trabajo = form.cleaned_data['horario_de_trabajo']
+                mecanico.experiencia_laboral = form.cleaned_data['experiencia_laboral']
+                mecanico.id_taller_mecanico = form.cleaned_data['id_taller_mecanico']
                 mecanico.save()
+                
                 context['success_message'] = 'Mecánico actualizado exitosamente'
                 return render(request, 'mecanicos.html', {
                     'mecanicos': Mecanico.objects.select_related('id_usuario').all(),
@@ -70,14 +70,18 @@ def modificarMecanico(request, id_usuario):
                 context['error_message'] = f'Error al actualizar el mecánico: {str(e)}'
         else:
             context['error_message'] = "Por favor corrige los errores en el formulario"
-            for field, errors in form.errors.items():
-                for error in errors:
-                    if 'error_details' not in context:
-                        context['error_details'] = []
-                    context['error_details'].append(f"{field}: {error}")
+            context['form_errors'] = form.errors
     
-    context['form'] = RegistroMecanicoForm(instance=mecanico.id_usuario)
+    # Inicializa el formulario con los datos actuales
+    initial_data = {
+        'horario_de_trabajo': mecanico.horario_de_trabajo,
+        'experiencia_laboral': mecanico.experiencia_laboral,
+        'id_taller_mecanico': mecanico.id_taller_mecanico
+    }
+    context['form'] = ModificarMecanicoForm(instance=mecanico.id_usuario, initial=initial_data)
+    
     return render(request, 'modificarMecanico.html', context)
+
 
 @login_required
 def insertarMecanico(request):
