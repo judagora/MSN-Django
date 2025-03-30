@@ -14,13 +14,9 @@ urlpatterns = [
     path('historialesVehiculo/', views.historialesVehiculo, name='historialesVehiculo'),
     path('talleresMecanico/', views.talleresMecanico, name='talleresMecanico'),
     path('insertarTaller/', views.insertarTaller, name='insertarTaller'),
-    path('modificarMantenimiento/<int:id_mantenimiento>/', views.modificarMantenimiento, name='modificarMantenimiento'),
     path('peritajes/', views.peritajes, name='peritajes'),
-    path('modificarPeritaje/<int:id_peritaje>/', views.modificarPeritaje, name='modificarPeritaje'),
     path('modificarTaller/<int:id_taller_mecanico>/', views.modificarTaller, name='modificarTaller'),
-    path('eliminarMantenimiento/<int:id_mantenimiento>/', views.eliminar_mantenimiento, name='eliminar_mantenimiento'),
     path('eliminarTaller/<int:id_taller_mecanico>/', views.eliminarTaller, name='eliminar_taller'),
-    path('eliminarPeritaje/<int:id_peritaje>/', views.eliminarPeritaje, name='eliminar_peritaje'),
 
 
 
