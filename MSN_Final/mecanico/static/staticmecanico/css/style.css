@@ -317,3 +317,95 @@ footer{
     padding: 0.5rem 0.5rem;
 }
 
+.table-success {
+    background-color: #d1e7dd !important;
+}
+
+.badge {
+    font-size: 0.9em;
+    padding: 0.35em 0.65em;
+}
+
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.3em;
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+
+
+
+
+
+
+/* Estilos para la tabla */
+#mantenimientosTable {
+    font-size: 0.9rem;
+}
+
+#mantenimientosTable thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+#mantenimientosTable tbody td {
+    vertical-align: middle;
+    padding: 0.75rem;
+}
+
+/* Estilos para los badges */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+/* Estilos para el switch */
+.form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.form-switch .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    margin-left: 0;
+}
+
+/* Estilos para filas */
+.table-success {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+/* Estilos para la tarjeta */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}

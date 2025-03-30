@@ -7,6 +7,12 @@ from inicio.models import Mantenimiento, Vehiculo, VehiculoMantenimiento, Perita
 from django.db.models import Count, Q
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
+
+
 
 @login_required
 def inicio(request):
@@ -111,6 +117,28 @@ def consultarCitaMc(request):
         'mecanico': mecanico
     })
 
+
+
+
+@csrf_exempt
+@require_POST
+def actualizar_estado_mantenimiento(request):
+    try:
+        mantenimiento_id = request.POST.get('mantenimiento_id')
+        nuevo_estado = request.POST.get('estado')
+        
+        if not mantenimiento_id or not nuevo_estado:
+            return JsonResponse({'success': False, 'error': 'Datos incompletos'}, status=400)
+            
+        mantenimiento = MantenimientoProgramado.objects.get(pk=mantenimiento_id)
+        mantenimiento.estado = nuevo_estado
+        mantenimiento.save()
+        return JsonResponse({'success': True})
+        
+    except MantenimientoProgramado.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Mantenimiento no encontrado'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 

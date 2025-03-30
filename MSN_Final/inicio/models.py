@@ -98,6 +98,11 @@ class Cliente(models.Model):
 
 
 class MantenimientoProgramado(models.Model):
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('completado', 'Completado'),
+    ]
+    
     id_mantenimiento = models.AutoField(primary_key=True)
     tipo_Mantenimiento = models.CharField(max_length=30)
     id_mecanico = models.ForeignKey('Mecanico', on_delete=models.SET_NULL, null=True)
@@ -106,6 +111,11 @@ class MantenimientoProgramado(models.Model):
     fecha_mantenimiento = models.DateField()
     hora_mantenimiento = models.TimeField()
     notas = models.CharField(max_length=100, blank=True, null=True)
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default='pendiente'
+    )
 
     def __str__(self):
         return f"Mantenimiento Programado {self.id_mantenimiento}"

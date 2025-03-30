@@ -32,6 +32,9 @@ urlpatterns = [
     
     path('consultarCitaMc/', views.consultarCitaMc, name='consultarCitaMc'),
     
- 
+      path('actualizar-estado-mantenimiento/', views.actualizar_estado_mantenimiento, name='actualizar_estado_mantenimiento'),
 ]
+    
+ 
+
 

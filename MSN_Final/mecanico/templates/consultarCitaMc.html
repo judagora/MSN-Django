@@ -156,8 +156,8 @@
                 </div>
                 <div class="tabla table-responsive row mt-3">
                     <span class="modificar">Consultar Citas Programadas</span>
-                    <table id="ConsultarCita" class="table table-bordered display nowrap" width="100%">
-                        <thead>
+                    <table id="mantenimientosTable" class="table  table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead class="thead-light">
                             <tr>
                                 <th>Tipo de mantenimiento</th>
                                 <th>Vehículo</th>
@@ -167,11 +167,13 @@
                                 <th>Fecha</th>
                                 <th>Hora</th>
                                 <th>Notas</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for mantenimiento in mantenimientos %}
-                                <tr>
+                                <tr class="{% if mantenimiento.estado == 'completado' %}table-success{% endif %}">
                                     <td>{{ mantenimiento.tipo_Mantenimiento }}</td>
                                     <td>{{ mantenimiento.id_vehiculo.tipo }} {{ mantenimiento.id_vehiculo.modelo }}</td>
                                     <td>{{ mantenimiento.id_vehiculo.marca|capfirst }}</td>
@@ -180,6 +182,26 @@
                                     <td>{{ mantenimiento.fecha_mantenimiento }}</td>
                                     <td>{{ mantenimiento.hora_mantenimiento|time:"h:i A" }}</td>
                                     <td>{{ mantenimiento.notas|default:"Sin notas" }}</td>
+                                    <td>
+                                        {% if mantenimiento.estado == 'completado' %}
+                                            <span class="badge bg-success">Completado</span>
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">Pendiente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input estado-checkbox" 
+                                                   type="checkbox" 
+                                                   data-mantenimiento-id="{{ mantenimiento.id_mantenimiento }}"
+                                                   {% if mantenimiento.estado == 'completado' %}checked{% endif %}>
+                                            <label class="form-check-label">Realizado</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="10">No tienes mantenimientos programados</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -195,40 +217,64 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.js"></script>
+    {% block scripts %}
     <script>
         $(document).ready(function () {
-            $('#ConsultarCita').DataTable({
+            $('#mantenimientosTable').DataTable({
                 responsive: true
             });
         });
-
-        window.addEventListener('pageshow', function (event) {
-            // Verificar si la página se carga desde la caché
-            if (event.persisted) {
-                forms.forEach(form => {
-                    form.reset(); // Limpiar los campos del formulario
-                    form.classList.remove('was-validated'); // Remover clases de validación
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.estado-checkbox');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const mantenimientoId = this.dataset.mantenimientoId;
+                const nuevoEstado = this.checked ? 'completado' : 'pendiente';
+                
+                // Crear FormData para enviar los datos
+                const formData = new FormData();
+                formData.append('mantenimiento_id', mantenimientoId);
+                formData.append('estado', nuevoEstado);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                
+                fetch('{% url "mecanico:actualizar_estado_mantenimiento" %}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la red');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const row = this.closest('tr');
+                        if (nuevoEstado === 'completado') {
+                            row.classList.add('table-success');
+                            row.querySelector('.badge').className = 'badge bg-success';
+                            row.querySelector('.badge').textContent = 'Completado';
+                        } else {
+                            row.classList.remove('table-success');
+                            row.querySelector('.badge').className = 'badge bg-warning text-dark';
+                            row.querySelector('.badge').textContent = 'Pendiente';
+                        }
+                    } else {
+                        this.checked = !this.checked; // Revertir el cambio si falla
+                        alert(data.error || 'Error al actualizar el estado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.checked = !this.checked; // Revertir el cambio si falla
+                    alert('Error de conexión. Intente nuevamente.');
                 });
-
-                // Limpiar mensajes de error específicos (opcional)
-                const invalidInputs = document.querySelectorAll('.is-invalid');
-                invalidInputs.forEach(input => input.classList.remove('is-invalid'));
-
-                const invalidFeedbacks = document.querySelectorAll('.invalid-feedback');
-                invalidFeedbacks.forEach(feedback => feedback.remove());
-            }
-        });
-
-        // Cierre automático después de 5 segundos
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(alert => {
-                alert.style.animation = 'fadeOut 0.5s forwards';
-                setTimeout(() => {
-                    alert.remove();
-                }, 500);
             });
-        }, 5000);
+        });
+    });
     </script>
+    {% endblock %}
 </body>
 
 </html>
