@@ -152,32 +152,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <div class="notification-container">
-                        {% if success_message %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
-                            {{ success_message }}
-                            <button type="button" class="close" onclick="dismissAlert('success-alert')">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        {% endif %}
-
-                        {% if error_message %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="error-alert">
-                            {{ error_message }}
-                            {% if error_details %}
-                            <ul>
-                                {% for detail in error_details %}
-                                <li>{{ detail }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                            <button type="button" class="close" onclick="dismissAlert('error-alert')">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        {% endif %}
-                    </div>
                 </div>
             </div>
         </div>
