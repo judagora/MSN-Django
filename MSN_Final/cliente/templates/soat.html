@@ -85,7 +85,7 @@
                         </div>
                         <div class="form-group">
                             <label for="fecha_emision">Valor del SOAT</label>
-                            <input type="number" name="valor_soat" id="" placeholder="Ej: 117,900" required>
+                            <input type="text" pattern="^\d+$" title="Introducir el valor sin puntos ni comas." name="valor_soat" id="" placeholder="Ej: 113900" required>
                             {% if form.valor_soat.errors %}
                             <div class="alert-danger">
                                 <span>{{ form.valor_soat.errors.0 }}</span>
@@ -242,6 +242,13 @@
                 }
             });
         }
+    </script>
+
+
+    <script>
+    document.getElementById("valor_soat").addEventListener("input", function() {
+        this.value = this.value.replace(/[^0-9]/g, '');  // Elimina puntos y comas
+    });
     </script>
 
     {% if messages %}
