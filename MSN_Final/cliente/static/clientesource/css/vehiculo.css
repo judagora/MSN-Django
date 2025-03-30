@@ -1,8 +1,10 @@
 .contenido {
     margin-top: 30px;
     padding: 20px;
-    background-color: aliceblue;
-    width: 100%;
+    background-color: #9d9d9d;
+    box-shadow: 6px 6px 25px 3px rgba(0,0,0,0.75);
+    width: 97%;
+    margin-left: 11px;
     height: 50vh;
     border-radius: 20px;
 }
@@ -11,7 +13,7 @@
 }
 
 .icono-nom {
-    background-color: rgb(218, 238, 255);
+    background-color: white;
     border-radius: 20px;
     width: 25%;
     display: flex;
@@ -21,6 +23,7 @@
 
 .icono-nom img {
     width: 100%;  
+    margin-top: 30px;
 }
 
 
@@ -35,7 +38,7 @@
 }
 
 .informacion-vehi table {
-    background-color: rgb(218, 238, 255);
+    background-color: white;
     border-radius: 20px;
     width: 100%;
     height: 100%;
@@ -62,10 +65,10 @@
     border: none;
     background-color: #ccc;
     transition: all .3s;
-    border-radius: 2px;
+    border-radius: 10px;
     display: block;
-    width: fit-content;
-    margin-left: 45%;
+    width: 180px;
+    margin-left: 30%;
 }
 
 .editar:hover {
