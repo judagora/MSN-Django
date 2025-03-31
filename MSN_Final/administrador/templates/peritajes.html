@@ -13,41 +13,40 @@
     <link rel="stylesheet" href="{% static 'found/css/Mensajes.css' %}">
     <link rel="shortcut icon" href="{% static 'found/img/logo-msn.svg' %}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
-    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Peritajes</title>
 </head>
 
 <body class="fuente">
 
 
-    <!--  Barra de Navegación  -->
-    <header class="barrasup">
+     <!--  Barra de Navegación  -->
+     <header class="barrasup">
         <div class="logo">
-            <a class="link" href="{% url 'administrador:inicio' %}">
-                <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
-            </a>
-            <h1>Motors Safety Net</h1>
+          <a class="link" href="{% url 'administrador:inicio' %}">
+            <img src="{% static 'found/img/logo-msn.svg' %}" alt="imagen logo">
+          </a>
+          <h1>Motors Safety Net</h1>
         </div>
-
+    
         <div class="d-flex flex-column justify-content-between" style="margin-right: 5%;">
-            <a class="usuario text-white text-decoration-none d-flex align-items-center"
-                href="{% url 'administrador:inicio' %}">
-                <i class="lni lni-user"></i>
-                <span>{{ user.nombre_usuario }}</span>
-            </a>
-
-            <a class="correo text-white text-decoration-none d-flex align-items-center">
-                <small>{{ user.correo_electronico }}</small>
-            </a>
-            <br>
-            <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
-                href="{% url 'inicio:logout' %}">
-                <i class="lni lni-exit"></i>
-                <span>Cerrar Sesión</span>
-            </a>
+          <a class="usuario text-white text-decoration-none d-flex align-items-center"
+            href="{% url 'administrador:inicio' %}">
+            <i class="fa-solid fa-user"></i>
+            <span>{{ user.nombre_usuario }}</span>
+          </a>
+    
+          <a class="correo text-white text-decoration-none d-flex align-items-center">
+            <small>{{ user.correo_electronico }}</small>
+          </a>
+          <br>
+          <a class="salida text-white text-decoration-none d-flex align-items-center" role="button"
+          href="{% url 'inicio:logout' %}">
+          <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Cerrar Sesión</span>
+          </a>
         </div>
-    </header>
-
+      </header>
 
     <!-- Contenido de la página -->
     <div class="col">
@@ -58,49 +57,43 @@
                     <div class="espaciobarranav">
                         <div class="espaciobarranav cambiocolor" onclick="toggleSubMenu()">
                             <li class="nav-item d-flex justify-content-center align-items-center">
-                                <h3><a class="nav-link text-light text-center">Mecanicos <i
-                                            class="lni lni-chevron-right-circle"></i></a></h3>
+                                <h3><a class="nav-link text-light text-center">Mecanicos <i class="fa-solid fa-users"></i></a></h3>
                             </li>
                         </div>
                         <ul class="submenu">
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center"
-                                        href="{% url 'administrador:insertarMecanico' %}"
-                                        style="margin-top: 10%;">Registrar Mecánico</a></li>
+                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:insertarMecanico' %}" style="margin-top: 10%;">Registrar Mecánico</a></li>
                             </div>
                             <div class="cambiocolor">
-                                <li><a class="nav-link text-light text-center"
-                                        href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos
-                                        Registrados</a></li>
+                                <li><a class="nav-link text-light text-center" href="{% url 'administrador:mecanicos' %}" style="margin-top: 10%;">Mecánicos Registrados</a></li>
                             </div>
                         </ul>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center" aria-current="page"
-                                    href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
-                                        class="lni lni-agenda"></i></a></h3>
+                                href="{% url 'administrador:mantenimientos' %}">Mantenimientos programados <i
+                                        class="fa-solid fa-calendar-check"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                    href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
-                                        class="lni lni-delivery"></i></a></h3>
+                                href="{% url 'administrador:historialesVehiculo' %}">Historial del vehículo<i
+                                        class="fa-solid fa-car-side"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                    href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
-                                        class="lni lni-cogs"></i></a></h3>
+                                href="{% url 'administrador:talleresMecanico' %}">Talleres Mecánico<i
+                                        class="fa-solid fa-wrench"></i></a></h3>
                         </li>
                     </div>
                     <div class="espaciobarranav cambiocolor">
                         <li class="nav-item d-flex justify-content-center align-items-center">
                             <h3><a class="nav-link text-light text-center"
-                                    href="{% url 'administrador:peritajes' %}">Peritaje<i class="lni lni-cogs"></i></a>
-                            </h3>
+                                href="{% url 'administrador:peritajes' %}">Peritaje<i class="fa-solid fa-shield-halved"></i></a></h3>
                         </li>
                     </div>
                 </ul>
