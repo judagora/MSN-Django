@@ -118,6 +118,14 @@
     .col-3 {
         width: 100%;
     }
+
+    .informacion-vehi table {
+        height: 92%;
+    }
+
+    .editar{
+        width: 30%;
+    }
 }
 @media only screen and (max-width: 700px) {
     .contenido {

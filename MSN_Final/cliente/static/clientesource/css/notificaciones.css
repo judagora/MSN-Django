@@ -121,7 +121,7 @@ select[list="tipo-m"] {
 
 @media only screen and (max-width: 540px) {
     header {
-        padding-bottom: 200px;
+        padding-bottom: 1px;
     }
 
     .menu {
@@ -135,7 +135,7 @@ select[list="tipo-m"] {
     }
 } 
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 1px) {
     header {
         padding-bottom: 250px;
     }

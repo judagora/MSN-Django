@@ -142,6 +142,30 @@
     .header {
         height: 250px;
     }
+
+    .logo .link img {
+        height: 70px;
+        width: 70px;
+        margin: 0 10px 0 10px;
+    }
+
+    .logo h1 {
+        color: white;
+        font-family: "Oswald", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 700;
+        font-size: 21px;
+    }
+
+    .barraNav {
+        margin-right: 0px;
+        width: 71%;
+    }
+
+    .barraNav ul li {
+        display: inline-block;
+        margin-left: 40px;
+    }
 }
 
 
@@ -159,6 +183,15 @@
 
     .menu {
         height: 70vh;
+    }
+
+    .barraNav ul li {
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    .logo a {
+        margin-left: 3px;
     }
 }
 

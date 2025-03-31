@@ -30,22 +30,21 @@ def inicio(request):
     }
     
     if mecanico:
-        # Optimización: Obtenemos todos los datos necesarios en menos consultas
-        # Estadísticas de MANTENIMIENTOS
+
         mantenimientos_mecanico = MecanicoMantenimiento.objects.filter(
             id_mecanico=mecanico
         ).select_related('id_mantenimiento').prefetch_related(
             'id_mantenimiento__vehiculomantenimiento_set__id_vehiculo'
         )
         
-        # Preparamos datos para gráficos y estadísticas
+        # datos para gráficos y estadísticas
         if mantenimientos_mecanico.exists():
             # Vehículos únicos con mantenimientos
             vehiculos_mantenimiento = VehiculoMantenimiento.objects.filter(
                 id_mantenimiento__in=[m.id_mantenimiento for m in mantenimientos_mecanico]
             ).values('id_vehiculo').distinct().count()
             
-            # Mantenimientos por tipo (optimizado)
+            # Mantenimientos por tipo 
             mantenimientos_por_tipo = Mantenimiento.objects.filter(
                 id_mantenimiento__in=[m.id_mantenimiento.id_mantenimiento for m in mantenimientos_mecanico]
             ).values('tipo_mantenimiento').annotate(total=Count('id_mantenimiento'))
@@ -60,7 +59,7 @@ def inicio(request):
                 'ultimos_mantenimientos': ultimos_mantenimientos,
             })
         
-        # Estadísticas de PERITAJES (optimizadas)
+        # Estadísticas de PERITAJES 
         peritajes_mecanico = MecanicoPeritaje.objects.filter(
             id_mecanico=mecanico
         ).select_related('id_peritaje').prefetch_related(

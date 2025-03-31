@@ -67,6 +67,13 @@ body {
   }
 
 
+  @media only screen and (max-width: 660px) {
+    .container {
+      width: 80%;
+    }
+} 
+
+
   @media only screen and (max-width: 493px) {
     .btn-volver {
       margin-left: 1vw;
