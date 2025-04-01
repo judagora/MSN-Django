@@ -33,10 +33,25 @@ class VehiculoForm(forms.ModelForm):
     
     def clean_placa(self):
         placa = self.cleaned_data.get('placa')
+        tipo = self.cleaned_data.get('tipo')  # Asegúrate de que 'tipo' es un campo válido en tu modelo
+
+        # Expresiones regulares para validar el formato
+        regex_carro = r'^[A-Z]{3}\d{3}$'    # Formato: AAA123
+        regex_moto = r'^[A-Z]{3}\d{2}[A-Z]$'  # Formato: AAA12T
+
+        if tipo == "Automovil" or tipo == "Camioneta":  # Ajusta según los valores que uses en 'tipo'
+            if not re.fullmatch(regex_carro, placa):
+                raise ValidationError("Formato de placa incorrecto. Para carros: AAA123.")
+        elif tipo == "Motocicleta":
+            if not re.fullmatch(regex_moto, placa):
+                raise ValidationError("Formato de placa incorrecto. Para motos: AAA12T.")
+        else:
+            raise ValidationError("Tipo de vehículo no válido.")
+
+        # Verificar si ya existe en la base de datos (evitando duplicados)
         instance = self.instance
-        # Verifica si la placa ya está registrada en la base de datos
         if Vehiculo.objects.filter(placa=placa).exclude(id_vehiculo=instance.id_vehiculo).exists():
-            raise forms.ValidationError("Ya existe un vehículo registrado con esta placa.")
+            raise ValidationError("Ya existe un vehículo registrado con esta placa.")
 
         return placa
     
